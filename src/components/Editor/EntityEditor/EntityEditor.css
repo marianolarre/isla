@@ -1,0 +1,12 @@
+.container {
+    display: block;
+    max-width: 1600px;
+    margin: auto;
+    padding: 30px;
+}
+
+canvas {
+    position: static;
+    margin: auto;
+    padding: 20px;
+}

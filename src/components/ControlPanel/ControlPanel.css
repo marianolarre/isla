@@ -1,0 +1,50 @@
+#control-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 30%;
+  background-color: #222d;
+  display: block;
+  z-index: 1;
+  backdrop-filter: blur(7px);
+  overflow-y: scroll;
+}
+
+.scroller {
+  max-height: 196px;
+  overflow-y: auto;
+}
+
+p {
+  justify-content: space-between;
+}
+
+h1 {
+  display: inline-block;
+  margin: 14px 0 0 20px;
+  font-size: 1.25em;
+}
+
+h2 {
+  display: block;
+  margin: 5px 0;
+}
+
+.MuiAccordionSummary-content {
+  margin: 5px 0 !important;
+}
+
+.MuiAccordionDetails-root {
+  display: block !important;
+  padding: 5px !important;
+}
+
+img {
+  margin: 8px 0 8px 0;
+  height: 32px;
+}
+
+.block {
+  display: block;
+}

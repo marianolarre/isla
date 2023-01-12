@@ -1,0 +1,35 @@
+.bar-container {
+  width: 60%;
+  margin-left: 5%;
+  margin-right: 5%;
+  height: 10px;
+  display: inline-block;
+}
+
+.bar-filled {
+  display: inline-block;
+  background-color: rgb(255, 255, 255);
+  height: 100%;
+}
+
+.bar-positive {
+  display: inline-block;
+  background-color: rgb(68, 201, 112);
+  height: 100%;
+}
+
+.bar-negative {
+  display: inline-block;
+  background-color: rgb(180, 46, 46);
+  height: 100%;
+}
+
+.bar-empty {
+  display: inline-block;
+  background-color: rgb(24, 24, 24);
+  height: 100%;
+}
+
+.numbers {
+  display: inline-block;
+}

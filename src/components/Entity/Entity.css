@@ -1,0 +1,28 @@
+.entity {
+  background-color: #666;
+  margin: 5px;
+  height: 42px;
+  text-align: left;
+}
+
+.imgContainer {
+  display: inline-block;
+  background-color: #ccc;
+  padding: 5px;
+  width: 50px;
+  overflow: hidden;
+  left: 10px;
+}
+
+.imgContainer img {
+  display: block;
+  margin: auto;
+}
+
+.textContainer {
+  display: inline-block;
+}
+
+.textContainer .resourcelist {
+  margin: 0;
+}

@@ -1,0 +1,212 @@
+import * as PIXI from "pixi.js";
+import $ from "jquery";
+import { IslandPIXI } from "./IslandPIXI.js";
+
+var clicking = false;
+var previousMousePos = { x: 0, y: 0 };
+var renderer = PIXI.autoDetectRenderer();
+var extract = new PIXI.Extract(renderer);
+
+class Graphics {
+  constructor(game) {
+    this.game = game;
+    this.spritePointers = [];
+    this.spritePointerCounter = 0;
+    this.entityRenders = {};
+
+    // Initialize PIXI application and containers
+    this.pixi = new IslandPIXI({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      autoResize: true,
+    });
+
+    document.body.appendChild(this.pixi.app.view);
+    //PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    this.gameView = new PIXI.Container();
+    this.backgroundView = new PIXI.Container();
+    this.entitiesView = new PIXI.Container();
+    this.entitiesView.sortableChildren = true;
+    this.gameView.addChild(this.backgroundView);
+    this.gameView.addChild(this.entitiesView);
+    this.gameView.scale.set(0.1, 0.1);
+    this.pixi.app.stage.addChild(this.gameView);
+
+    // Tiling background
+    const backgroundTexture = PIXI.Texture.from("img/background.png");
+    const tilingSprite = new PIXI.TilingSprite(backgroundTexture, 32768, 32768);
+    tilingSprite.tileScale.x = 2;
+    tilingSprite.tileScale.y = 2;
+    this.backgroundView.addChild(tilingSprite);
+
+    // Load Assets
+    this.pixi.app.loader.load((loader, resources) => {
+      this.createAllGraphicsFromData(this.game.worldData);
+    });
+
+    /* #region Event Listeners */
+    document.addEventListener(
+      "mousewheel",
+      (e) => {
+        this.mouseWheelHandler(e);
+      },
+      false
+    );
+    document.addEventListener(
+      "mousedown",
+      (e) => {
+        this.mouseDownHandler(e);
+      },
+      false
+    );
+    document.addEventListener(
+      "mouseup",
+      (e) => {
+        this.mouseUpHandler(e);
+      },
+      false
+    );
+    document.addEventListener(
+      "mousemove",
+      (e) => {
+        this.mouseMoveHandler(e);
+      },
+      false
+    );
+    /* #endregion */
+  }
+
+  /* #region  Sprite Creation */
+
+  createAllGraphicsFromData(worldData) {
+    const civilizations = worldData.civilizations;
+    for (var civId in civilizations) {
+      const civ = civilizations[civId];
+      const state = civ.state;
+      for (var entityBase in state.entities) {
+        let entityList = state.entities[entityBase];
+        for (var entityId in entityList) {
+          let entity = entityList[entityId];
+          this.createEntityGraphics(worldData.bases[entityBase], entity);
+        }
+      }
+    }
+  }
+
+  createEntityGraphics(base, entity) {
+    const container = this.pixi.imgStringToContainer(base.img);
+    let size = container.getBounds();
+    const renderTexture = PIXI.RenderTexture.create(256, 256);
+    renderer.render(container, renderTexture);
+    if (this.entityRenders[base.img] == null)
+      this.entityRenders[base.img] = extract.image(renderTexture);
+
+    container.position.set(entity.p[0] * 16, entity.p[1] * 16);
+    container.zIndex = entity.y;
+    container.pointer = this.spritePointerCounter;
+    entity.pointer = this.spritePointerCounter;
+    //entity.civ = civ;
+    this.spritePointers[this.spritePointerCounter] = {
+      graphic: container,
+      base: base,
+      entity: entity,
+      enabled: true,
+    };
+
+    container.interactive = true;
+    container.buttonMode = true;
+    container
+      .on("pointerover", (ev) => {
+        this.handleSpriteMouseOver(ev);
+      })
+      .on("pointerout", (ev) => {
+        this.handleSpriteMouseOut(ev);
+      })
+      .on("click", (ev) => {
+        this.handleSpriteClick(ev);
+      });
+
+    this.entitiesView.addChild(container);
+
+    this.spritePointerCounter++;
+  }
+  /* #endregion */
+
+  /* #region Mouse Event Handlers  */
+  mouseWheelHandler(event) {
+    if (this.mouseInsidePlayArea(event.clientX)) {
+      const { gameView } = this;
+      let zoom = gameView.scale.x;
+      let mouseScroll = event.deltaY / 100;
+      let newzoom = zoom * (1 - mouseScroll / 5);
+      const minzoom = 0.05;
+      const maxzoom = 2;
+      if (newzoom < minzoom) {
+        newzoom = minzoom;
+      }
+      if (newzoom > maxzoom) {
+        newzoom = maxzoom;
+      }
+      gameView.scale.set(newzoom, newzoom);
+
+      let deltaX = event.clientX - gameView.position.x;
+      let deltaY = event.clientY - gameView.position.y;
+      gameView.position.x = Math.floor(
+        event.clientX - (deltaX * newzoom) / zoom
+      );
+      gameView.position.y = Math.floor(
+        event.clientY - (deltaY * newzoom) / zoom
+      );
+    }
+  }
+
+  mouseDownHandler(event) {
+    if (this.mouseInsidePlayArea(event.clientX)) {
+      //dragged = false;
+      clicking = true;
+      previousMousePos = { x: event.clientX, y: event.clientY };
+      $("#sidebar-content").addClass("noselect");
+    }
+  }
+
+  mouseUpHandler(event) {
+    clicking = false;
+    $("#sidebar-content").removeClass("noselect");
+  }
+
+  mouseMoveHandler(event) {
+    const { gameView } = this;
+    if (clicking) {
+      //dragged = true;
+      let deltaX = event.clientX - previousMousePos.x;
+      let deltaY = event.clientY - previousMousePos.y;
+      gameView.position.x += deltaX;
+      gameView.position.y += deltaY;
+      previousMousePos = { x: event.clientX, y: event.clientY };
+    }
+  }
+
+  mouseInsidePlayArea(mouseX) {
+    return mouseX > $("#control-panel").outerWidth() || 0;
+  }
+  /* #endregion */
+
+  /* #region Sprite Event Handlers */
+
+  // TODO: Interacción con los sprites
+  handleSpriteMouseOver(ev) {
+    const sprite = ev.target;
+    const data = this.spritePointers[ev.target.pointer];
+    console.log(data);
+  }
+
+  handleSpriteMouseOut(ev) {}
+
+  handleSpriteClick(ev) {
+    //const sprite = ev.target;
+    //const data = this.spritePointers[ev.target.pointer];
+  }
+  /* #endregion */
+}
+
+export default Graphics;

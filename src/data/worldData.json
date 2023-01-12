@@ -1,0 +1,118 @@
+{
+  "resources": {
+    "satisfaction": {
+      "name": "Satisfacción",
+      "desc": "Qué tan feliz está tu población con su situación actual. A mayor satisfacción, más chances de que un nuevo aldeano se una a tu pueblo. Si la satisfacción es muy baja, tus aldeanos pueden volverse desobedientes.",
+      "img": "ffffffff",
+      "special": true
+    },
+    "population": {
+      "name": "Población",
+      "desc": "La cantidad de personas que conforman tu civilización. Cuanto más tengas, más fuerza de trabajo tendrás. Si tu pueblo provee una buena vida y tienes viviendas libres, más aldeanos querrán quedarse a vivir aquí.",
+      "img": "ffffffff",
+      "special": true
+    },
+    "housing": {
+      "name": "Viviendas",
+      "desc": "Lugares para vivir. Si el pueblo es atractivo y hay espacio extra, más aldeanos se quedarán a vivir aquí.",
+      "img": "ffffffff"
+    },
+    "food": {
+      "name": "Comida",
+      "desc": "Se obtiene de buscar comida en un bosque, hacer plantaciones o criar animales. Los aldeanos necesitan 1 de comida por día.",
+      "img": "ffffffff"
+    },
+    "wood": {
+      "name": "Madera",
+      "desc": "Se obtiene de campamentos acerraderos cerca de árboles. Útil para construir estructuras rápidamente.",
+      "img": "ffffffff"
+    },
+    "stone": {
+      "name": "Piedra",
+      "desc": "Se obtiene de campamentos mineros cerca de piedras. Útil para construir estructuras mas sólidas y duraderas.",
+      "img": "ffffffff"
+    }
+  },
+  "bases": {
+    "house": {
+      "name": "Casa",
+      "desc": "Es una casita bonita",
+      "cost": { "work": 1, "wood": 5 },
+      "prod": [{ "housing": 4 }],
+      "vision": 2,
+      "img": "0ZWdRO00;ojQhMK00;oYQhJI00;0LdhDD00;ijdhEE00;85WPUP00;LcfGNK00;C5hOCHC0"
+    },
+    "house_2": {
+      "name": "Casa II",
+      "desc": "Es una casita mas bonita",
+      "cost": { "work": 2, "wood": 6, "stone": 2 },
+      "prod": [{ "population": 8 }],
+      "vision": 2,
+      "img": "87ffff00"
+    },
+    "wood_camp": {
+      "name": "Campamento Acerradero",
+      "desc": "Recolecta maderita",
+      "cost": { "work": 1, "wood": 4 },
+      "prod": [{}, { "work": -1, "wood": 4 }, { "work": -2, "wood": 8 }],
+      "vision": 4,
+      "img": "NXLIMM00;65LSRR00;NXLYMM00;KkmqLLF0;KkhsLLF0;KkjnLLF0;0YjQFD00;0ZjJFD00;7bsM9DU0;rYtOHH60"
+    },
+    "villager": {
+      "name": "Aldeano",
+      "desc": "construye mas aldean-deja de construir mas aldeanos",
+      "unlisted": true,
+      "prod": [{ "population": 1 }],
+      "vision": 4,
+      "img": "0pWcDD00;o5WWJF00;uOWPDD00;6jWMDD00;t0WQBB00"
+    }
+  },
+  "civilizations": [
+    {
+      "name": "Redsburg",
+      "player": "John Smith",
+      "flag_img": "ffffffff",
+      "state": {
+        "day": 1,
+        "title": "Dia 1",
+        "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "entities": {
+          "villager": [{ "p": [640, 320] }, { "p": [704, 320] }],
+          "house": [{ "p": [640, 352] }],
+          "wood_camp": [{ "p": [672, 336], "w": 1 }]
+        },
+        "resources": {
+          "sat": 50,
+          "pop": 4,
+          "viv": 4,
+          "mad": 10,
+          "pie": 8,
+          "com": 9
+        }
+      }
+    },
+    {
+      "name": "Blusburg",
+      "player": "John Doe",
+      "flag_img": "ffffffff",
+      "state": {
+        "day": 1,
+        "title": "Dia 1",
+        "desc": "So it begins",
+        "entities": {
+          "villager": [{ "p": [640, 160] }, { "p": [704, 160] }],
+          "house": [{ "p": [640, 176] }],
+          "wood_camp": [{ "p": [656, 176], "w": 1 }]
+        },
+        "resources": {
+          "sat": 50,
+          "pop": 4,
+          "viv": 4,
+          "mad": 10,
+          "pie": 8,
+          "com": 9
+        }
+      }
+    }
+  ]
+}

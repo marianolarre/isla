@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Editor from "./components/Editor/Editor";
+import { createTheme, ThemeProvider } from "@mui/material";
+import GamePanel from "./components/GamePanel/GamePanel";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
+
+class App extends Component {
+  render() {
+    return (
+      <ThemeProvider theme={darkTheme}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<GamePanel></GamePanel>}></Route>
+            <Route path="/editor" element={<Editor></Editor>}></Route>
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    );
+  }
 }
 
 export default App;
