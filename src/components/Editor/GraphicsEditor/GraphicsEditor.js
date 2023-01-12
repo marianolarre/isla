@@ -25,6 +25,16 @@ class GraphicsEditor extends Component {
     this.pixi = new IslandPIXI(this.props.options);
 
     this.preview = new PIXI.Container();
+    if (this.props.scale != null) {
+      this.pixi.app.stage.scale.set(this.props.scale, this.props.scale);
+    }
+    const graphics = new PIXI.Graphics();
+    graphics.lineStyle(1, 0x000000, 0.2);
+    graphics.moveTo(128, 0);
+    graphics.lineTo(128, 256);
+    graphics.moveTo(0, 128);
+    graphics.lineTo(256, 128);
+    this.pixi.app.stage.addChild(graphics);
     this.preview.sortableChildren = true;
     this.pixi.app.stage.addChild(this.preview);
     $("#" + this.props.containerId).append(this.pixi.app.view);
@@ -199,10 +209,10 @@ class GraphicsEditor extends Component {
 
       const newGraphicData = [...this.state.graphicData];
       let part = newGraphicData[this.state.currentImage];
-      part.xPos += deltaX / 4;
+      part.xPos += deltaX / 4 / this.props.scale;
       if (part.xPos < 0) part.xPos = 0;
       if (part.xPos > 63) part.xPos = 63;
-      part.yPos += deltaY / 4;
+      part.yPos += deltaY / 4 / this.props.scale;
       if (part.yPos < 0) part.yPos = 0;
       if (part.yPos > 63) part.yPos = 63;
 

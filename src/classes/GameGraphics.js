@@ -6,6 +6,7 @@ var clicking = false;
 var previousMousePos = { x: 0, y: 0 };
 var renderer = PIXI.autoDetectRenderer();
 var extract = new PIXI.Extract(renderer);
+const outlineMultiplier = 6;
 
 class Graphics {
   constructor(game) {
@@ -31,6 +32,9 @@ class Graphics {
     this.gameView.addChild(this.entitiesView);
     this.gameView.scale.set(0.1, 0.1);
     this.pixi.app.stage.addChild(this.gameView);
+
+    this.pixi.blackOutline.thickness =
+      this.gameView.scale.x * outlineMultiplier;
 
     // Tiling background
     const backgroundTexture = PIXI.Texture.from("img/background.png");
@@ -148,7 +152,7 @@ class Graphics {
         newzoom = maxzoom;
       }
       gameView.scale.set(newzoom, newzoom);
-
+      this.pixi.blackOutline.thickness = newzoom * outlineMultiplier;
       let deltaX = event.clientX - gameView.position.x;
       let deltaY = event.clientY - gameView.position.y;
       gameView.position.x = Math.floor(

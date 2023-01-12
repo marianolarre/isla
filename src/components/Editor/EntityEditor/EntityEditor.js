@@ -23,22 +23,28 @@ class EntityEditor extends Component {
     return (
       <div className="container">
         <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             <Paper elevation={2} id="list">
               <Typography>Lista</Typography>
             </Paper>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={5}>
             <Paper elevation={2} id="list">
               <Typography>Opciónes</Typography>
               <GraphicsEditor
                 containerId="entity-preview"
-                options={{ width: 256, height: 256 }}
+                options={{
+                  width: 512,
+                  height: 512,
+                  backgroundColor: 0x86d369,
+                  scale: 2,
+                }}
+                scale={2}
                 onChange={(e) => this.handleChange(e, "graphicString")}
               ></GraphicsEditor>
             </Paper>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={5}>
             <Paper elevation={2} id="list">
               <Typography>Vista previa</Typography>
               <div id="entity-preview"></div>

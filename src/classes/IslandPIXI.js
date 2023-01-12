@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { b64ToInt, intToB64 } from "./utility.js";
+import { OutlineFilter } from "pixi-filters";
 
 export const colorPalette = [
   "060608",
@@ -76,6 +77,12 @@ export class IslandPIXI {
     this.app = new PIXI.Application(options);
     this.spriteTextures = [];
     this.spriteRenders = [];
+    let outline = 6;
+    if (options.scale != null) {
+      outline *= options.scale;
+    }
+    this.blackOutline = new OutlineFilter(outline, 0x000000, 0.3);
+    this.blackOutline.padding = 10;
     this.loadAssets();
   }
 
@@ -122,11 +129,9 @@ export class IslandPIXI {
   imgStringToContainer(string) {
     const container = new PIXI.Container();
     var imgArray = string.split(";");
-    //const blackOutline = new OutlineFilter();
     for (let i in imgArray) {
       const spriteData = this.deserializeSingleSprite(imgArray[i]);
       const sprite = new PIXI.Sprite(this.spriteTextures[spriteData.imageId]);
-      //sprite.filters = [blackOutline];
       sprite.pivot.x = 128;
       sprite.pivot.y = 128;
       sprite.tint = "0x" + colorPalette[spriteData.colorId];
@@ -137,6 +142,7 @@ export class IslandPIXI {
       sprite.rotation = (spriteData.rotation / 180) * Math.PI * 7.5;
       container.addChild(sprite);
     }
+    container.filters = [this.blackOutline];
     return container;
   }
 
