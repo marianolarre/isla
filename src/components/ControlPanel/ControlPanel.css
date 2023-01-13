@@ -11,6 +11,10 @@
   overflow-y: scroll;
 }
 
+.render {
+  filter: drop-shadow(1px 1px 0 black) drop-shadow(-1px -1px 0 black) drop-shadow(-1px 1px 0 black) drop-shadow(1px -1px 0 black)
+}
+
 .scroller {
   max-height: 196px;
   overflow-y: auto;

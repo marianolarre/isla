@@ -5,3 +5,8 @@
     justify-content: center;
     padding: auto;
 }
+
+.part-button img {
+    width: 100%;
+    height: auto;
+}

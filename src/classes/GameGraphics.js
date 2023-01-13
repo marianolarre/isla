@@ -13,7 +13,7 @@ class Graphics {
     this.game = game;
     this.spritePointers = [];
     this.spritePointerCounter = 0;
-    this.entityRenders = {};
+    this.renders = {};
 
     // Initialize PIXI application and containers
     this.pixi = new IslandPIXI({
@@ -84,26 +84,42 @@ class Graphics {
 
   createAllGraphicsFromData(worldData) {
     const civilizations = worldData.civilizations;
+    for (var resource in worldData.resources) {
+      this.renderHTMLFromString(worldData.resources[resource].img);
+    }
     for (var civId in civilizations) {
       const civ = civilizations[civId];
       const state = civ.state;
+      this.renderHTMLFromString(civ.flag_img);
       for (var entityBase in state.entities) {
         let entityList = state.entities[entityBase];
         for (var entityId in entityList) {
           let entity = entityList[entityId];
+          this.renderHTMLFromString(worldData.bases[entityBase].img);
           this.createEntityGraphics(worldData.bases[entityBase], entity);
         }
       }
     }
   }
 
+  renderHTMLFromString(graphicString) {
+    const container = this.pixi.imgStringToContainer(graphicString);
+    if (this.renders[graphicString] == null)
+      this.renders[graphicString] = this.pixi.renderHTMLImage(container, 0.25);
+    container.destroy();
+  }
+
   createEntityGraphics(base, entity) {
     const container = this.pixi.imgStringToContainer(base.img);
-    let size = container.getBounds();
-    const renderTexture = PIXI.RenderTexture.create(256, 256);
-    renderer.render(container, renderTexture);
-    if (this.entityRenders[base.img] == null)
-      this.entityRenders[base.img] = extract.image(renderTexture);
+    /*
+    if (this.renders[base.img] == null) {
+      const renderTexture = PIXI.RenderTexture.create({
+        width: 256,
+        height: 256,
+      });
+      renderer.render(container, renderTexture);
+      this.renders[base.img] = extract.image(renderTexture);
+    }*/
 
     container.position.set(entity.p[0] * 16, entity.p[1] * 16);
     container.zIndex = entity.y;

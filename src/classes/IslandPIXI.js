@@ -1,6 +1,13 @@
 import * as PIXI from "pixi.js";
 import { b64ToInt, intToB64 } from "./utility.js";
 import { OutlineFilter } from "pixi-filters";
+import {
+  EmojiPeople,
+  Hexagon,
+  House,
+  Park,
+  Restaurant,
+} from "@mui/icons-material";
 
 export const colorPalette = [
   "060608",
@@ -69,6 +76,39 @@ export const colorPalette = [
   "423934",
 ];
 
+export const partPages = [
+  {
+    name: "Basic shapes",
+    file: "img/shapes_basic.png",
+    icon: <Hexagon></Hexagon>,
+    count: 58,
+  },
+  {
+    name: "Architecture",
+    file: "img/shapes_architecture.png",
+    icon: <House></House>,
+    count: 16,
+  },
+  {
+    name: "Nature",
+    file: "img/shapes_nature.png",
+    icon: <Park></Park>,
+    count: 6,
+  },
+  {
+    name: "Criaturas",
+    file: "img/shapes_creatures.png",
+    icon: <EmojiPeople></EmojiPeople>,
+    count: 5,
+  },
+  {
+    name: "Objetos",
+    file: "img/shapes_items.png",
+    icon: <Restaurant></Restaurant>,
+    count: 9,
+  },
+];
+
 var renderer = PIXI.autoDetectRenderer();
 var extract = new PIXI.Extract(renderer);
 
@@ -77,12 +117,13 @@ export class IslandPIXI {
     this.app = new PIXI.Application(options);
     this.spriteTextures = [];
     this.spriteRenders = [];
+    this.renders = [];
     let outline = 6;
     if (options.scale != null) {
       outline *= options.scale;
     }
     this.blackOutline = new OutlineFilter(outline, 0x000000, 0.3);
-    this.blackOutline.padding = 10;
+    this.blackOutline.padding = 12;
     this.loadAssets();
   }
 
@@ -97,14 +138,13 @@ export class IslandPIXI {
 
   deserializeSingleSprite(string) {
     return {
-      imageId: b64ToInt(string.substring(0, 1)),
-      colorId: b64ToInt(string.substring(1, 2)),
-      xPos: b64ToInt(string.substring(2, 3)),
-      yPos: b64ToInt(string.substring(3, 4)),
-      xScale: b64ToInt(string.substring(4, 5)),
-      yScale: b64ToInt(string.substring(5, 6)),
-      rotation: b64ToInt(string.substring(6, 7)),
-      flags: b64ToInt(string.substring(7, 8)),
+      imageId: b64ToInt(string.substring(0, 2)),
+      colorId: b64ToInt(string.substring(2, 3)),
+      xPos: b64ToInt(string.substring(3, 4)),
+      yPos: b64ToInt(string.substring(4, 5)),
+      xScale: b64ToInt(string.substring(5, 6)),
+      yScale: b64ToInt(string.substring(6, 7)),
+      rotation: b64ToInt(string.substring(7, 8)),
     };
   }
 
@@ -113,14 +153,13 @@ export class IslandPIXI {
     for (let i in graphicData) {
       const part = graphicData[i];
       parts.push(
-        intToB64(part.imageId) +
+        intToB64(part.imageId).padStart(2, "0") +
           intToB64(part.colorId) +
           intToB64(part.xPos) +
           intToB64(part.yPos) +
           intToB64(part.xScale) +
           intToB64(part.yScale) +
-          intToB64(part.rotation) +
-          intToB64(part.flags)
+          intToB64(part.rotation)
       );
     }
     return parts.join(";");
@@ -148,19 +187,47 @@ export class IslandPIXI {
 
   loadAssets() {
     if (this.loaded) return;
-    this.app.loader.add(["img/shapes.png"]);
+    let fileList = [];
+    for (let i in partPages) {
+      fileList.push(partPages[i].file);
+    }
+    this.app.loader.add(fileList);
     this.app.loader.load((loader, resources) => {
-      this.loadedAssets();
+      for (let i in partPages) {
+        this.loadIndividualSprites(i);
+      }
+      this.loaded = true;
     });
     this.loaded = true;
   }
 
+  renderHTMLImage(pixiObject, quality) {
+    //const rect = pixiObject.getBounds();
+    pixiObject.scale.x *= quality;
+    pixiObject.scale.y *= quality;
+    const renderTexture = PIXI.RenderTexture.create({
+      width: 256 * quality,
+      height: 256 * quality,
+      scaleMode: PIXI.settings.SCALE_MODE.NEAREST,
+    });
+    renderer.render(pixiObject, renderTexture);
+    let render = extract.image(renderTexture);
+    pixiObject.scale.x /= quality;
+    pixiObject.scale.y /= quality;
+    return render;
+  }
+
   // Once assets are loaded
-  loadedAssets() {
+  loadIndividualSprites(pageId) {
     const imageSize = 256;
-    const texture = this.app.loader.resources["img/shapes.png"].texture;
+    const texture = this.app.loader.resources[partPages[pageId].file].texture;
+    let images = 0;
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
+        if (images >= partPages[pageId].count) {
+          return;
+        }
+
         const rect = new PIXI.Rectangle(
           x * imageSize,
           y * imageSize,
@@ -169,19 +236,17 @@ export class IslandPIXI {
         );
 
         const newTexture = new PIXI.Texture(texture, rect);
-        this.spriteTextures.push(newTexture);
+        this.spriteTextures[pageId * 64 + images] = newTexture;
 
         // Render and save
         const sprite = new PIXI.Sprite(newTexture);
-        const renderTexture = PIXI.RenderTexture.create(
-          rect.width,
-          rect.height
+        this.spriteRenders[pageId * 64 + images] = this.renderHTMLImage(
+          sprite,
+          0.125
         );
-        renderer.render(sprite, renderTexture);
-        this.spriteRenders.push(extract.image(renderTexture));
         sprite.destroy();
+        images++;
       }
     }
-    this.loaded = true;
   }
 }

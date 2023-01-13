@@ -3,6 +3,20 @@
     max-width: 1600px;
     margin: auto;
     padding: 30px;
+    overflow: auto;
+}
+
+.scrolling-panel {
+overflow-y: auto;
+max-height: 85vh;
+}
+
+.inline {
+display: inline-block;
+}
+
+.fullWidth {
+width: 100%;
 }
 
 canvas {

@@ -5,7 +5,7 @@ import $ from "jquery";
 import ColorPalette from "../ColorPalette/ColorPalette";
 import PartPalette from "../PartPalette/PartPalette";
 import SliderWithInput from "../SliderWithInput";
-import { Grid, Button, Typography } from "@mui/material";
+import { Grid, Button, Typography, CircularProgress } from "@mui/material";
 import "./GraphicsEditor.css";
 
 var clicking = false;
@@ -22,7 +22,11 @@ class GraphicsEditor extends Component {
   }
 
   componentDidMount() {
-    this.pixi = new IslandPIXI(this.props.options);
+    if (this.props.pixi == null) {
+      this.pixi = new IslandPIXI(this.props.options);
+    } else {
+      this.pixi = this.props.pixi;
+    }
 
     this.preview = new PIXI.Container();
     if (this.props.scale != null) {
@@ -40,7 +44,7 @@ class GraphicsEditor extends Component {
     $("#" + this.props.containerId).append(this.pixi.app.view);
     this.pixi.app.loader.load((loader, resources) => {
       this.renderString(this.pixi.serializeSprite(this.state.graphicString));
-      this.forceUpdate();
+      this.addNewPart();
     });
 
     document.addEventListener(
@@ -90,10 +94,9 @@ class GraphicsEditor extends Component {
       colorId: 5,
       xPos: 32,
       yPos: 32,
-      xScale: 32,
-      yScale: 32,
+      xScale: 16,
+      yScale: 16,
       rotation: 0,
-      flags: 0,
     });
     this.uploadNewPartList(parts, parts.length - 1);
   }
@@ -251,24 +254,21 @@ class GraphicsEditor extends Component {
 
   render() {
     if (this.pixi == null) {
-      return <></>;
+      return <CircularProgress />;
     }
     return (
       <>
         <br></br>
         <Typography>Parts</Typography>
         <br></br>
+        <label>Graphic string </label>
         <input
+          label="String"
           className="string-display"
           value={this.state.graphicString}
           onChange={(e) => this.handleCodeChange(e)}
         />
         <Grid container>
-          <Grid item xs={12}>
-            <Button onClick={() => this.addNewPart()} fullWidth>
-              +
-            </Button>
-          </Grid>
           {this.pixi != null &&
             this.state.graphicData.map((value, index) => (
               <button
@@ -286,17 +286,21 @@ class GraphicsEditor extends Component {
                   src={
                     this.pixi.spriteRenders[
                       this.state.graphicData[index].imageId
-                    ].src
+                    ] != null
+                      ? this.pixi.spriteRenders[
+                          this.state.graphicData[index].imageId
+                        ].src
+                      : ""
                   }
                 ></img>
               </button>
             ))}
         </Grid>
 
-        {this.state.graphicData.length > 0 && (
+        <br></br>
+        {(this.state.graphicData.length > 0 && (
           <div>
-            <h2>Part settings</h2>
-            <br></br>
+            <Button onClick={() => this.addNewPart()}>Create new part</Button>
             <Button onClick={() => this.moveBack()}>Move Back</Button>
             <Button onClick={() => this.moveForward()}>Move Forward</Button>
             <Button onClick={() => this.duplicatePart()}>Duplicate</Button>
@@ -308,15 +312,6 @@ class GraphicsEditor extends Component {
               Delete
             </Button>
             <br></br>
-            <PartPalette
-              images={this.pixi.spriteRenders}
-              value={this.state.graphicData[this.state.currentImage].imageId}
-              onChange={(e) => this.handleChange(e, "imageId")}
-            ></PartPalette>
-            <ColorPalette
-              value={this.state.graphicData[this.state.currentImage].colorId}
-              onChange={(e) => this.handleChange(e, "colorId")}
-            ></ColorPalette>
             <SliderWithInput
               label="X Pos"
               value={this.state.graphicData[this.state.currentImage].xPos}
@@ -357,7 +352,18 @@ class GraphicsEditor extends Component {
               max={63}
               step={1}
             ></SliderWithInput>
+            <PartPalette
+              images={this.pixi.spriteRenders}
+              value={this.state.graphicData[this.state.currentImage].imageId}
+              onChange={(e) => this.handleChange(e, "imageId")}
+            ></PartPalette>
+            <ColorPalette
+              value={this.state.graphicData[this.state.currentImage].colorId}
+              onChange={(e) => this.handleChange(e, "colorId")}
+            ></ColorPalette>
           </div>
+        )) || (
+          <Button onClick={() => this.addNewPart()}>Create new part</Button>
         )}
       </>
     );

@@ -43,12 +43,12 @@ class SliderWithInput extends Component {
     return (
       <Box>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <Typography id="input-slider" gutterBottom align="right">
               {this.props.label}
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={8}>
             <Slider
               marks={this.props.marks}
               value={
@@ -62,7 +62,7 @@ class SliderWithInput extends Component {
               aria-labelledby="input-slider"
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <Input
               value={this.state.temporaryValue || this.props.value}
               size="small"

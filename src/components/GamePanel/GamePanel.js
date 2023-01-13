@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
 import GameGraphics from "../../classes/GameGraphics.js";
-import worldData from "../../data/worldData.json";
 import Game from "../../classes/Game.js";
 
 class GamePanel extends Component {
@@ -11,7 +10,7 @@ class GamePanel extends Component {
   }
 
   componentWillMount() {
-    this.game = new Game(worldData);
+    this.game = new Game(this.props.worldData);
     this.graphics = new GameGraphics(this.game);
     this.currentCiv = 0;
   }

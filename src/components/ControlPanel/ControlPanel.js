@@ -82,8 +82,14 @@ class ControlPanel extends Component {
 
   renderEntities(civ) {
     let imgList = [];
-    for (let i in this.props.graphics.entityRenders) {
-      imgList.push(<img src={this.props.graphics.entityRenders[i].src}></img>);
+    for (let i in this.props.graphics.renders) {
+      imgList.push(
+        <img
+          className="render"
+          src={this.props.graphics.renders[i].src}
+          style={{ width: "64px", height: "auto", textShadow: "0 0 4px white" }}
+        ></img>
+      );
     }
     return <>{imgList}</>;
   }
@@ -123,7 +129,15 @@ class ControlPanel extends Component {
         {/*<MuiThemeProvider theme={THEME}>*/}
         <Accordion>
           <AccordionSummary>
-            <img src={civ.simbol} alt=""></img>
+            <img
+              className="render"
+              src={
+                this.props.graphics.renders[civ.flag_img] == null
+                  ? ""
+                  : this.props.graphics.renders[civ.flag_img].src
+              }
+              alt=""
+            ></img>
             <h1>{civ.name}</h1>
           </AccordionSummary>
           <AccordionDetails>
