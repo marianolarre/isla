@@ -1,4 +1,5 @@
 import { Box, Button, Grid, Modal, TextField, Typography } from "@mui/material";
+import { isEmptyObject } from "jquery";
 import React, { Component } from "react";
 import "./ResourceSelector.css";
 
@@ -18,7 +19,10 @@ class ResourceSelector extends Component {
 
   renderResourceList() {
     let resourceList = [];
-    Object.keys(this.props.value).map((i, index) =>
+    if (this.getResources() == null) {
+      return <Typography>Nothing</Typography>;
+    }
+    Object.keys(this.props.value).map((i, index) => {
       resourceList.push(
         <div className="resource-setter" key={index}>
           <img
@@ -29,11 +33,8 @@ class ResourceSelector extends Component {
             {this.props.value[i]}
           </Typography>
         </div>
-      )
-    );
-    if (resourceList.length == 0) {
-      return <Typography>Nothing</Typography>;
-    }
+      );
+    });
     return resourceList;
   }
 
@@ -56,7 +57,7 @@ class ResourceSelector extends Component {
               fullWidth
               type="number"
               className="resource-textfield"
-              value={this.props.value[i]}
+              value={this.getResources(i)}
               onChange={(e) => this.handleResourceChange(i, e.target.value)}
             ></TextField>
           </Grid>
@@ -64,6 +65,19 @@ class ResourceSelector extends Component {
       )
     );
     return resourceList;
+  }
+
+  getResources(id) {
+    if (this.props.value === undefined) {
+      return null;
+    }
+    if (isEmptyObject(this.props.value)) {
+      return null;
+    }
+    if (id != null) {
+      return this.props.value[id];
+    }
+    return this.props.value;
   }
 
   handleResourceChange(resource, newValue) {
@@ -74,6 +88,11 @@ class ResourceSelector extends Component {
       delete newList[resource];
     }
     this.props.onChange(newList);
+  }
+
+  handleResourceRemove() {
+    this.closeModal();
+    this.props.onRemove();
   }
 
   openModal() {
@@ -99,7 +118,12 @@ class ResourceSelector extends Component {
             <Typography variant="h6">Resources</Typography>
             <br></br>
             <Box className="resource-list">{this.renderResourceTable()}</Box>
-            <Button onClose={() => this.closeModal()}>Accept</Button>
+            <Button
+              onClick={() => this.closeModal()}
+              style={{ float: "right" }}
+            >
+              Accept
+            </Button>
           </Box>
         </Modal>
       </div>

@@ -12,10 +12,10 @@ class Editor extends Component {
 
   componentWillMount() {
     this.pixi = new IslandPIXI({
-      width: 512,
-      height: 512,
+      width: 256,
+      height: 256,
       backgroundColor: 0x86d369,
-      scale: 2,
+      scale: 1,
     });
 
     this.renders = [];
@@ -25,11 +25,20 @@ class Editor extends Component {
     });
   }
 
+  renderHTMLFromString(graphicString) {
+    const container = this.pixi.imgStringToContainer(graphicString);
+    if (this.renders[graphicString] == null)
+      this.renders[graphicString] = this.pixi.renderHTMLImage(container, 0.25);
+    container.destroy();
+  }
+
   createAllGraphicsFromData(worldData) {
     for (let i in worldData.resources) {
       const res = worldData.resources[i];
-      const container = this.pixi.imgStringToContainer(res.img);
-      this.renders[res.img] = this.pixi.renderHTMLImage(container, 0.5);
+      this.renderHTMLFromString(res.img);
+    }
+    for (var entityBase in worldData.bases) {
+      this.renderHTMLFromString(worldData.bases[entityBase].img);
     }
   }
 

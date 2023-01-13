@@ -6,9 +6,6 @@ import {
   Typography,
 } from "@mui/material";
 import "./ControlPanel.css";
-import ResourceList from "../ResourceList/ResourceList";
-import Entity from "../Entity/Entity";
-import Event from "../Event/Event";
 /*
 const THEME = createMuiTheme({
   palette: {
@@ -30,56 +27,6 @@ class ControlPanel extends Component {
     });
   }
 
-  renderPersistentIncomes(civ) {
-    const incomes = this.props.game.calculatePersistentIncome(civ);
-    return (
-      <ResourceList
-        worldData={this.props.game.worldData}
-        list={incomes}
-        type={"big"}
-        delta={true}
-      />
-    );
-  }
-
-  renderIncomes(civ) {
-    const incomes = this.props.game.calculateIncome(civ);
-    return (
-      <ResourceList
-        worldData={this.props.game.worldData}
-        list={incomes}
-        type={"big"}
-        delta={true}
-      />
-    );
-  }
-
-  renderIncomeBreakdown(civ) {
-    let itemList = [];
-    const list = civ.state.instances;
-    for (var i in list) {
-      const income = this.props.game.calculateInstanceIncome(
-        civ,
-        list[i],
-        true
-      );
-      if (Object.keys(income).length > 0) {
-        itemList.push(
-          <Entity
-            key={i}
-            civ={civ}
-            instance={list[i]}
-            worldData={this.props.game.worldData}
-            income={income}
-            delta={true}
-          />
-        );
-      }
-    }
-
-    return itemList;
-  }
-
   renderEntities(civ) {
     let imgList = [];
     for (let i in this.props.graphics.renders) {
@@ -92,24 +39,6 @@ class ControlPanel extends Component {
       );
     }
     return <>{imgList}</>;
-  }
-
-  renderEvents(civ) {
-    let itemList = [];
-    const list = civ.state.events;
-    for (var i in list) {
-      itemList.push(
-        <Event
-          key={i}
-          civ={civ}
-          event={list[i]}
-          worldData={this.props.game.worldData}
-          delta={true}
-        />
-      );
-    }
-
-    return itemList;
   }
 
   onGraphicsFinished() {
@@ -147,11 +76,6 @@ class ControlPanel extends Component {
                 <p>{civ.state.desc}</p>
               </div>
             </div>
-            <ResourceList
-              worldData={this.props.game.worldData}
-              list={civ.state.resources}
-              type={"big"}
-            />
           </AccordionDetails>
         </Accordion>
         <Accordion>

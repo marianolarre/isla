@@ -1,22 +1,37 @@
 .container {
     display: block;
-    max-width: 1600px;
+    width: 100%;
     margin: auto;
-    padding: 30px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     overflow: auto;
+    background-color: #444;
 }
 
 .scrolling-panel {
 overflow-y: auto;
-max-height: 85vh;
+max-height: 80vh;
 }
 
 .inline {
 display: inline-block;
 }
 
+.field {
+    display: flex;
+    justify-content: left;
+}
+
+.spacer {
+    margin: 20px;
+}
+
 .fullWidth {
 width: 100%;
+}
+
+.panel {
+    padding: 20px;
 }
 
 canvas {

@@ -259,9 +259,7 @@ class GraphicsEditor extends Component {
     return (
       <>
         <br></br>
-        <Typography>Parts</Typography>
-        <br></br>
-        <label>Graphic string </label>
+        <label>Code </label>
         <input
           label="String"
           className="string-display"
