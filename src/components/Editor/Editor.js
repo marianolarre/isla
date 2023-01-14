@@ -5,6 +5,7 @@ import { IslandPIXI } from "../../classes/IslandPIXI";
 import "./Editor.css";
 import { ArrowBack, Save } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import ResourceEditor from "./ResourceEditor/ResourceEditor";
 
 class Editor extends Component {
   constructor(props) {
@@ -43,15 +44,17 @@ class Editor extends Component {
     for (let i in worldData.civilizations) {
       const civ = worldData.civilizations[i];
       this.renderHTMLFromString(civ.flag_img);
-      for (var entityBase in worldData.bases) {
-        this.renderHTMLFromString(worldData.bases[entityBase].img, {
+      for (var baseId in worldData.bases) {
+        this.renderHTMLFromString(worldData.bases[baseId].img, {
           primary_color: civ.primary_color,
         });
       }
-    }
-    for (let i in worldData.resources) {
-      const res = worldData.resources[i];
-      this.renderHTMLFromString(res.img);
+      for (let resId in worldData.resources) {
+        const res = worldData.resources[resId];
+        this.renderHTMLFromString(res.img, {
+          primary_color: civ.primary_color,
+        });
+      }
     }
   }
 
@@ -113,6 +116,14 @@ class Editor extends Component {
             renders={this.renders}
             onChange={(e) => this.handleWorldDataChange(e)}
           ></EntityEditor>
+        )}
+        {this.state.loaded && this.state.tab == "resources" && (
+          <ResourceEditor
+            worldData={this.worldData}
+            pixi={this.pixi}
+            renders={this.renders}
+            onChange={(e) => this.handleWorldDataChange(e)}
+          ></ResourceEditor>
         )}
       </div>
     );

@@ -48,7 +48,6 @@ class Graphics {
   }
 
   mount() {
-    console.log("Mounting");
     $(document).on("mousedown", (e) => {
       this.mouseDownHandler(e);
     });
@@ -207,7 +206,6 @@ class Graphics {
   handleSpriteMouseOver(ev) {
     const sprite = ev.target;
     const data = this.spritePointers[ev.target.pointer];
-    console.log(data);
   }
 
   handleSpriteMouseOut(ev) {}

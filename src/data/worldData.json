@@ -3,7 +3,7 @@
     "satisfaction": {
       "name": "Satisfacción",
       "desc": "Qué tan feliz está tu población con su situación actual. A mayor satisfacción, más chances de que un nuevo aldeano se una a tu pueblo. Si la satisfacción es muy baja, tus aldeanos pueden volverse desobedientes.",
-      "img": "08KWWWW0;330WSWW0",
+      "img": "08KWWWW0;331WSWW0",
       "special": true
     },
     "population": {
@@ -15,7 +15,7 @@
     "work": {
       "name": "Trabajo",
       "desc": "Un dia de trabajo de un aldeano. Todos los días, tu trabajo se iguala a tu población.",
-      "img": "0m8MfVR0;088MGMM0;08ReeUU0;08meeOO0;0o0eZGBC;0o0heDBO",
+      "img": "0m8MfVR0;088MGMM0;08ReeUU0;08meeOO0;0o1eZGBC;0o1heDBO",
       "special": true
     },
     "housing": {
@@ -37,6 +37,11 @@
       "name": "Piedra",
       "desc": "Se obtiene de campamentos mineros cerca de piedras. Útil para construir estructuras mas sólidas y duraderas.",
       "img": "20eZTZZ0;21dNeWW0;21dpgLLT"
+    },
+    "basic_tools": {
+      "name": "Herramientas básicas",
+      "desc": "Herramientas de piedra y madera",
+      "img": "43clMOM5;0qcKKOFJ;0pjYVYYH;0pkUWYYV"
     }
   },
   "bases": {
@@ -67,9 +72,15 @@
       "name": "Campamento Acerradero",
       "desc": "Recolecta maderita",
       "cost": { "work": 1, "wood": 4 },
-      "prod": [{}, { "work": -1, "wood": 4 }, { "work": -2, "wood": 8 }],
+      "prod": [
+        {},
+        { "work": -1, "wood": 4 },
+        { "work": -2, "wood": 8 },
+        { "work": "-1", "basic_tools": "-1", "wood": "8" },
+        { "work": "-2", "basic_tools": "-2", "wood": "16" }
+      ],
       "vision": 4,
-      "img": "13kMKII0;180MQMM0;13kMUII0;1DkdJCF0;1DkhQCF0;43bnPAAh;0pkoRDDV;45kjmMMF;45kepMMF;45kgjMMF"
+      "img": "13kMKII0;180MQMM0;13kMUII0;1DkdJCF0;1DkhQCF0;43ZnPAAh;0pkoRDDV;45kjmMMF;45kepMMF;45kgjMMF"
     },
     "villager": {
       "name": "Aldeano",
@@ -78,6 +89,13 @@
       "prod": [{ "population": 1 }],
       "vision": 4,
       "img": "0m0WYHG0;08lWQBB0;311WQAA0;22jWNDA0;0M0bV99O;WM0RV99O"
+    },
+    "flag": {
+      "name": "Bandera",
+      "desc": "Lo más patriótico",
+      "cost": { "work": "1", "wood": "2" },
+      "prod": [{ "satisfaction": "2" }],
+      "img": "150cEGG0;13kWINN0;0hjWTDD0"
     }
   },
   "civilizations": [

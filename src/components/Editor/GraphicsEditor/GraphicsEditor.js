@@ -10,7 +10,7 @@ import ColorPalette from "../ColorPalette/ColorPalette";
 import PartPalette from "../PartPalette/PartPalette";
 import SliderWithInput from "../SliderWithInput";
 import MyToggle from "../MyToggle";
-import { Grid, Button, CircularProgress } from "@mui/material";
+import { Grid, Button, CircularProgress, Stack, Box } from "@mui/material";
 import "./GraphicsEditor.css";
 
 var clicking = false;
@@ -50,7 +50,9 @@ class GraphicsEditor extends Component {
     this.pixi.app.stage.addChild(background);
     this.preview.sortableChildren = true;
     this.pixi.app.stage.addChild(this.preview);
-    $("#" + this.props.containerId).append(this.pixi.app.view);
+    $(() => {
+      $("#" + this.props.containerId).append(this.pixi.app.view);
+    });
     this.pixi.app.loader.load((loader, resources) => {
       this.renderString(this.pixi.serializeSprite(this.props.value));
       this.graphicData = [];
@@ -73,40 +75,10 @@ class GraphicsEditor extends Component {
     $(document).on("wheel", (e) => {
       this.mouseWheelHandler(e);
     });
-    /*this.pixi.app.renderer.addEventListener(
-      "mousewheel",
-      (e) => {
-        this.mouseWheelHandler(e);
-      },
-      false
-    );
-    this.pixi.app.renderer.addEventListener(
-      "mousedown",
-      (e) => {
-        this.mouseDownHandler(e);
-      },
-      false
-    );
-    this.pixi.app.renderer.addEventListener(
-      "mouseup",
-      (e) => {
-        this.mouseUpHandler(e);
-      },
-      false
-    );
-    this.pixi.app.renderer.addEventListener(
-      "mousemove",
-      (e) => {
-        this.mouseMoveHandler(e);
-      },
-      false
-    );*/
   }
 
   componentWillUnmount() {
-    console.log("Will unmount");
     $(document).off();
-    this.pixi.app.destroy();
   }
 
   componentDidUpdate() {
@@ -175,14 +147,15 @@ class GraphicsEditor extends Component {
   }
 
   deletePart() {
+    if (this.graphicData.length == 1) return;
     let parts = [...this.graphicData];
     parts.splice(this.state.currentImage, 1);
     this.uploadNewPartList(parts, this.state.currentImage);
   }
 
   moveBack() {
-    let parts = [...this.graphicData];
     if (this.state.currentImage == 0) return;
+    let parts = [...this.graphicData];
     let temp = parts[this.state.currentImage];
     parts[this.state.currentImage] = parts[this.state.currentImage - 1];
     parts[this.state.currentImage - 1] = temp;
@@ -223,7 +196,6 @@ class GraphicsEditor extends Component {
   }
 
   mouseWheelHandler(event) {
-    console.log(this);
     if (this.mouseInsidePlayArea(event.clientX, event.clientY)) {
       let part = this.graphicData[this.state.currentImage];
       const deltaY = event.originalEvent.deltaY / 100;
@@ -235,19 +207,10 @@ class GraphicsEditor extends Component {
       if (part.yScale > 63) part.yScale = 63;
 
       this.props.onChange(this.pixi.serializeSprite(this.graphicData));
-
-      /*this.setState(
-        {
-          graphicData: newGraphicData,
-          graphicString: this.pixi.serializeSprite(newGraphicData),
-        },
-        this.updateGraphic
-      );*/
     }
   }
 
   mouseDownHandler(event) {
-    //if (this.mouseInsidePlayArea(event.clientX, event.clientY)) {
     clicking = true;
     startMousePos = {
       x: event.data.global.x,
@@ -258,7 +221,6 @@ class GraphicsEditor extends Component {
       x: part.xPos,
       y: part.yPos,
     };
-    //}
   }
 
   mouseUpHandler(event) {
@@ -270,25 +232,12 @@ class GraphicsEditor extends Component {
     part.yPos = Math.floor(part.yPos);
 
     this.props.onChange(this.pixi.serializeSprite(this.graphicData));
-    /*this.setState(
-      {
-        graphicData: newGraphicData,
-        graphicString: this.pixi.serializeSprite(newGraphicData),
-      },
-      this.updateGraphic
-    );*/
   }
 
   mouseMoveHandler(event) {
-    const { gameView } = this;
     if (clicking) {
-      console.log(event);
       let deltaX = event.data.global.x - startMousePos.x;
       let deltaY = event.data.global.y - startMousePos.y;
-      /*startMousePos = {
-        x: event.data.global.x,
-        y: event.data.global.y,
-      };*/
 
       let part = this.graphicData[this.state.currentImage];
       part.xPos = startPartPos.x + deltaX / 4 / this.props.scale;
@@ -299,27 +248,12 @@ class GraphicsEditor extends Component {
       if (part.yPos > 63) part.yPos = 63;
 
       this.props.onChange(this.pixi.serializeSprite(this.graphicData));
-      /*
-      this.setState(
-        {
-          graphicData: newGraphicData,
-          graphicString: this.pixi.serializeSprite(newGraphicData),
-        },
-        this.updateGraphic
-      );*/
     }
   }
 
   handleCodeChange(event) {
     let string = event.target.value;
     this.props.onChange(string);
-    /*this.setState(
-      {
-        graphicString: string,
-        graphicData: this.pixi.deserializeFullString(string),
-      },
-      this.updateGraphic
-    );*/
   }
 
   handleToggle(variable) {
@@ -346,8 +280,8 @@ class GraphicsEditor extends Component {
       return <CircularProgress />;
     }
     return (
-      <>
-        <br></br>
+      <Box>
+        <div id="graphic-editor-container"></div>
         <label>Code </label>
         <input
           label="String"
@@ -392,7 +326,8 @@ class GraphicsEditor extends Component {
             <Button onClick={() => this.duplicatePart()}>Duplicate</Button>
             <Button
               onClick={() => this.deletePart()}
-              color="secondary"
+              disabled={this.graphicData.length <= 1}
+              color="error"
               style={{ float: "right" }}
             >
               Delete
@@ -456,7 +391,7 @@ class GraphicsEditor extends Component {
         )) || (
           <Button onClick={() => this.addNewPart()}>Create new part</Button>
         )}
-      </>
+      </Box>
     );
   }
 }

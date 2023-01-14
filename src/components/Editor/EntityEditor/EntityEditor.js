@@ -15,12 +15,8 @@ import "./EntityEditor.css";
 import GraphicsEditor from "../GraphicsEditor/GraphicsEditor";
 import ResourceSelector from "../ResourceSelector/ResourceSelector";
 import ResourceDisplay from "../../ResourceDisplay/ResourceDisplay";
-import {
-  ArrowDownward,
-  ArrowUpward,
-  Delete,
-  ThirtyFpsSelect,
-} from "@mui/icons-material";
+import { ArrowUpward, Delete } from "@mui/icons-material";
+import EntryList from "../EntryList/EntryList";
 
 class EntityEditor extends Component {
   constructor(props) {
@@ -50,31 +46,6 @@ class EntityEditor extends Component {
     newGraphicData[this.state.currentImage][variable] = newValue;
     newBase.img = newValue;
     this.setState({ base: newBase }, this.updateGraphicDataString);
-  }
-
-  renderEntityList() {
-    let entityList = [];
-    for (let i in this.props.worldData.bases) {
-      const base = this.props.worldData.bases[i];
-      const str = this.props.pixi.transformImgString(base.img, {
-        primary_color:
-          this.props.worldData.civilizations[this.state.currentCiv]
-            .primary_color,
-      });
-      const render = this.props.renders[str];
-      entityList.push(
-        <Button
-          key={i}
-          fullWidth
-          startIcon={<img src={render != null ? render.src : ""}></img>}
-          style={{ textTransform: "none" }}
-          onClick={() => this.selectBase(i)}
-        >
-          {"[" + i + "] " + base.name}
-        </Button>
-      );
-    }
-    return entityList;
   }
 
   selectBase(baseId) {
@@ -180,7 +151,7 @@ class EntityEditor extends Component {
     } else {
       newBase[this.state.currentResourceType] = newValue;
     }
-    this.setState(newBase);
+    this.setState({ base: newBase });
   }
 
   applyChanges() {
@@ -213,6 +184,12 @@ class EntityEditor extends Component {
     this.setState({ base: newBase });
   }
 
+  handleBaseListChange(newList) {
+    let newWorldData = { ...this.props.worldData };
+    newWorldData.bases = newList;
+    this.props.onChange(newWorldData);
+  }
+
   handleCivChange(civId) {
     this.setState({ currentCiv: civId });
   }
@@ -243,13 +220,28 @@ class EntityEditor extends Component {
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={4}>
             <Paper elevation={2} id="list" className="panel">
-              <Typography variant="h4">Lista</Typography>
-              {this.renderEntityList()}
+              <EntryList
+                entries={this.props.worldData.bases}
+                pixi={this.props.pixi}
+                renders={this.props.renders}
+                primaryColor={
+                  this.props.worldData.civilizations[this.state.currentCiv]
+                    .primary_color
+                }
+                entryTemplate={{
+                  name: "New entity",
+                  desc: "New entity's description",
+                  cost: {},
+                  prod: [],
+                  img: "000WWGG0",
+                }}
+                onSelect={(e) => this.selectBase(e)}
+                onChange={(e) => this.handleBaseListChange(e)}
+              ></EntryList>
             </Paper>
           </Grid>
           <Grid item xs={3}>
             <Paper elevation={2} className="panel">
-              <Typography variant="h4">Vista previa</Typography>
               <div id="entity-preview"></div>
               <Typography>Click and drag to move selected part.</Typography>
               <br></br>
@@ -264,7 +256,6 @@ class EntityEditor extends Component {
           </Grid>
           <Grid item xs={5}>
             <Paper elevation={2} className="panel scrolling-panel">
-              <Typography variant="h4">Configuración</Typography>
               <TextField
                 fullWidth
                 label="Nombre único"
