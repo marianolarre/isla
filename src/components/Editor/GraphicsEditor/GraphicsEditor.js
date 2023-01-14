@@ -5,7 +5,8 @@ import $ from "jquery";
 import ColorPalette from "../ColorPalette/ColorPalette";
 import PartPalette from "../PartPalette/PartPalette";
 import SliderWithInput from "../SliderWithInput";
-import { Grid, Button, Typography, CircularProgress } from "@mui/material";
+import MyToggle from "../MyToggle";
+import { Grid, Button, CircularProgress } from "@mui/material";
 import "./GraphicsEditor.css";
 
 var clicking = false;
@@ -14,9 +15,10 @@ var previousMousePos = { x: 0, y: 0 };
 class GraphicsEditor extends Component {
   constructor(props) {
     super(props);
+    this.lastValue = "";
+    this.graphicData = this.props.pixi.deserializeFullString(this.props.value);
     this.state = {
-      graphicData: [],
-      graphicString: "",
+      graphicString: this.props.value,
       currentImage: 0,
     };
   }
@@ -43,7 +45,8 @@ class GraphicsEditor extends Component {
     this.pixi.app.stage.addChild(this.preview);
     $("#" + this.props.containerId).append(this.pixi.app.view);
     this.pixi.app.loader.load((loader, resources) => {
-      this.renderString(this.pixi.serializeSprite(this.state.graphicString));
+      this.renderString(this.pixi.serializeSprite(this.props.value));
+      this.graphicData = [];
       this.addNewPart();
     });
 
@@ -77,6 +80,17 @@ class GraphicsEditor extends Component {
     );
   }
 
+  componentDidUpdate() {
+    // After updating props.value, graphicData must also be updated.
+    // We do this only if props.value changed, to prevent infinite loops
+    if (this.newValue != this.props.value) {
+      this.graphicData = this.pixi.deserializeFullString(this.props.value);
+      this.newValue = this.props.value;
+      this.forceUpdate();
+      this.updateGraphic();
+    }
+  }
+
   renderString(string) {
     this.preview.removeChildren();
     const container = this.pixi.imgStringToContainer(string);
@@ -88,7 +102,7 @@ class GraphicsEditor extends Component {
   }
 
   addNewPart() {
-    let parts = [...this.state.graphicData];
+    let parts = [...this.graphicData];
     parts.push({
       imageId: 0,
       colorId: 5,
@@ -102,19 +116,19 @@ class GraphicsEditor extends Component {
   }
 
   duplicatePart() {
-    let parts = [...this.state.graphicData];
-    parts.push({ ...this.state.graphicData[this.state.currentImage] });
+    let parts = [...this.graphicData];
+    parts.push({ ...this.graphicData[this.state.currentImage] });
     this.uploadNewPartList(parts, parts.length - 1);
   }
 
   deletePart() {
-    let parts = [...this.state.graphicData];
+    let parts = [...this.graphicData];
     parts.splice(this.state.currentImage, 1);
     this.uploadNewPartList(parts, this.state.currentImage);
   }
 
   moveBack() {
-    let parts = [...this.state.graphicData];
+    let parts = [...this.graphicData];
     if (this.state.currentImage == 0) return;
     let temp = parts[this.state.currentImage];
     parts[this.state.currentImage] = parts[this.state.currentImage - 1];
@@ -123,7 +137,7 @@ class GraphicsEditor extends Component {
   }
 
   moveForward() {
-    let parts = [...this.state.graphicData];
+    let parts = [...this.graphicData];
     if (this.state.currentImage == parts.length - 1) return;
     let temp = parts[this.state.currentImage];
     parts[this.state.currentImage] = parts[this.state.currentImage + 1];
@@ -138,18 +152,16 @@ class GraphicsEditor extends Component {
     if (newSelected < 0) {
       newSelected = 0;
     }
-    this.setState(
-      {
-        graphicData: parts,
-        graphicString: this.pixi.serializeSprite(parts),
-        currentImage: newSelected,
-      },
-      this.updateGraphic
-    );
+    this.graphicData = parts;
+    const newString = this.pixi.serializeSprite(parts);
+    this.props.onChange(newString);
+    this.setState({
+      currentImage: newSelected,
+    });
   }
 
   updateGraphic() {
-    this.renderString(this.state.graphicString);
+    this.renderString(this.props.value);
   }
 
   mouseInsidePlayArea(x, y) {
@@ -159,8 +171,7 @@ class GraphicsEditor extends Component {
 
   mouseWheelHandler(event) {
     if (this.mouseInsidePlayArea(event.clientX, event.clientY)) {
-      const newGraphicData = [...this.state.graphicData];
-      let part = newGraphicData[this.state.currentImage];
+      let part = this.graphicData[this.state.currentImage];
       part.xScale -= Math.round(event.deltaY / 100);
       if (part.xScale < 0) part.xScale = 0;
       if (part.xScale > 63) part.xScale = 63;
@@ -168,13 +179,15 @@ class GraphicsEditor extends Component {
       if (part.yScale < 0) part.yScale = 0;
       if (part.yScale > 63) part.yScale = 63;
 
-      this.setState(
+      this.props.onChange(this.pixi.serializeSprite(this.graphicData));
+
+      /*this.setState(
         {
           graphicData: newGraphicData,
           graphicString: this.pixi.serializeSprite(newGraphicData),
         },
         this.updateGraphic
-      );
+      );*/
     }
   }
 
@@ -188,19 +201,19 @@ class GraphicsEditor extends Component {
   mouseUpHandler(event) {
     clicking = false;
 
-    const newGraphicData = [...this.state.graphicData];
-    let part = newGraphicData[this.state.currentImage];
+    let part = this.graphicData[this.state.currentPart];
     if (part == null) return;
     part.xPos = Math.floor(part.xPos);
     part.yPos = Math.floor(part.yPos);
 
-    this.setState(
+    this.props.onChange(this.pixi.serializeSprite(this.graphicData));
+    /*this.setState(
       {
         graphicData: newGraphicData,
         graphicString: this.pixi.serializeSprite(newGraphicData),
       },
       this.updateGraphic
-    );
+    );*/
   }
 
   mouseMoveHandler(event) {
@@ -210,8 +223,7 @@ class GraphicsEditor extends Component {
       let deltaY = event.clientY - previousMousePos.y;
       previousMousePos = { x: event.clientX, y: event.clientY };
 
-      const newGraphicData = [...this.state.graphicData];
-      let part = newGraphicData[this.state.currentImage];
+      let part = this.graphicData[this.state.currentImage];
       part.xPos += deltaX / 4 / this.props.scale;
       if (part.xPos < 0) part.xPos = 0;
       if (part.xPos > 63) part.xPos = 63;
@@ -219,37 +231,39 @@ class GraphicsEditor extends Component {
       if (part.yPos < 0) part.yPos = 0;
       if (part.yPos > 63) part.yPos = 63;
 
+      this.props.onChange(this.pixi.serializeSprite(this.graphicData));
+      /*
       this.setState(
         {
           graphicData: newGraphicData,
           graphicString: this.pixi.serializeSprite(newGraphicData),
         },
         this.updateGraphic
-      );
+      );*/
     }
   }
 
   handleCodeChange(event) {
     let string = event.target.value;
-    this.setState(
+    this.props.onChange(string);
+    /*this.setState(
       {
         graphicString: string,
         graphicData: this.pixi.deserializeFullString(string),
       },
       this.updateGraphic
-    );
+    );*/
+  }
+
+  handleToggle(variable) {
+    this.graphicData[this.state.currentImage][variable] =
+      !this.graphicData[this.state.currentImage][variable];
+    this.props.onChange(this.pixi.serializeSprite(this.graphicData));
   }
 
   handleChange(newValue, variable) {
-    const newGraphicData = [...this.state.graphicData];
-    newGraphicData[this.state.currentImage][variable] = newValue;
-    this.setState(
-      {
-        graphicData: newGraphicData,
-        graphicString: this.pixi.serializeSprite(newGraphicData),
-      },
-      this.updateGraphic
-    );
+    this.graphicData[this.state.currentImage][variable] = newValue;
+    this.props.onChange(this.pixi.serializeSprite(this.graphicData));
   }
 
   render() {
@@ -263,31 +277,29 @@ class GraphicsEditor extends Component {
         <input
           label="String"
           className="string-display"
-          value={this.state.graphicString}
+          value={this.props.value}
           onChange={(e) => this.handleCodeChange(e)}
         />
         <Grid container>
           {this.pixi != null &&
-            this.state.graphicData.map((value, index) => (
+            this.graphicData.map((value, index) => (
               <button
                 key={index}
                 className="part-selection-button"
                 onClick={() => this.selectPart(index)}
                 style={{
                   backgroundColor:
-                    "#" + colorPalette[this.state.graphicData[index].colorId],
+                    "#" + colorPalette[this.graphicData[index].colorId],
                   borderColor:
                     index == this.state.currentImage ? "#FFFFFF" : "#000000",
                 }}
               >
                 <img
                   src={
-                    this.pixi.spriteRenders[
-                      this.state.graphicData[index].imageId
-                    ] != null
-                      ? this.pixi.spriteRenders[
-                          this.state.graphicData[index].imageId
-                        ].src
+                    this.pixi.spriteRenders[this.graphicData[index].imageId] !=
+                    null
+                      ? this.pixi.spriteRenders[this.graphicData[index].imageId]
+                          .src
                       : ""
                   }
                 ></img>
@@ -296,7 +308,7 @@ class GraphicsEditor extends Component {
         </Grid>
 
         <br></br>
-        {(this.state.graphicData.length > 0 && (
+        {(this.graphicData[this.state.currentImage] != null && (
           <div>
             <Button onClick={() => this.addNewPart()}>Create new part</Button>
             <Button onClick={() => this.moveBack()}>Move Back</Button>
@@ -310,9 +322,14 @@ class GraphicsEditor extends Component {
               Delete
             </Button>
             <br></br>
+            <MyToggle
+              label="Mirrored"
+              value={this.graphicData[this.state.currentImage].mirrored}
+              onChange={() => this.handleToggle("mirrored")}
+            ></MyToggle>
             <SliderWithInput
               label="X Pos"
-              value={this.state.graphicData[this.state.currentImage].xPos}
+              value={this.graphicData[this.state.currentImage].xPos}
               onChange={(e) => this.handleChange(e, "xPos")}
               min={0}
               max={63}
@@ -320,7 +337,7 @@ class GraphicsEditor extends Component {
             ></SliderWithInput>
             <SliderWithInput
               label="Y Pos"
-              value={this.state.graphicData[this.state.currentImage].yPos}
+              value={this.graphicData[this.state.currentImage].yPos}
               onChange={(e) => this.handleChange(e, "yPos")}
               min={0}
               max={63}
@@ -328,7 +345,7 @@ class GraphicsEditor extends Component {
             ></SliderWithInput>
             <SliderWithInput
               label="X Scale"
-              value={this.state.graphicData[this.state.currentImage].xScale}
+              value={this.graphicData[this.state.currentImage].xScale}
               onChange={(e) => this.handleChange(e, "xScale")}
               min={0}
               max={63}
@@ -336,7 +353,7 @@ class GraphicsEditor extends Component {
             ></SliderWithInput>
             <SliderWithInput
               label="Y Scale"
-              value={this.state.graphicData[this.state.currentImage].yScale}
+              value={this.graphicData[this.state.currentImage].yScale}
               onChange={(e) => this.handleChange(e, "yScale")}
               min={0}
               max={63}
@@ -344,7 +361,7 @@ class GraphicsEditor extends Component {
             ></SliderWithInput>
             <SliderWithInput
               label="Rotation"
-              value={this.state.graphicData[this.state.currentImage].rotation}
+              value={this.graphicData[this.state.currentImage].rotation}
               onChange={(e) => this.handleChange(e, "rotation")}
               min={0}
               max={63}
@@ -352,11 +369,11 @@ class GraphicsEditor extends Component {
             ></SliderWithInput>
             <PartPalette
               images={this.pixi.spriteRenders}
-              value={this.state.graphicData[this.state.currentImage].imageId}
+              value={this.graphicData[this.state.currentImage].imageId}
               onChange={(e) => this.handleChange(e, "imageId")}
             ></PartPalette>
             <ColorPalette
-              value={this.state.graphicData[this.state.currentImage].colorId}
+              value={this.graphicData[this.state.currentImage].colorId}
               onChange={(e) => this.handleChange(e, "colorId")}
             ></ColorPalette>
           </div>

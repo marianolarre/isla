@@ -13,29 +13,7 @@ class ResourceSelector extends Component {
     super(props);
     this.state = {
       open: false,
-      resourceCounts: this.props.resources,
     };
-  }
-
-  renderResourceList() {
-    let resourceList = [];
-    if (this.getResources() == null) {
-      return <Typography>Nothing</Typography>;
-    }
-    Object.keys(this.props.value).map((i, index) => {
-      resourceList.push(
-        <div className="resource-setter" key={index}>
-          <img
-            className="resource-icon"
-            src={this.props.renders[this.props.resourceData[i].img].src}
-          />
-          <Typography className="resource-number">
-            {this.props.value[i]}
-          </Typography>
-        </div>
-      );
-    });
-    return resourceList;
   }
 
   renderResourceTable() {
@@ -56,8 +34,9 @@ class ResourceSelector extends Component {
             <TextField
               fullWidth
               type="number"
+              variant="filled"
               className="resource-textfield"
-              value={this.getResources(i)}
+              value={this.getResources(i) || ""}
               onChange={(e) => this.handleResourceChange(i, e.target.value)}
             ></TextField>
           </Grid>
@@ -95,33 +74,13 @@ class ResourceSelector extends Component {
     this.props.onRemove();
   }
 
-  openModal() {
-    this.setState({ open: true });
-  }
-
-  closeModal() {
-    this.setState({ open: false });
-  }
-
   render() {
     return (
       <div>
-        <Box>
-          <Typography className="inline">{this.props.label}</Typography>
-          <Button onClick={() => this.openModal()}>
-            {this.renderResourceList()}
-          </Button>
-        </Box>
-        <Modal open={this.state.open} onClose={() => this.closeModal()}>
+        <Modal open={this.props.open} onClose={this.props.onClose}>
           <Box className="modal">
-            <br></br>
-            <Typography variant="h6">Resources</Typography>
-            <br></br>
             <Box className="resource-list">{this.renderResourceTable()}</Box>
-            <Button
-              onClick={() => this.closeModal()}
-              style={{ float: "right" }}
-            >
+            <Button onClick={this.props.onClose} style={{ float: "right" }}>
               Accept
             </Button>
           </Box>

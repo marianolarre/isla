@@ -15,7 +15,7 @@
     "work": {
       "name": "Trabajo",
       "desc": "Un dia de trabajo de un aldeano. Todos los días, tu trabajo se iguala a tu población.",
-      "img": "088WWdd0;08gWWXX0;08mWWTT0;000WN9K0;000bW9IC",
+      "img": "0m8MfVR0;088MGMM0;08ReeUU0;08meeOO0;0o0eZGBC;0o0heDBO",
       "special": true
     },
     "housing": {
@@ -57,11 +57,11 @@
       "img": "00wXXYO0;00wKfOL0;005XLZP0;105KVRO0;0miKjHH0;00LjcHC0;11igcCC0;12dkDJJ0;11imcCC0"
     },
     "wheat_farm": {
-      "name": "Granja de trigo arada",
+      "name": "Granja de trigo",
       "desc": "Genera comida",
       "cost": { "work": 2 },
       "prod": [{ "work": -1, "food": 4 }],
-      "img": "00iWWZZ0;0SjWWYYC;0P8MRaLa;0P8fRaLa"
+      "img": "00iWWZZ0;0SjWWYYC;0b7WWG-0;0b7KWG-0;0b7iWG-0;0b8KqG-0;0b8WqG-0;0b8iqG-0"
     },
     "wood_camp": {
       "name": "Campamento Acerradero",
@@ -77,7 +77,7 @@
       "unlisted": true,
       "prod": [{ "population": 1 }],
       "vision": 4,
-      "img": "0m5WYHG0;08lWQBB0;310WQAA0;22jWNDA0"
+      "img": "0m5WYHG0;08lWQBB0;310WQAA0;22jWNDA0;0M5bV99O;WM5RV99O"
     }
   },
   "civilizations": [

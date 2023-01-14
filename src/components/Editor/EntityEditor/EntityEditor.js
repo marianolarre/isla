@@ -1,28 +1,52 @@
-import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { Component } from "react";
 import "./EntityEditor.css";
 import GraphicsEditor from "../GraphicsEditor/GraphicsEditor";
 import ResourceSelector from "../ResourceSelector/ResourceSelector";
+import ResourceDisplay from "../../ResourceDisplay/ResourceDisplay";
+import {
+  ArrowDownward,
+  ArrowUpward,
+  Delete,
+  ThirtyFpsSelect,
+} from "@mui/icons-material";
 
 class EntityEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
-      desc: "",
+      base: {
+        name: "",
+        desc: "",
+        cost: {},
+        prod: [],
+        img: "",
+      },
+      keyChange: "",
       currentBase: "",
       graphicData: [],
-      cost: {},
-      prod: [],
-      graphicString: "",
       currentImage: 0,
+      currentResourceType: "",
+      currentResourceID: 0,
+      resourceSelectorOpen: false,
     };
   }
 
   handleGraphicsChange(newValue, variable) {
-    const newGraphicData = [...this.state.graphicData];
+    let newBase = { ...this.state.base };
+    const newGraphicData = [...newBase.img];
     newGraphicData[this.state.currentImage][variable] = newValue;
-    this.setState({ newGraphicData }, this.updateGraphicDataString);
+    newBase.img = newValue;
+    this.setState({ base: newBase }, this.updateGraphicDataString);
   }
 
   renderEntityList() {
@@ -35,9 +59,10 @@ class EntityEditor extends Component {
           key={i}
           fullWidth
           startIcon={<img src={render != null ? render.src : ""}></img>}
+          style={{ textTransform: "none" }}
           onClick={() => this.selectBase(i)}
         >
-          {base.name}
+          {"[" + i + "] " + base.name}
         </Button>
       );
     }
@@ -45,72 +70,139 @@ class EntityEditor extends Component {
   }
 
   selectBase(baseId) {
+    this.applyChanges();
     const base = this.props.worldData.bases[baseId];
-    console.log(base);
-    this.setState({
-      name: base.name,
-      desc: base.desc,
-      cost: base.cost,
-      prod: base.prod,
-      graphicString: base.img,
-      graphicData: this.props.pixi.deserializeFullString(base.img),
-    });
+    this.setState({ base: base, currentBase: baseId, keyChange: baseId });
   }
 
   renderEntityProductions() {
     let prodList = [];
-    for (let i in this.state.prod) {
+    for (let i in this.state.base.prod) {
       prodList.push(
-        <ResourceSelector
-          key={i}
-          className="field"
-          value={this.state.prod[i]}
-          resourceData={this.props.worldData.resources}
-          renders={this.props.renders}
-          onChange={(e) => this.handleProductionChange(i, e)}
-        ></ResourceSelector>
+        <Stack key={i} direction="row">
+          <Button
+            className="resource-button"
+            onClick={() => this.handleEditResource("prod", i)}
+          >
+            <ResourceDisplay
+              value={this.state.base.prod[i]}
+              resourceData={this.props.worldData.resources}
+              renders={this.props.renders}
+            ></ResourceDisplay>
+          </Button>
+          <Box style={{ float: "right" }}>
+            <IconButton
+              disabled={i == 0}
+              onClick={() => this.handleMoveProductionUp(i)}
+            >
+              <ArrowUpward></ArrowUpward>
+            </IconButton>
+            <IconButton
+              color="error"
+              onClick={() => this.handleRemoveProduction(i)}
+            >
+              <Delete></Delete>
+            </IconButton>
+          </Box>
+        </Stack>
       );
     }
     return prodList;
   }
 
-  handleProductionChange(i, e) {
-    let prod = [...this.state.prod];
-    prod[i] = e;
-    this.setState({ prod: prod });
+  handleEditResource(type, id) {
+    this.setState({
+      currentResourceType: type,
+      currentResourceID: id,
+      resourceSelectorOpen: true,
+    });
   }
 
-  handleProductionRemove(i) {
-    let prod = [...this.state.prod];
-    prod.splice(i, 1);
-    this.setState({ prod: prod });
+  handleRemoveProduction(i) {
+    let newBase = { ...this.state.base };
+    newBase.prod.splice(i, 1);
+    this.setState({ base: newBase });
   }
 
-  handleProductionMoveUp(i) {
+  handleMoveProductionUp(i) {
     if (i == 0) return;
-    let prod = [...this.state.prod];
-    let temp = { ...prod[i] };
-    prod[i] = prod[i - 1];
-    prod[i - 1] = temp;
-    this.setState({ prod: prod });
+    let newBase = { ...this.state.base };
+    let temp = { ...newBase.prod[i] };
+    newBase.prod[i] = newBase.prod[i - 1];
+    newBase.prod[i - 1] = temp;
+    this.setState({ base: newBase });
   }
 
-  handleProductionMoveDown(i) {
-    console.log(i);
-    if (i >= this.state.prod.length - 1) return;
-    let prod = [...this.state.prod];
-    console.log(prod);
-    let temp = { ...prod[i] };
-    prod[i] = prod[i + 1];
-    prod[i + 1] = temp;
-    console.log(prod);
-    this.setState({ prod: prod });
+  handleMoveProductionDown(i) {
+    if (i >= this.state.base.prod.length - 1) return;
+    let newBase = { ...this.state.base };
+    let temp = { ...newBase.prod[i + 1] };
+    newBase.prod[i + 1] = newBase.prod[i];
+    newBase.prod[i] = temp;
+    this.setState({ base: newBase });
   }
 
   addProduction() {
-    let prod = [...this.state.prod];
-    prod.push({});
-    this.setState({ prod: prod });
+    let newBase = { ...this.state.base };
+    newBase.prod.push({});
+    this.setState({ base: newBase });
+  }
+
+  handleResourceSelectorClose() {
+    this.setState({ resourceSelectorOpen: false });
+  }
+
+  getCurrentResource() {
+    // If its an array, use the Id. Otherwise, just return it.
+    if (Array.isArray(this.state.base[this.state.currentResourceType])) {
+      return this.state.base[this.state.currentResourceType][
+        this.state.currentResourceID
+      ];
+    } else {
+      return this.state.base[this.state.currentResourceType];
+    }
+  }
+
+  handleResourceSelectorChange(newValue) {
+    // If its an array, use the Id. Otherwise, just edit it.
+    let newBase = { ...this.state.base };
+    if (Array.isArray(newBase[this.state.currentResourceType])) {
+      newBase[this.state.currentResourceType][this.state.currentResourceID] =
+        newValue;
+    } else {
+      newBase[this.state.currentResourceType] = newValue;
+    }
+    this.setState(newBase);
+  }
+
+  applyChanges() {
+    if (this.state.currentBase == "") return;
+    let newWorldData = { ...this.props.worldData };
+    newWorldData.bases[this.state.currentBase] = { ...this.state.base };
+
+    if (this.state.currentBase !== this.state.keyChange) {
+      Object.defineProperty(
+        newWorldData.bases,
+        this.state.keyChange,
+        Object.getOwnPropertyDescriptor(
+          newWorldData.bases,
+          this.state.currentBase
+        )
+      );
+      delete newWorldData.bases[this.state.currentBase];
+    }
+
+    this.props.onChange(newWorldData);
+  }
+
+  handleKeyChange(new_key) {
+    this.setState({ keyChange: new_key });
+  }
+
+  handleBaseChange(newValue, variable) {
+    let newBase = { ...this.state.base };
+    newBase[variable] = newValue;
+    this.setState({ base: newBase });
   }
 
   render() {
@@ -130,6 +222,7 @@ class EntityEditor extends Component {
               <Typography>Click and drag to move selected part.</Typography>
               <br></br>
               <Typography>Use the scroll wheel to scale part.</Typography>
+              <Button onClick={() => this.applyChanges()}>Apply Changes</Button>
             </Paper>
           </Grid>
           <Grid item xs={5}>
@@ -137,32 +230,44 @@ class EntityEditor extends Component {
               <Typography variant="h4">Configuración</Typography>
               <TextField
                 fullWidth
+                label="Nombre único"
+                variant="filled"
+                value={this.state.keyChange}
+                onChange={(e) => this.handleKeyChange(e.target.value)}
+              ></TextField>
+              <div className="spacer"></div>
+              <TextField
+                fullWidth
                 label="Name"
-                value={this.state.name}
-                InputLabelProps={{ shrink: this.state.name }}
-                onChange={(e) => this.setState({ name: e.target.value })}
+                variant="filled"
+                value={this.state.base.name}
+                onChange={(e) => this.handleBaseChange(e.target.value, "name")}
               ></TextField>
               <div className="spacer"></div>
               <TextField
                 fullWidth
                 label="Description"
-                value={this.state.desc}
-                InputLabelProps={{ shrink: this.state.name }}
-                onChange={(e) => this.setState({ desc: e.target.value })}
+                variant="filled"
+                value={this.state.base.desc}
+                onChange={(e) => this.handleBaseChange(e.target.value, "desc")}
               ></TextField>
               <div className="spacer"></div>
               <Grid container>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <Typography>Cost</Typography>
-                  <ResourceSelector
-                    className="field"
-                    value={this.state.cost}
-                    resourceData={this.props.worldData.resources}
-                    renders={this.props.renders}
-                    onChange={(e) => this.setState({ cost: e })}
-                  ></ResourceSelector>
+                  <Button
+                    className="resource-button"
+                    fullWidth
+                    onClick={() => this.handleEditResource("cost", 0)}
+                  >
+                    <ResourceDisplay
+                      value={this.state.base.cost}
+                      resourceData={this.props.worldData.resources}
+                      renders={this.props.renders}
+                    ></ResourceDisplay>
+                  </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={8}>
                   <Typography>Production</Typography>
                   {this.renderEntityProductions()}
                   <Button onClick={() => this.addProduction()}>
@@ -175,12 +280,21 @@ class EntityEditor extends Component {
               <GraphicsEditor
                 containerId="entity-preview"
                 pixi={this.props.pixi}
+                value={this.state.base.img}
                 scale={1}
-                onChange={(e) => this.handleGraphicsChange(e, "graphicString")}
+                onChange={(e) => this.handleBaseChange(e, "img")}
               ></GraphicsEditor>
             </Paper>
           </Grid>
         </Grid>
+        <ResourceSelector
+          resourceData={this.props.worldData.resources}
+          open={this.state.resourceSelectorOpen}
+          value={this.getCurrentResource()}
+          renders={this.props.renders}
+          onClose={() => this.handleResourceSelectorClose()}
+          onChange={(e) => this.handleResourceSelectorChange(e)}
+        ></ResourceSelector>
       </div>
     );
   }

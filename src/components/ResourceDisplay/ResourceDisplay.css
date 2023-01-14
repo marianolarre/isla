@@ -1,0 +1,12 @@
+.resource-setter {
+    display: inline-block;
+    padding: 0;
+    color: white;
+    margin: 0;
+}
+
+.resource-icon {
+    display: inline-block;
+    margin: 0;
+    position: relative;
+}

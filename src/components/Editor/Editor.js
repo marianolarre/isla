@@ -1,12 +1,14 @@
 import React, { Component } from "react";
-import { Tabs, Tab } from "@mui/material";
+import { Tabs, Tab, Button } from "@mui/material";
 import EntityEditor from "./EntityEditor/EntityEditor";
 import { IslandPIXI } from "../../classes/IslandPIXI";
 import "./Editor.css";
+import { Save } from "@mui/icons-material";
 
 class Editor extends Component {
   constructor(props) {
     super(props);
+    this.worldData = { ...this.props.worldData };
     this.state = { tab: "entity", loaded: false };
   }
 
@@ -26,10 +28,11 @@ class Editor extends Component {
   }
 
   renderHTMLFromString(graphicString) {
-    const container = this.pixi.imgStringToContainer(graphicString);
-    if (this.renders[graphicString] == null)
+    if (this.renders[graphicString] == null) {
+      const container = this.pixi.imgStringToContainer(graphicString);
       this.renders[graphicString] = this.pixi.renderHTMLImage(container, 0.25);
-    container.destroy();
+      container.destroy();
+    }
   }
 
   createAllGraphicsFromData(worldData) {
@@ -46,9 +49,37 @@ class Editor extends Component {
     this.setState({ tab: newValue });
   }
 
+  handleWorldDataChange(newValue) {
+    this.worldData = newValue;
+    this.createAllGraphicsFromData(newValue);
+    this.forceUpdate();
+  }
+
+  downloadWorldData() {
+    this.downloadObjectAsJson(this.worldData, "textWorldData");
+  }
+
+  downloadObjectAsJson(exportObj, exportName) {
+    var dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+
   render() {
     return (
       <div id="editor">
+        <Button
+          style={{ float: "right" }}
+          onClick={() => this.downloadWorldData()}
+        >
+          <Save></Save>
+        </Button>
         <Tabs
           centered
           value={this.state.tab}
@@ -59,11 +90,13 @@ class Editor extends Component {
           <Tab value="resources" label="Recursos" />
           <Tab value="tech" label="Investigaciónes" />
         </Tabs>
+
         {this.state.loaded && this.state.tab == "entity" && (
           <EntityEditor
-            worldData={this.props.worldData}
+            worldData={this.worldData}
             pixi={this.pixi}
             renders={this.renders}
+            onChange={(e) => this.handleWorldDataChange(e)}
           ></EntityEditor>
         )}
       </div>

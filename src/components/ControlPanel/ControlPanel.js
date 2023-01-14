@@ -83,10 +83,7 @@ class ControlPanel extends Component {
             <img src="./../../../img/icons/income.png" alt=""></img>
             <h1>Ingresos</h1>
           </AccordionSummary>
-          <AccordionDetails>
-            {this.renderPersistentIncomes(this.state.civData)}
-            {this.renderIncomeBreakdown(this.state.civData)}
-          </AccordionDetails>
+          <AccordionDetails></AccordionDetails>
         </Accordion>
         <Accordion>
           <AccordionSummary>
@@ -106,9 +103,7 @@ class ControlPanel extends Component {
             <img src="./../../../img/icons/events.png" alt=""></img>
             <h1>Eventos</h1>
           </AccordionSummary>
-          <AccordionDetails>
-            {this.renderEvents(this.state.civData)}
-          </AccordionDetails>
+          <AccordionDetails></AccordionDetails>
         </Accordion>
         <Accordion>
           <AccordionSummary>

@@ -96,13 +96,13 @@ export const partPages = [
     count: 6,
   },
   {
-    name: "Criaturas",
+    name: "Creatures",
     file: "img/shapes_creatures.png",
     icon: <EmojiPeople></EmojiPeople>,
     count: 5,
   },
   {
-    name: "Objetos",
+    name: "Items",
     file: "img/shapes_items.png",
     icon: <Restaurant></Restaurant>,
     count: 9,
@@ -128,6 +128,9 @@ export class IslandPIXI {
   }
 
   deserializeFullString(string) {
+    if (string === undefined) {
+      return [];
+    }
     let data = [];
     let split = string.split(";");
     for (let i in split) {
@@ -137,8 +140,16 @@ export class IslandPIXI {
   }
 
   deserializeSingleSprite(string) {
+    let imageId = b64ToInt(string.substring(0, 2));
+    let mirrored = false;
+    if (imageId >= 2048) {
+      // If most significative bit is on: mirrored
+      mirrored = true;
+      imageId -= 2048;
+    }
     return {
-      imageId: b64ToInt(string.substring(0, 2)),
+      mirrored: mirrored,
+      imageId: imageId,
       colorId: b64ToInt(string.substring(2, 3)),
       xPos: b64ToInt(string.substring(3, 4)),
       yPos: b64ToInt(string.substring(4, 5)),
@@ -152,8 +163,12 @@ export class IslandPIXI {
     let parts = [];
     for (let i in graphicData) {
       const part = graphicData[i];
+      let imageIdMirrored = part.imageId;
+      if (part.mirrored) {
+        imageIdMirrored += 2048;
+      }
       parts.push(
-        intToB64(part.imageId).padStart(2, "0") +
+        intToB64(imageIdMirrored).padStart(2, "0") +
           intToB64(part.colorId) +
           intToB64(part.xPos) +
           intToB64(part.yPos) +
@@ -176,7 +191,12 @@ export class IslandPIXI {
       sprite.tint = "0x" + colorPalette[spriteData.colorId];
       sprite.position.x = spriteData.xPos * 4;
       sprite.position.y = spriteData.yPos * 4;
-      sprite.scale.x = (spriteData.xScale * spriteData.xScale) / 1600 + 0.02;
+      let mirror = 1;
+      if (spriteData.mirrored) {
+        mirror = -1;
+      }
+      sprite.scale.x =
+        mirror * ((spriteData.xScale * spriteData.xScale) / 1600 + 0.02);
       sprite.scale.y = (spriteData.yScale * spriteData.yScale) / 1600 + 0.02;
       sprite.rotation = (spriteData.rotation / 180) * Math.PI * 7.5;
       container.addChild(sprite);

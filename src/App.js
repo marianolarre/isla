@@ -13,6 +13,10 @@ const darkTheme = createTheme({
 });
 
 class App extends Component {
+  handleWorldDataChange(newValue) {
+    worldData = newValue;
+  }
+
   render() {
     return (
       <ThemeProvider theme={darkTheme}>
@@ -20,11 +24,21 @@ class App extends Component {
           <Routes>
             <Route
               path="/"
-              element={<GamePanel worldData={worldData}></GamePanel>}
+              element={
+                <GamePanel
+                  worldData={worldData}
+                  onChange={(e) => this.handleWorldDataChange(e)}
+                ></GamePanel>
+              }
             ></Route>
             <Route
               path="/editor"
-              element={<Editor worldData={worldData}></Editor>}
+              element={
+                <Editor
+                  worldData={worldData}
+                  onChange={(e) => this.handleWorldDataChange(e)}
+                ></Editor>
+              }
             ></Route>
           </Routes>
         </BrowserRouter>
