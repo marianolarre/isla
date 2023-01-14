@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { colorPalette } from "../../../classes/IslandPIXI";
+import { colorPalette, teamColorGradient } from "../../../classes/IslandPIXI";
 import "./ColorPalette.css";
 
 class ColorPalette extends Component {
@@ -14,7 +14,7 @@ class ColorPalette extends Component {
           <button
             key={index}
             style={{
-              background: "#" + value,
+              background: index == 0 ? teamColorGradient : "#" + value,
               borderColor: index == this.props.value ? "#FFFFFF" : "#000000",
             }}
             className="color-button"

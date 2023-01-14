@@ -91,35 +91,38 @@ class Graphics {
       const civ = civilizations[civId];
       const state = civ.state;
       this.renderHTMLFromString(civ.flag_img);
+      const options = {
+        primary_color: civ.primary_color,
+      };
       for (var entityBase in state.entities) {
         let entityList = state.entities[entityBase];
         for (var entityId in entityList) {
           let entity = entityList[entityId];
-          this.renderHTMLFromString(worldData.bases[entityBase].img);
-          this.createEntityGraphics(worldData.bases[entityBase], entity);
+          const str = this.pixi.transformImgString(
+            worldData.bases[entityBase].img,
+            options
+          );
+          this.renderHTMLFromString(str);
+          this.createEntityGraphics(worldData.bases[entityBase], entity, civ);
         }
       }
     }
   }
 
   renderHTMLFromString(graphicString) {
-    const container = this.pixi.imgStringToContainer(graphicString);
-    if (this.renders[graphicString] == null)
+    if (this.renders[graphicString] == null) {
+      const container = this.pixi.imgStringToContainer(graphicString);
       this.renders[graphicString] = this.pixi.renderHTMLImage(container, 0.25);
-    container.destroy();
+      container.destroy();
+    }
   }
 
-  createEntityGraphics(base, entity) {
-    const container = this.pixi.imgStringToContainer(base.img);
-    /*
-    if (this.renders[base.img] == null) {
-      const renderTexture = PIXI.RenderTexture.create({
-        width: 256,
-        height: 256,
-      });
-      renderer.render(container, renderTexture);
-      this.renders[base.img] = extract.image(renderTexture);
-    }*/
+  createEntityGraphics(base, entity, civ) {
+    const options = {
+      primary_color: civ.primary_color,
+    };
+    const str = this.pixi.transformImgString(base.img, options);
+    const container = this.pixi.imgStringToContainer(str);
 
     container.position.set(entity.p[0] * 16, entity.p[1] * 16);
     container.zIndex = entity.y;

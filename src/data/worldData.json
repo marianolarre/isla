@@ -46,7 +46,7 @@
       "cost": { "work": 1, "wood": 5 },
       "prod": [{ "housing": 4 }],
       "vision": 2,
-      "img": "05wWcQN0;105WQSP0;0miRhHH0;00LbfCC0;11ibfCC0;12ddHJJ0;0X5dNBFC"
+      "img": "05wWcQN0;100WQSP0;0miRhHH0;00LbfCC0;11ibfCC0;12ddHJJ0;0X0dNBFC"
     },
     "house_2": {
       "name": "Casa II",
@@ -54,7 +54,7 @@
       "cost": { "work": 2, "wood": 6, "stone": 2 },
       "prod": [{ "population": 8 }],
       "vision": 2,
-      "img": "00wXXYO0;00wKfOL0;005XLZP0;105KVRO0;0miKjHH0;00LjcHC0;11igcCC0;12dkDJJ0;11imcCC0"
+      "img": "00wXXYO0;00wKfOL0;000XLZP0;100KVRO0;0miKjHH0;00LjcHC0;11igcCC0;12dkDJJ0;11imcCC0"
     },
     "wheat_farm": {
       "name": "Granja de trigo",
@@ -69,7 +69,7 @@
       "cost": { "work": 1, "wood": 4 },
       "prod": [{}, { "work": -1, "wood": 4 }, { "work": -2, "wood": 8 }],
       "vision": 4,
-      "img": "13kMKII0;185MQMM0;13kMUII0;1DkdJCF0;1DkhQCF0;43bnPAAh;0pkoRDDV;45kjmMMF;45kepMMF;45kgjMMF"
+      "img": "13kMKII0;180MQMM0;13kMUII0;1DkdJCF0;1DkhQCF0;43bnPAAh;0pkoRDDV;45kjmMMF;45kepMMF;45kgjMMF"
     },
     "villager": {
       "name": "Aldeano",
@@ -77,14 +77,15 @@
       "unlisted": true,
       "prod": [{ "population": 1 }],
       "vision": 4,
-      "img": "0m5WYHG0;08lWQBB0;310WQAA0;22jWNDA0;0M5bV99O;WM5RV99O"
+      "img": "0m0WYHG0;08lWQBB0;311WQAA0;22jWNDA0;0M0bV99O;WM0RV99O"
     }
   },
   "civilizations": [
     {
       "name": "Redsburg",
       "player": "John Smith",
-      "flag_img": "08gWWaa0;1F8WWWW0;088WWLL0;0ogWZKKO;008VWOC0;0ogRTDD0;0ogbTDDC",
+      "flag_img": "085WWaa0;1F8WWWW0;088WWLL0;0o5WZKKO;008VWOC0;0o5RTDD0;0o5bTDDC",
+      "primary_color": 5,
       "state": {
         "day": 1,
         "title": "Dia 1",
@@ -113,6 +114,7 @@
       "name": "Blusburg",
       "player": "John Doe",
       "flag_img": "00IWQSa0;0jKXRSS0;310dONN0;0UIWuSS0",
+      "primary_color": 18,
       "state": {
         "day": 1,
         "title": "Dia 1",

@@ -38,6 +38,7 @@ class EntityEditor extends Component {
       currentResourceType: "",
       currentResourceID: 0,
       resourceSelectorOpen: false,
+      currentCiv: 0,
     };
   }
 
@@ -53,7 +54,12 @@ class EntityEditor extends Component {
     let entityList = [];
     for (let i in this.props.worldData.bases) {
       const base = this.props.worldData.bases[i];
-      const render = this.props.renders[base.img];
+      const str = this.props.pixi.transformImgString(base.img, {
+        primary_color:
+          this.props.worldData.civilizations[this.state.currentCiv]
+            .primary_color,
+      });
+      const render = this.props.renders[str];
       entityList.push(
         <Button
           key={i}
@@ -205,6 +211,22 @@ class EntityEditor extends Component {
     this.setState({ base: newBase });
   }
 
+  handleCivChange(civId) {
+    this.setState({ currentCiv: civId });
+  }
+
+  renderCivButtons() {
+    let list = [];
+    this.props.worldData.civilizations.map((value, index) =>
+      list.push(
+        <Button key={index} onClick={() => this.handleCivChange(index)}>
+          <img src={this.props.renders[value.flag_img].src}></img>
+        </Button>
+      )
+    );
+    return list;
+  }
+
   render() {
     return (
       <div className="container">
@@ -222,6 +244,9 @@ class EntityEditor extends Component {
               <Typography>Click and drag to move selected part.</Typography>
               <br></br>
               <Typography>Use the scroll wheel to scale part.</Typography>
+              <br></br>
+              {this.renderCivButtons()}
+              <br></br>
               <Button onClick={() => this.applyChanges()}>Apply Changes</Button>
             </Paper>
           </Grid>
@@ -280,6 +305,10 @@ class EntityEditor extends Component {
               <GraphicsEditor
                 containerId="entity-preview"
                 pixi={this.props.pixi}
+                primaryColor={
+                  this.props.worldData.civilizations[this.state.currentCiv]
+                    .primary_color
+                }
                 value={this.state.base.img}
                 scale={1}
                 onChange={(e) => this.handleBaseChange(e, "img")}

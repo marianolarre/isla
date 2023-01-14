@@ -27,21 +27,32 @@ class Editor extends Component {
     });
   }
 
-  renderHTMLFromString(graphicString) {
+  renderHTMLFromString(graphicString, options) {
     if (this.renders[graphicString] == null) {
-      const container = this.pixi.imgStringToContainer(graphicString);
-      this.renders[graphicString] = this.pixi.renderHTMLImage(container, 0.25);
+      let str = graphicString;
+      if (options != null) {
+        console.log(options);
+        str = this.pixi.transformImgString(str, options);
+      }
+      const container = this.pixi.imgStringToContainer(str);
+      this.renders[str] = this.pixi.renderHTMLImage(container, 0.25);
       container.destroy();
     }
   }
 
   createAllGraphicsFromData(worldData) {
+    for (let i in worldData.civilizations) {
+      const civ = worldData.civilizations[i];
+      this.renderHTMLFromString(civ.flag_img);
+      for (var entityBase in worldData.bases) {
+        this.renderHTMLFromString(worldData.bases[entityBase].img, {
+          primary_color: civ.primary_color,
+        });
+      }
+    }
     for (let i in worldData.resources) {
       const res = worldData.resources[i];
       this.renderHTMLFromString(res.img);
-    }
-    for (var entityBase in worldData.bases) {
-      this.renderHTMLFromString(worldData.bases[entityBase].img);
     }
   }
 

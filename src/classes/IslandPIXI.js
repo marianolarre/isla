@@ -76,6 +76,9 @@ export const colorPalette = [
   "423934",
 ];
 
+export const teamColorGradient =
+  "linear-gradient(45deg, red 20%, yellow 20% 40%, green 40% 60%, cyan 60% 80%, blue 80%)";
+
 export const partPages = [
   {
     name: "Basic shapes",
@@ -178,6 +181,20 @@ export class IslandPIXI {
       );
     }
     return parts.join(";");
+  }
+
+  transformImgString(string, options) {
+    var imgArray = string.split(";");
+    let parts = [];
+    for (let i in imgArray) {
+      let spriteData = this.deserializeSingleSprite(imgArray[i]);
+      // Things with colorId 0 should be changed to have the color of their civ
+      if (spriteData.colorId == 0 && options.primary_color != null) {
+        spriteData.colorId = options.primary_color;
+      }
+      parts.push(spriteData);
+    }
+    return this.serializeSprite(parts);
   }
 
   imgStringToContainer(string) {

@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { colorPalette, IslandPIXI } from "../../../classes/IslandPIXI";
+import {
+  colorPalette,
+  IslandPIXI,
+  teamColorGradient,
+} from "../../../classes/IslandPIXI";
 import * as PIXI from "pixi.js";
 import $ from "jquery";
 import ColorPalette from "../ColorPalette/ColorPalette";
@@ -89,16 +93,42 @@ class GraphicsEditor extends Component {
       this.forceUpdate();
       this.updateGraphic();
     }
+    if (this.primaryColor != this.props.primaryColor) {
+      this.primaryColor = this.props.primaryColor;
+      this.updateGraphic();
+      console.log("Updating graphics");
+    }
   }
 
   renderString(string) {
+    console.log(this.props.primaryColor);
+    const transformImgString = this.pixi.transformImgString(string, {
+      primary_color: this.props.primaryColor,
+    });
     this.preview.removeChildren();
-    const container = this.pixi.imgStringToContainer(string);
+    const container = this.pixi.imgStringToContainer(transformImgString);
     this.preview.addChild(container);
   }
 
   selectPart(index) {
-    this.setState({ currentImage: index });
+    this.setState({ currentImage: index }, this.selectAnimation);
+  }
+
+  selectAnimation() {
+    clearTimeout();
+    this.flashColor(22);
+    setTimeout(() => this.flashColor(42), 150);
+    setTimeout(() => this.flashColor(22), 300);
+    setTimeout(() => this.flashColor(42), 450);
+    setTimeout(() => this.renderString(this.props.value), 600);
+  }
+
+  flashColor(colorId) {
+    let previousColor = this.graphicData[this.state.currentImage].colorId;
+    this.graphicData[this.state.currentImage].colorId = colorId;
+    let animationString = this.pixi.serializeSprite(this.graphicData);
+    this.renderString(animationString);
+    this.graphicData[this.state.currentImage].colorId = previousColor;
   }
 
   addNewPart() {
@@ -266,6 +296,14 @@ class GraphicsEditor extends Component {
     this.props.onChange(this.pixi.serializeSprite(this.graphicData));
   }
 
+  getColorFromID(colorId) {
+    if (colorId > 0) {
+      return "#" + colorPalette[colorId];
+    } else {
+      return teamColorGradient;
+    }
+  }
+
   render() {
     if (this.pixi == null) {
       return <CircularProgress />;
@@ -288,8 +326,9 @@ class GraphicsEditor extends Component {
                 className="part-selection-button"
                 onClick={() => this.selectPart(index)}
                 style={{
-                  backgroundColor:
-                    "#" + colorPalette[this.graphicData[index].colorId],
+                  background: this.getColorFromID(
+                    this.graphicData[index].colorId
+                  ),
                   borderColor:
                     index == this.state.currentImage ? "#FFFFFF" : "#000000",
                 }}
