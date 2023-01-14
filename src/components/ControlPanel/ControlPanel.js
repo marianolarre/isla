@@ -4,8 +4,10 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography,
+  Button,
 } from "@mui/material";
 import "./ControlPanel.css";
+import { Link } from "react-router-dom";
 /*
 const THEME = createMuiTheme({
   palette: {
@@ -118,7 +120,10 @@ class ControlPanel extends Component {
             </Typography>
           </AccordionDetails>
         </Accordion>
-        {/*</MuiThemeProvider>*/}
+
+        <Link to="/editor">
+          <Button>Editor</Button>
+        </Link>
       </div>
     );
   }

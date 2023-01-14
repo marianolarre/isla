@@ -61,7 +61,7 @@
       "desc": "Genera comida",
       "cost": { "work": 2 },
       "prod": [{ "work": -1, "food": 4 }],
-      "img": "00iWWZZ0;0SjWWYYC;0b7WWG-0;0b7KWG-0;0b7iWG-0;0b8KqG-0;0b8WqG-0;0b8iqG-0"
+      "img": "00iWWZZ0;0SjWWYYC;0S7LFMP0;0S7hFMP0;0S8LdMP0;0S8hdMP0"
     },
     "wood_camp": {
       "name": "Campamento Acerradero",

@@ -14,7 +14,6 @@ class Graphics {
     this.spritePointers = [];
     this.spritePointerCounter = 0;
     this.renders = {};
-
     // Initialize PIXI application and containers
     this.pixi = new IslandPIXI({
       width: window.innerWidth,
@@ -22,8 +21,7 @@ class Graphics {
       autoResize: true,
     });
 
-    document.body.appendChild(this.pixi.app.view);
-    //PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    this.canvas = document.body.appendChild(this.pixi.app.view);
     this.gameView = new PIXI.Container();
     this.backgroundView = new PIXI.Container();
     this.entitiesView = new PIXI.Container();
@@ -47,39 +45,28 @@ class Graphics {
     this.pixi.app.loader.load((loader, resources) => {
       this.createAllGraphicsFromData(this.game.worldData);
     });
-
-    /* #region Event Listeners */
-    document.addEventListener(
-      "mousewheel",
-      (e) => {
-        this.mouseWheelHandler(e);
-      },
-      false
-    );
-    document.addEventListener(
-      "mousedown",
-      (e) => {
-        this.mouseDownHandler(e);
-      },
-      false
-    );
-    document.addEventListener(
-      "mouseup",
-      (e) => {
-        this.mouseUpHandler(e);
-      },
-      false
-    );
-    document.addEventListener(
-      "mousemove",
-      (e) => {
-        this.mouseMoveHandler(e);
-      },
-      false
-    );
-    /* #endregion */
   }
 
+  mount() {
+    console.log("Mounting");
+    $(document).on("mousedown", (e) => {
+      this.mouseDownHandler(e);
+    });
+    $(document).on("mouseup", (e) => {
+      this.mouseUpHandler(e);
+    });
+    $(document).on("mousemove", (e) => {
+      this.mouseMoveHandler(e);
+    });
+    $(document).on("mousewheel", (e) => {
+      this.mouseWheelHandler(e);
+    });
+  }
+
+  unmount() {
+    document.body.removeChild(this.pixi.app.view);
+    $(document).off();
+  }
   /* #region  Sprite Creation */
 
   createAllGraphicsFromData(worldData) {
@@ -160,7 +147,7 @@ class Graphics {
     if (this.mouseInsidePlayArea(event.clientX)) {
       const { gameView } = this;
       let zoom = gameView.scale.x;
-      let mouseScroll = event.deltaY / 100;
+      let mouseScroll = event.originalEvent.deltaY / 100;
       let newzoom = zoom * (1 - mouseScroll / 5);
       const minzoom = 0.05;
       const maxzoom = 2;

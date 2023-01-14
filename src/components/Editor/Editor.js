@@ -3,7 +3,8 @@ import { Tabs, Tab, Button } from "@mui/material";
 import EntityEditor from "./EntityEditor/EntityEditor";
 import { IslandPIXI } from "../../classes/IslandPIXI";
 import "./Editor.css";
-import { Save } from "@mui/icons-material";
+import { ArrowBack, Save } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 class Editor extends Component {
   constructor(props) {
@@ -16,7 +17,6 @@ class Editor extends Component {
     this.pixi = new IslandPIXI({
       width: 256,
       height: 256,
-      backgroundColor: 0x86d369,
       scale: 1,
     });
 
@@ -31,7 +31,6 @@ class Editor extends Component {
     if (this.renders[graphicString] == null) {
       let str = graphicString;
       if (options != null) {
-        console.log(options);
         str = this.pixi.transformImgString(str, options);
       }
       const container = this.pixi.imgStringToContainer(str);
@@ -85,6 +84,11 @@ class Editor extends Component {
   render() {
     return (
       <div id="editor">
+        <Link to="/">
+          <Button style={{ float: "left" }}>
+            <ArrowBack></ArrowBack>
+          </Button>
+        </Link>
         <Button
           style={{ float: "right" }}
           onClick={() => this.downloadWorldData()}

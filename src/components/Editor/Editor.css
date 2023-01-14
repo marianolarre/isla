@@ -6,3 +6,7 @@
     height: 100vh;
     background-color: #222f;
 }
+
+p,h1,h2,h3,h4,h5,h6,br {
+    user-select: none;
+}

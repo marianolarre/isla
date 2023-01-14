@@ -1,4 +1,6 @@
 import {
+  BottomNavigation,
+  BottomNavigationAction,
   Box,
   Button,
   Grid,
@@ -219,9 +221,17 @@ class EntityEditor extends Component {
     let list = [];
     this.props.worldData.civilizations.map((value, index) =>
       list.push(
-        <Button key={index} onClick={() => this.handleCivChange(index)}>
-          <img src={this.props.renders[value.flag_img].src}></img>
-        </Button>
+        <BottomNavigationAction
+          key={index}
+          onClick={() => this.handleCivChange(index)}
+          icon={
+            <img
+              src={this.props.renders[value.flag_img].src}
+              style={{ margin: 0 }}
+            ></img>
+          }
+          label={value.name}
+        ></BottomNavigationAction>
       )
     );
     return list;
@@ -245,7 +255,9 @@ class EntityEditor extends Component {
               <br></br>
               <Typography>Use the scroll wheel to scale part.</Typography>
               <br></br>
-              {this.renderCivButtons()}
+              <BottomNavigation value={this.state.currentCiv}>
+                {this.renderCivButtons()}
+              </BottomNavigation>
               <br></br>
               <Button onClick={() => this.applyChanges()}>Apply Changes</Button>
             </Paper>

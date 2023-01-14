@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import ControlPanel from "../ControlPanel/ControlPanel";
 import GameGraphics from "../../classes/GameGraphics.js";
 import Game from "../../classes/Game.js";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
+import "./GamePanel.css";
 
 class GamePanel extends Component {
   constructor(props) {
@@ -15,13 +18,23 @@ class GamePanel extends Component {
     this.currentCiv = 0;
   }
 
+  componentDidMount() {
+    this.graphics.mount();
+  }
+
+  componentWillUnmount() {
+    this.graphics.unmount();
+  }
+
   render() {
     return (
-      <ControlPanel
-        game={this.game}
-        currentCiv={this.currentCiv}
-        graphics={this.graphics}
-      ></ControlPanel>
+      <>
+        <ControlPanel
+          game={this.game}
+          currentCiv={this.currentCiv}
+          graphics={this.graphics}
+        ></ControlPanel>
+      </>
     );
   }
 }
