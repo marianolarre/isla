@@ -6,6 +6,8 @@ import {
   AccordionSummary,
   Typography,
   Box,
+  BottomNavigation,
+  BottomNavigationAction,
 } from "@mui/material";
 import GameGraphics from "../../classes/GameGraphics.js";
 import { Link } from "react-router-dom";
@@ -18,7 +20,6 @@ class GamePanel extends Component {
     this.state = {
       ready: false,
       currentCiv: 0,
-      civilization: this.props.worldData.civilizations[0],
     };
   }
 
@@ -42,7 +43,6 @@ class GamePanel extends Component {
 
   handleGraphicsLoaded() {
     this.setState({ ready: true });
-    console.log(Object.keys(this.graphics.renders));
   }
 
   handleSpriteHover(data, spritePointer) {}
@@ -51,15 +51,25 @@ class GamePanel extends Component {
 
   handleSpriteExit() {}
 
+  /* ====================================
+                Entities
+  ==================================== */
   renderEntities() {
+    const civ = this.props.worldData.civilizations[this.state.currentCiv];
+    const bases = this.props.worldData.bases;
+    const options = {
+      primary_color: civ.primary_color,
+    };
     let imgList = [];
-    for (let i in this.graphics.renders) {
-      console.log("AAA");
-      console.log(i);
+    for (let i in civ.state.entities) {
+      const str = this.graphics.pixi.transformImgString(
+        this.props.worldData.bases[i].img,
+        options
+      );
       imgList.push(
         <img
           className="render"
-          src={this.graphics.renders[i].src}
+          src={this.graphics.renders[str].src}
           style={{ width: "64px", height: "auto", textShadow: "0 0 4px white" }}
         ></img>
       );
@@ -67,7 +77,38 @@ class GamePanel extends Component {
     return <>{imgList}</>;
   }
 
+  /* ====================================
+                Game Master
+  ==================================== */
+  renderCivButtons() {
+    let list = [];
+    this.props.worldData.civilizations.map((value, index) =>
+      list.push(
+        <BottomNavigationAction
+          key={index}
+          onClick={() => this.handleCivChange(index)}
+          icon={
+            <img
+              src={this.graphics.renders[value.img].src}
+              style={{ margin: 0 }}
+            ></img>
+          }
+          label={value.name}
+        ></BottomNavigationAction>
+      )
+    );
+    return list;
+  }
+
+  handleCivChange(civId) {
+    this.setState({ currentCiv: civId });
+  }
+
   render() {
+    const civ = this.props.worldData.civilizations[this.state.currentCiv];
+    if (!this.state.ready) {
+      return <p>Loading</p>;
+    }
     return (
       <>
         <Stack id="control-panel">
@@ -76,19 +117,19 @@ class GamePanel extends Component {
               <img
                 className="render"
                 src={
-                  this.graphics.renders[this.state.civilization.img] == null
+                  this.graphics.renders[civ.img] == null
                     ? ""
-                    : this.graphics.renders[this.state.civilization.img].src
+                    : this.graphics.renders[civ.img].src
                 }
                 alt=""
               ></img>
-              <h1>{this.state.civilization.name}</h1>
+              <h1>{civ.name}</h1>
             </AccordionSummary>
             <AccordionDetails>
               <div className="block">
-                <h2>{this.state.civilization.state.title}</h2>
+                <h2>{civ.state.title}</h2>
                 <div className="scroller">
-                  <p>{this.state.civilization.state.desc}</p>
+                  <p>{civ.state.desc}</p>
                 </div>
               </div>
             </AccordionDetails>
@@ -102,7 +143,7 @@ class GamePanel extends Component {
           </Accordion>
           <Accordion>
             <AccordionSummary>
-              <img src="./../../../img/icons/events.png" alt=""></img>
+              <img src="./../../../img/icons/buildings.png" alt=""></img>
               <h1>Entidades</h1>
             </AccordionSummary>
             <AccordionDetails>
@@ -135,9 +176,13 @@ class GamePanel extends Component {
 
           <Accordion>
             <AccordionSummary>
+              <img src="./../../../img/icons/master.png" alt=""></img>
               <h1>Game Master</h1>
             </AccordionSummary>
             <AccordionDetails>
+              <BottomNavigation value={this.state.currentCiv}>
+                {this.renderCivButtons()}
+              </BottomNavigation>
               <Link to="/editor">
                 <Button>Editor</Button>
               </Link>

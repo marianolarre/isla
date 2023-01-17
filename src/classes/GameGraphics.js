@@ -4,8 +4,6 @@ import { IslandPIXI } from "./IslandPIXI.js";
 
 var clicking = false;
 var previousMousePos = { x: 0, y: 0 };
-var renderer = PIXI.autoDetectRenderer();
-var extract = new PIXI.Extract(renderer);
 const outlineMultiplier = 6;
 
 class Graphics {

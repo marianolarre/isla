@@ -100,10 +100,10 @@
   },
   "civilizations": [
     {
-      "name": "Redsburg",
+      "name": "Mermopolis",
       "player": "Marum",
-      "img": "085WWaa0;1F2WWaa0;0H5WWbb0;1F8WWWW0;088WWLL0;0o1WZKKO;008VWOC0;0o1RTDD0;0o1bTDDC",
-      "primary_color": 5,
+      "img": "08IWWaa0;1FHWWaa0;0HIWWbb0;1F8WWWW0;088WWLL0;0o1WZKKO;008VWOC0;0o1RTDD0;0o1bTDDC",
+      "primary_color": 18,
       "state": {
         "day": 1,
         "title": "Dia 1",
@@ -132,10 +132,10 @@
       }
     },
     {
-      "name": "Blusburg",
+      "name": "Villa Emilla",
       "player": "Emeh",
-      "img": "04IWiVV0;00IWKVV0;06JWPVV0;23MWRTT0;321WPPP0",
-      "primary_color": 18,
+      "img": "045WiVV0;005WKVV0;068WPVV0;23MWRTT0;321WPPP0",
+      "primary_color": 5,
       "state": {
         "day": 1,
         "title": "Dia 1",
