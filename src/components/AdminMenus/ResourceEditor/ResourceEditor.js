@@ -150,10 +150,7 @@ class ResourceEditor extends Component {
                 entries={this.props.worldData.resources}
                 pixi={this.props.pixi}
                 renders={this.props.renders}
-                primaryColor={
-                  this.props.worldData.civilizations[this.state.currentCiv]
-                    .primary_color
-                }
+                primaryColor={1}
                 entryTemplate={{
                   name: "New resource",
                   desc: "New resource's description",
@@ -202,10 +199,7 @@ class ResourceEditor extends Component {
                 containerId="entity-preview"
                 pixi={this.props.pixi}
                 disableSpecialColors={true}
-                primaryColor={
-                  this.props.worldData.civilizations[this.state.currentCiv]
-                    .primary_color
-                }
+                primaryColor={1}
                 value={this.state.resource.img}
                 scale={1}
                 onChange={(e) => this.handleResourceChange(e, "img")}

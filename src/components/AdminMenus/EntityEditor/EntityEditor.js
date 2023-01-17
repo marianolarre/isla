@@ -325,10 +325,7 @@ class EntityEditor extends Component {
               <GraphicsEditor
                 containerId="entity-preview"
                 pixi={this.props.pixi}
-                primaryColor={
-                  this.props.worldData.civilizations[this.state.currentCiv]
-                    .primary_color
-                }
+                primaryColor={primaryColor}
                 value={this.state.base.img}
                 scale={1}
                 onChange={(e) => this.handleBaseChange(e, "img")}
