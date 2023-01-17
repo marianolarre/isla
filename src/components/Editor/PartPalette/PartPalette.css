@@ -3,10 +3,12 @@
     display: inline-block;
     width: 6.24%;
     justify-content: center;
-    padding: auto;
+    padding: 4px;
 }
 
 .part-button img {
     width: 100%;
     height: auto;
+    margin: 0;
+    padding: 0;
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Editor from "./components/Editor/Editor";
+import Editor from "./components/AdminMenus/EditorMenu/Editor";
 import { createTheme, ThemeProvider } from "@mui/material";
 import GamePanel from "./components/GamePanel/GamePanel";
 import worldData from "./data/worldData.json";

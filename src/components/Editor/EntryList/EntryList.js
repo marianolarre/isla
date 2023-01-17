@@ -1,5 +1,12 @@
-import { Delete } from "@mui/icons-material";
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
+import { AddCircle, Delete } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import React, { Component } from "react";
 
 /*
@@ -32,7 +39,6 @@ class EntryList extends Component {
           </IconButton>
           <Button
             key={i}
-            fullWidth
             startIcon={<img src={render != null ? render.src : ""}></img>}
             style={{ textTransform: "none", display: "flex" }}
             onClick={() => this.props.onSelect(i)}
@@ -46,11 +52,12 @@ class EntryList extends Component {
   }
 
   handleAddEntry() {
-    let newEntries = { ...this.props.entries };
+    /*let newEntries = { ...this.props.entries };
     newEntries["_new_entry"] = {
       ...this.props.entryTemplate,
     };
-    this.props.onChange(newEntries);
+    this.props.onChange(newEntries);*/
+    this.props.onNew();
   }
 
   handleRemoveEntry(i) {
@@ -63,7 +70,11 @@ class EntryList extends Component {
     return (
       <Box>
         {this.renderEntryList()}
-        <Button onClick={() => this.handleAddEntry()}>Create new entity</Button>
+        <Tooltip title="Create new entry">
+          <Button onClick={() => this.handleAddEntry()}>
+            <AddCircle></AddCircle>
+          </Button>
+        </Tooltip>
       </Box>
     );
   }

@@ -3,6 +3,7 @@ import {
   BottomNavigationAction,
   Box,
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   Paper,
@@ -12,11 +13,11 @@ import {
 } from "@mui/material";
 import React, { Component } from "react";
 import "./EntityEditor.css";
-import GraphicsEditor from "../GraphicsEditor/GraphicsEditor";
-import ResourceSelector from "../ResourceSelector/ResourceSelector";
+import GraphicsEditor from "../../GraphicsEditor/GraphicsEditor";
+import ResourceSelector from "../../Editor/ResourceSelector/ResourceSelector";
 import ResourceDisplay from "../../ResourceDisplay/ResourceDisplay";
 import { ArrowUpward, Delete } from "@mui/icons-material";
-import EntryList from "../EntryList/EntryList";
+import EntryList from "../../Editor/EntryList/EntryList";
 
 class EntityEditor extends Component {
   constructor(props) {
@@ -156,6 +157,7 @@ class EntityEditor extends Component {
 
   applyChanges() {
     if (this.state.currentBase == "") return;
+
     let newWorldData = { ...this.props.worldData };
     newWorldData.bases[this.state.currentBase] = { ...this.state.base };
 
@@ -187,7 +189,22 @@ class EntityEditor extends Component {
   handleBaseListChange(newList) {
     let newWorldData = { ...this.props.worldData };
     newWorldData.bases = newList;
+    this.applyChanges();
     this.props.onChange(newWorldData);
+  }
+
+  handleNewBase() {
+    this.setState({
+      keyChange: "new_entry",
+      currentBase: "new_entry",
+      base: {
+        name: "Unnamed entity",
+        desc: "Description unknown",
+        cost: {},
+        prod: [],
+        img: "000WWGG0",
+      },
+    });
   }
 
   handleCivChange(civId) {
@@ -203,7 +220,7 @@ class EntityEditor extends Component {
           onClick={() => this.handleCivChange(index)}
           icon={
             <img
-              src={this.props.renders[value.flag_img].src}
+              src={this.props.renders[value.img].src}
               style={{ margin: 0 }}
             ></img>
           }
@@ -215,11 +232,14 @@ class EntityEditor extends Component {
   }
 
   render() {
+    if (this.state.base === undefined) {
+      return <CircularProgress></CircularProgress>;
+    }
     return (
       <div className="container">
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={4}>
-            <Paper elevation={2} id="list" className="panel">
+            <Paper elevation={2} id="list" className="scrolling-panel">
               <EntryList
                 entries={this.props.worldData.bases}
                 pixi={this.props.pixi}
@@ -237,25 +257,13 @@ class EntityEditor extends Component {
                 }}
                 onSelect={(e) => this.selectBase(e)}
                 onChange={(e) => this.handleBaseListChange(e)}
+                onNew={(e) => this.handleNewBase(e)}
               ></EntryList>
             </Paper>
           </Grid>
-          <Grid item xs={3}>
-            <Paper elevation={2} className="panel">
-              <div id="entity-preview"></div>
-              <Typography>Click and drag to move selected part.</Typography>
-              <br></br>
-              <Typography>Use the scroll wheel to scale part.</Typography>
-              <br></br>
-              <BottomNavigation value={this.state.currentCiv}>
-                {this.renderCivButtons()}
-              </BottomNavigation>
-              <br></br>
-              <Button onClick={() => this.applyChanges()}>Apply Changes</Button>
-            </Paper>
-          </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={8}>
             <Paper elevation={2} className="panel scrolling-panel">
+              <Button onClick={() => this.applyChanges()}>Apply Changes</Button>
               <TextField
                 fullWidth
                 label="Nombre único"
@@ -305,6 +313,10 @@ class EntityEditor extends Component {
               </Grid>
               <div className="spacer"></div>
               <Typography>Graphic</Typography>
+              <BottomNavigation value={this.state.currentCiv}>
+                {this.renderCivButtons()}
+              </BottomNavigation>
+              <br></br>
               <GraphicsEditor
                 containerId="entity-preview"
                 pixi={this.props.pixi}

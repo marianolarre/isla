@@ -3,15 +3,32 @@ import {
   colorPalette,
   IslandPIXI,
   teamColorGradient,
-} from "../../../classes/IslandPIXI";
+} from "../../classes/IslandPIXI";
 import * as PIXI from "pixi.js";
 import $ from "jquery";
-import ColorPalette from "../ColorPalette/ColorPalette";
-import PartPalette from "../PartPalette/PartPalette";
-import SliderWithInput from "../SliderWithInput";
-import MyToggle from "../MyToggle";
-import { Grid, Button, CircularProgress, Stack, Box } from "@mui/material";
+import ColorPalette from "../Editor/ColorPalette/ColorPalette";
+import PartPalette from "../Editor/PartPalette/PartPalette";
+import SliderWithInput from "../Editor/SliderWithInput";
+import MyToggle from "../Editor/MyToggle";
+import {
+  Grid,
+  Button,
+  CircularProgress,
+  Stack,
+  Box,
+  Tooltip,
+  Link,
+} from "@mui/material";
 import "./GraphicsEditor.css";
+import {
+  AddCircle,
+  Delete,
+  FileCopy,
+  FlipToBack,
+  FlipToFront,
+  InsertLink,
+  LinkOff,
+} from "@mui/icons-material";
 
 var clicking = false;
 var startMousePos = { x: 0, y: 0 };
@@ -25,6 +42,7 @@ class GraphicsEditor extends Component {
     this.state = {
       graphicString: this.props.value,
       currentImage: 0,
+      linkedScale: true,
     };
   }
 
@@ -50,6 +68,7 @@ class GraphicsEditor extends Component {
     this.pixi.app.stage.addChild(background);
     this.preview.sortableChildren = true;
     this.pixi.app.stage.addChild(this.preview);
+
     $(() => {
       $("#" + this.props.containerId).append(this.pixi.app.view);
     });
@@ -72,13 +91,13 @@ class GraphicsEditor extends Component {
     background.on("mouseupoutside", (e) => {
       this.mouseUpHandler(e);
     });
-    $(document).on("wheel", (e) => {
+    /*$(document).on("wheel", (e) => {
       this.mouseWheelHandler(e);
-    });
+    });*/
   }
 
   componentWillUnmount() {
-    $(document).off();
+    //$(document).off();
   }
 
   componentDidUpdate() {
@@ -89,6 +108,9 @@ class GraphicsEditor extends Component {
       this.newValue = this.props.value;
       this.forceUpdate();
       this.updateGraphic();
+      if (this.state.currentImage >= this.graphicData.length) {
+        this.setState({ currentImage: 0 });
+      }
     }
     if (this.primaryColor != this.props.primaryColor) {
       this.primaryColor = this.props.primaryColor;
@@ -267,6 +289,67 @@ class GraphicsEditor extends Component {
     this.props.onChange(this.pixi.serializeSprite(this.graphicData));
   }
 
+  handleScaleChange(newValue, variable) {
+    const limit = (value) => {
+      const max = 63;
+      const min = 0;
+      return Math.max(Math.min(value, max), min);
+    };
+    const otherVariable = variable == "xScale" ? "yScale" : "xScale";
+    if (this.state.linkedScale) {
+      const delta =
+        newValue - this.graphicData[this.state.currentImage][variable];
+      this.graphicData[this.state.currentImage][variable] = limit(
+        this.graphicData[this.state.currentImage][variable] + delta
+      );
+      this.graphicData[this.state.currentImage][otherVariable] = limit(
+        this.graphicData[this.state.currentImage][otherVariable] + delta
+      );
+    } else {
+      this.graphicData[this.state.currentImage][variable] = newValue;
+    }
+    this.props.onChange(this.pixi.serializeSprite(this.graphicData));
+  }
+
+  renderPartButtons() {
+    let partList = [];
+    this.graphicData.map((value, index) => {
+      const src =
+        this.pixi.spriteRenders[this.graphicData[index].imageId] != null
+          ? this.pixi.spriteRenders[this.graphicData[index].imageId].src
+          : "";
+      partList.push(
+        <button
+          key={index}
+          className="part-selection-button"
+          onClick={() => this.selectPart(index)}
+          style={{
+            borderColor:
+              index == this.state.currentImage ? "#FFFFFF" : "#000000",
+          }}
+        >
+          <img src={src} className="part-selection-outline" />
+          <div
+            className="part-selection-image"
+            style={{
+              background: this.getColorFromID(this.graphicData[index].colorId),
+              WebkitMaskImage: "url(" + src + ")",
+              maskImage: "url(" + src + ")",
+            }}
+          />
+        </button>
+      );
+    });
+    partList.push(
+      <Tooltip title="Create new part" key={-1}>
+        <Button onClick={() => this.addNewPart()}>
+          <AddCircle></AddCircle>
+        </Button>
+      </Tooltip>
+    );
+    return partList;
+  }
+
   getColorFromID(colorId) {
     if (colorId > 0) {
       return "#" + colorPalette[colorId];
@@ -275,13 +358,19 @@ class GraphicsEditor extends Component {
     }
   }
 
+  toggleLinkedScale() {
+    this.setState({ linkedScale: !this.state.linkedScale });
+  }
+
   render() {
     if (this.pixi == null) {
       return <CircularProgress />;
     }
+    if (this.graphicData[this.state.currentImage] == null) {
+      return <CircularProgress />;
+    }
     return (
       <Box>
-        <div id="graphic-editor-container"></div>
         <label>Code </label>
         <input
           label="String"
@@ -289,55 +378,47 @@ class GraphicsEditor extends Component {
           value={this.props.value}
           onChange={(e) => this.handleCodeChange(e)}
         />
-        <Grid container>
-          {this.pixi != null &&
-            this.graphicData.map((value, index) => (
-              <button
-                key={index}
-                className="part-selection-button"
-                onClick={() => this.selectPart(index)}
-                style={{
-                  background: this.getColorFromID(
-                    this.graphicData[index].colorId
-                  ),
-                  borderColor:
-                    index == this.state.currentImage ? "#FFFFFF" : "#000000",
-                }}
-              >
-                <img
-                  src={
-                    this.pixi.spriteRenders[this.graphicData[index].imageId] !=
-                    null
-                      ? this.pixi.spriteRenders[this.graphicData[index].imageId]
-                          .src
-                      : ""
-                  }
-                ></img>
-              </button>
-            ))}
-        </Grid>
 
-        <br></br>
-        {(this.graphicData[this.state.currentImage] != null && (
-          <div>
-            <Button onClick={() => this.addNewPart()}>Create new part</Button>
-            <Button onClick={() => this.moveBack()}>Move Back</Button>
-            <Button onClick={() => this.moveForward()}>Move Forward</Button>
-            <Button onClick={() => this.duplicatePart()}>Duplicate</Button>
-            <Button
-              onClick={() => this.deletePart()}
-              disabled={this.graphicData.length <= 1}
-              color="error"
-              style={{ float: "right" }}
-            >
-              Delete
-            </Button>
+        <Stack direction="row">
+          <Box flex={1}>
+            <Grid container>
+              {this.pixi != null && this.renderPartButtons()}
+            </Grid>
+            <Tooltip title="Move back">
+              <Button onClick={() => this.moveBack()}>
+                <FlipToBack></FlipToBack>
+              </Button>
+            </Tooltip>
+            <Tooltip title="Move forward">
+              <Button onClick={() => this.moveForward()}>
+                <FlipToFront></FlipToFront>
+              </Button>
+            </Tooltip>
+            <Tooltip title="Duplicate">
+              <Button onClick={() => this.duplicatePart()}>
+                <FileCopy></FileCopy>
+              </Button>
+            </Tooltip>
+            <Tooltip title="Delete part">
+              <span>
+                <Button
+                  onClick={() => this.deletePart()}
+                  disabled={this.graphicData.length <= 1}
+                  color="error"
+                  style={{ float: "right" }}
+                >
+                  <Delete></Delete>
+                </Button>
+              </span>
+            </Tooltip>
             <br></br>
-            <MyToggle
-              label="Mirrored"
-              value={this.graphicData[this.state.currentImage].mirrored}
-              onChange={() => this.handleToggle("mirrored")}
-            ></MyToggle>
+            <Box style={{ display: "flex", justifyContent: "left" }}>
+              <MyToggle
+                label="Mirrored"
+                value={this.graphicData[this.state.currentImage].mirrored}
+                onChange={() => this.handleToggle("mirrored")}
+              ></MyToggle>
+            </Box>
             <SliderWithInput
               label="X Pos"
               value={this.graphicData[this.state.currentImage].xPos}
@@ -346,26 +427,11 @@ class GraphicsEditor extends Component {
               max={63}
               step={1}
             ></SliderWithInput>
+
             <SliderWithInput
               label="Y Pos"
               value={this.graphicData[this.state.currentImage].yPos}
               onChange={(e) => this.handleChange(e, "yPos")}
-              min={0}
-              max={63}
-              step={1}
-            ></SliderWithInput>
-            <SliderWithInput
-              label="X Scale"
-              value={this.graphicData[this.state.currentImage].xScale}
-              onChange={(e) => this.handleChange(e, "xScale")}
-              min={0}
-              max={63}
-              step={1}
-            ></SliderWithInput>
-            <SliderWithInput
-              label="Y Scale"
-              value={this.graphicData[this.state.currentImage].yScale}
-              onChange={(e) => this.handleChange(e, "yScale")}
               min={0}
               max={63}
               step={1}
@@ -378,19 +444,58 @@ class GraphicsEditor extends Component {
               max={63}
               step={1}
             ></SliderWithInput>
+            <Stack direction="row">
+              <Box flex={1}>
+                <SliderWithInput
+                  label="X Scale"
+                  value={this.graphicData[this.state.currentImage].xScale}
+                  onChange={(e) => this.handleScaleChange(e, "xScale")}
+                  min={0}
+                  max={63}
+                  step={1}
+                ></SliderWithInput>
+                <SliderWithInput
+                  label="Y Scale"
+                  value={this.graphicData[this.state.currentImage].yScale}
+                  onChange={(e) => this.handleScaleChange(e, "yScale")}
+                  min={0}
+                  max={63}
+                  step={1}
+                ></SliderWithInput>
+              </Box>
+              <Box style={{ display: "flex", textAlign: "left" }}>
+                <Tooltip
+                  title={
+                    "Linked scaling " + (this.state.linkedScale ? "on" : "off")
+                  }
+                >
+                  <Button onClick={() => this.toggleLinkedScale()}>
+                    {(this.state.linkedScale && <InsertLink></InsertLink>) || (
+                      <LinkOff></LinkOff>
+                    )}
+                  </Button>
+                </Tooltip>
+              </Box>
+            </Stack>
+          </Box>
+          <Box id={this.props.containerId}></Box>
+        </Stack>
+        <Stack direction="row">
+          <Box flex={2}>
             <PartPalette
               images={this.pixi.spriteRenders}
               value={this.graphicData[this.state.currentImage].imageId}
               onChange={(e) => this.handleChange(e, "imageId")}
             ></PartPalette>
+          </Box>
+          <Box flex={1}>
             <ColorPalette
               value={this.graphicData[this.state.currentImage].colorId}
               onChange={(e) => this.handleChange(e, "colorId")}
+              disableSpecialColors={this.props.disableSpecialColors}
             ></ColorPalette>
-          </div>
-        )) || (
-          <Button onClick={() => this.addNewPart()}>Create new part</Button>
-        )}
+          </Box>
+        </Stack>
       </Box>
     );
   }

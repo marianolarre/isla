@@ -101,22 +101,25 @@
   "civilizations": [
     {
       "name": "Redsburg",
-      "player": "John Smith",
-      "flag_img": "085WWaa0;1F8WWWW0;088WWLL0;0o5WZKKO;008VWOC0;0o5RTDD0;0o5bTDDC",
+      "player": "Marum",
+      "img": "085WWaa0;1F2WWaa0;0H5WWbb0;1F8WWWW0;088WWLL0;0o1WZKKO;008VWOC0;0o1RTDD0;0o1bTDDC",
       "primary_color": 5,
       "state": {
         "day": 1,
         "title": "Dia 1",
         "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "entities": {
-          "villager": [{ "p": [640, 320] }, { "p": [704, 320] }],
-          "house": [{ "p": [640, 352] }],
-          "wheat_farm": [
-            { "p": [640, 368] },
-            { "p": [656, 368] },
-            { "p": [672, 368] }
+          "villager": [
+            { "p": [640, 320], "pointer": 0 },
+            { "p": [704, 320], "pointer": 1 }
           ],
-          "wood_camp": [{ "p": [672, 336], "w": 1 }]
+          "house": [{ "p": [640, 352], "pointer": 2 }],
+          "wheat_farm": [
+            { "p": [640, 368], "pointer": 3 },
+            { "p": [656, 368], "pointer": 4 },
+            { "p": [672, 368], "pointer": 5 }
+          ],
+          "wood_camp": [{ "p": [672, 336], "w": 1, "pointer": 6 }]
         },
         "resources": {
           "sat": 50,
@@ -130,17 +133,20 @@
     },
     {
       "name": "Blusburg",
-      "player": "John Doe",
-      "flag_img": "00IWQSa0;0jKXRSS0;310dONN0;0UIWuSS0",
+      "player": "Emeh",
+      "img": "04IWiVV0;00IWKVV0;06JWPVV0;23MWRTT0;321WPPP0",
       "primary_color": 18,
       "state": {
         "day": 1,
         "title": "Dia 1",
         "desc": "So it begins",
         "entities": {
-          "villager": [{ "p": [640, 160] }, { "p": [704, 160] }],
-          "house": [{ "p": [640, 176] }],
-          "wood_camp": [{ "p": [656, 176], "w": 1 }]
+          "villager": [
+            { "p": [640, 160], "pointer": 7 },
+            { "p": [704, 160], "pointer": 8 }
+          ],
+          "house": [{ "p": [640, 176], "pointer": 9 }],
+          "wood_camp": [{ "p": [656, 176], "w": 1, "pointer": 10 }]
         },
         "resources": {
           "sat": 50,

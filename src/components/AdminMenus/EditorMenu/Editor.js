@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import { Tabs, Tab, Button } from "@mui/material";
-import EntityEditor from "./EntityEditor/EntityEditor";
-import { IslandPIXI } from "../../classes/IslandPIXI";
+import EntityEditor from "../EntityEditor/EntityEditor";
+import { IslandPIXI } from "../../../classes/IslandPIXI";
 import "./Editor.css";
 import { ArrowBack, Save } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import ResourceEditor from "./ResourceEditor/ResourceEditor";
+import ResourceEditor from "../ResourceEditor/ResourceEditor";
+import CivilizationEditor from "../CivilizationEditor/CivilizationEditor";
 
 class Editor extends Component {
   constructor(props) {
     super(props);
     this.worldData = { ...this.props.worldData };
-    this.state = { tab: "entity", loaded: false };
+    this.state = { tab: "civilizations", loaded: false };
   }
 
   componentWillMount() {
@@ -43,7 +44,7 @@ class Editor extends Component {
   createAllGraphicsFromData(worldData) {
     for (let i in worldData.civilizations) {
       const civ = worldData.civilizations[i];
-      this.renderHTMLFromString(civ.flag_img);
+      this.renderHTMLFromString(civ.img);
       for (var baseId in worldData.bases) {
         this.renderHTMLFromString(worldData.bases[baseId].img, {
           primary_color: civ.primary_color,
@@ -106,9 +107,16 @@ class Editor extends Component {
           <Tab value="civilizations" label="Civilizaciónes" />
           <Tab value="entity" label="Entidades" />
           <Tab value="resources" label="Recursos" />
-          <Tab value="tech" label="Investigaciónes" />
         </Tabs>
 
+        {this.state.loaded && this.state.tab == "civilizations" && (
+          <CivilizationEditor
+            worldData={this.worldData}
+            pixi={this.pixi}
+            renders={this.renders}
+            onChange={(e) => this.handleWorldDataChange(e)}
+          ></CivilizationEditor>
+        )}
         {this.state.loaded && this.state.tab == "entity" && (
           <EntityEditor
             worldData={this.worldData}

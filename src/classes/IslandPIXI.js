@@ -77,9 +77,12 @@ export const colorPalette = [
   "5a4e44",
   "423934",
 ];
-
+/*
 export const teamColorGradient =
   "linear-gradient(45deg, red 20%, yellow 20% 40%, green 40% 60%, cyan 60% 80%, blue 80%)";
+*/
+export const teamColorGradient =
+  "linear-gradient(45deg, #df3e23 33%, #ffd541 33% 66%, #285cc4 66%)";
 
 export const partPages = [
   {

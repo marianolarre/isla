@@ -63,9 +63,9 @@ class ControlPanel extends Component {
             <img
               className="render"
               src={
-                this.props.graphics.renders[civ.flag_img] == null
+                this.props.graphics.renders[civ.img] == null
                   ? ""
-                  : this.props.graphics.renders[civ.flag_img].src
+                  : this.props.graphics.renders[civ.img].src
               }
               alt=""
             ></img>

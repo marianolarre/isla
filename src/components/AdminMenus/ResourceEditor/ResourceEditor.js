@@ -12,11 +12,11 @@ import {
 } from "@mui/material";
 import React, { Component } from "react";
 import "./ResourceEditor.css";
-import GraphicsEditor from "../GraphicsEditor/GraphicsEditor";
-import ResourceSelector from "../ResourceSelector/ResourceSelector";
+import GraphicsEditor from "../../GraphicsEditor/GraphicsEditor";
+import ResourceSelector from "../../Editor/ResourceSelector/ResourceSelector";
 import ResourceDisplay from "../../ResourceDisplay/ResourceDisplay";
 import { ArrowUpward, Delete } from "@mui/icons-material";
-import EntryList from "../EntryList/EntryList";
+import EntryList from "../../Editor/EntryList/EntryList";
 
 class ResourceEditor extends Component {
   constructor(props) {
@@ -53,6 +53,18 @@ class ResourceEditor extends Component {
       resource: resource,
       currentResource: resourceId,
       keyChange: resourceId,
+    });
+  }
+
+  handleNewResource() {
+    this.setState({
+      currentResource: "new_entry",
+      keyChange: "new_entry",
+      resource: {
+        name: "New resource",
+        desc: "New resource's description",
+        img: "00MWWGG0",
+      },
     });
   }
 
@@ -107,7 +119,7 @@ class ResourceEditor extends Component {
           onClick={() => this.handleCivChange(index)}
           icon={
             <img
-              src={this.props.renders[value.flag_img].src}
+              src={this.props.renders[value.img].src}
               style={{ margin: 0 }}
             ></img>
           }
@@ -123,7 +135,7 @@ class ResourceEditor extends Component {
       <div className="container">
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={4}>
-            <Paper elevation={2} id="list" className="panel">
+            <Paper elevation={2} id="list" className="scrolling-panel">
               <EntryList
                 entries={this.props.worldData.resources}
                 pixi={this.props.pixi}
@@ -139,25 +151,13 @@ class ResourceEditor extends Component {
                 }}
                 onSelect={(e) => this.selectResource(e)}
                 onChange={(e) => this.handleResourceListChange(e)}
+                onNew={(e) => this.handleNewResource()}
               ></EntryList>
             </Paper>
           </Grid>
-          <Grid item xs={3}>
-            <Paper elevation={2} className="panel">
-              <div id="entity-preview"></div>
-              <Typography>Click and drag to move selected part.</Typography>
-              <br></br>
-              <Typography>Use the scroll wheel to scale part.</Typography>
-              <br></br>
-              <BottomNavigation value={this.state.currentCiv}>
-                {this.renderCivButtons()}
-              </BottomNavigation>
-              <br></br>
-              <Button onClick={() => this.applyChanges()}>Apply Changes</Button>
-            </Paper>
-          </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={8}>
             <Paper elevation={2} className="panel scrolling-panel">
+              <Button onClick={() => this.applyChanges()}>Apply Changes</Button>
               <TextField
                 fullWidth
                 label="Nombre único"
@@ -190,6 +190,7 @@ class ResourceEditor extends Component {
               <GraphicsEditor
                 containerId="entity-preview"
                 pixi={this.props.pixi}
+                disableSpecialColors={true}
                 primaryColor={
                   this.props.worldData.civilizations[this.state.currentCiv]
                     .primary_color

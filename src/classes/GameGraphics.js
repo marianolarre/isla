@@ -76,7 +76,7 @@ class Graphics {
     for (var civId in civilizations) {
       const civ = civilizations[civId];
       const state = civ.state;
-      this.renderHTMLFromString(civ.flag_img);
+      this.renderHTMLFromString(civ.img);
       const options = {
         primary_color: civ.primary_color,
       };
