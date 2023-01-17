@@ -3,7 +3,7 @@ import ControlPanel from "../ControlPanel/ControlPanel";
 import GameGraphics from "../../classes/GameGraphics.js";
 import Game from "../../classes/Game.js";
 import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Button, Popper } from "@mui/material";
 import "./GamePanel.css";
 
 class GamePanel extends Component {
@@ -34,6 +34,7 @@ class GamePanel extends Component {
           currentCiv={this.currentCiv}
           graphics={this.graphics}
         ></ControlPanel>
+        <Popper>This is a popper</Popper>
       </>
     );
   }

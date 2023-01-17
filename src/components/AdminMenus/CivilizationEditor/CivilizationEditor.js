@@ -28,107 +28,70 @@ class CivilizationEditor extends Component {
         player: "",
         img: "",
       },
-      keyChange: "",
-      currentResource: "",
       graphicData: [],
       currentImage: 0,
-      currentResourceType: "",
-      currentResourceID: 0,
-      civilizationSelectorOpen: false,
-      currentCiv: 0,
+      currentCivilization: -1,
     };
   }
 
   handleGraphicsChange(newValue, variable) {
-    let newResource = { ...this.state.civilization };
-    const newGraphicData = [...newResource.img];
+    let newCiv = { ...this.state.civilization };
+    const newGraphicData = [...newCiv.img];
     newGraphicData[this.state.currentImage][variable] = newValue;
-    newResource.img = newValue;
-    this.setState({ civilization: newResource }, this.updateGraphicDataString);
+    newCiv.img = newValue;
+    this.setState({ civilization: newCiv }, this.updateGraphicDataString);
   }
 
-  selectResource(civilizationId) {
+  handleAddCivilization() {
+    let newWorldData = { ...this.props.worldData };
+    const newCivilization = {
+      name: "New civilization",
+      player: "Unknown player",
+      img: "00MWWGG0",
+      primary_color: 22,
+    };
+
+    newWorldData.civilizations.push(newCivilization);
+    this.props.onChange(newWorldData, () =>
+      this.handleSelectCivilization(newWorldData.civilizations.length - 1)
+    );
+  }
+
+  handleSelectCivilization(id) {
     this.applyChanges();
-    const civilization = this.props.worldData.civilizations[civilizationId];
+    const civilization = this.props.worldData.civilizations[id];
     this.setState({
       civilization: civilization,
-      currentResource: civilizationId,
-      keyChange: civilizationId,
+      currentCivilization: id,
     });
   }
 
-  handleNewResource() {
-    this.setState({
-      currentResource: "new_entry",
-      keyChange: "new_entry",
-      civilization: {
-        name: "New civilization",
-        player: "New civilization's playerription",
-        img: "00MWWGG0",
-      },
-    });
-  }
-
-  handleResourceListChange(newList) {
+  handleRemoveCivilization(id) {
     let newWorldData = { ...this.props.worldData };
-    newWorldData.civilizations = newList;
+    newWorldData.civilizations.splice(id, 1);
+    this.setState({ currentCivilization: -1 });
     this.props.onChange(newWorldData);
   }
 
   applyChanges() {
-    if (this.state.currentResource == "") return;
-    let newWorldData = { ...this.props.worldData };
-    newWorldData.civilizations[this.state.currentResource] = {
-      ...this.state.civilization,
-    };
-
-    if (this.state.currentResource !== this.state.keyChange) {
-      Object.defineProperty(
-        newWorldData.civilizations,
-        this.state.keyChange,
-        Object.getOwnPropertyDescriptor(
-          newWorldData.civilizations,
-          this.state.currentResource
-        )
-      );
-      delete newWorldData.civilizations[this.state.currentResource];
+    if (
+      this.state.currentCivilization < 0 ||
+      this.state.currentCivilization >= this.props.worldData.length
+    ) {
+      return;
     }
 
+    let newWorldData = { ...this.props.worldData };
+    newWorldData.civilizations[this.state.currentCivilization] = {
+      ...this.state.civilization,
+    };
     this.props.onChange(newWorldData);
-  }
-
-  handleKeyChange(new_key) {
-    this.setState({ keyChange: new_key });
   }
 
   handleCivilizationChange(newValue, variable) {
     let newResource = { ...this.state.civilization };
     newResource[variable] = newValue;
     this.setState({ civilization: newResource });
-  }
-
-  handleCivChange(civId) {
-    this.setState({ currentCiv: civId });
-  }
-
-  renderCivButtons() {
-    let list = [];
-    this.props.worldData.civilizations.map((value, index) =>
-      list.push(
-        <BottomNavigationAction
-          key={index}
-          onClick={() => this.handleCivChange(index)}
-          icon={
-            <img
-              src={this.props.renders[value.img].src}
-              style={{ margin: 0 }}
-            ></img>
-          }
-          label={value.name}
-        ></BottomNavigationAction>
-      )
-    );
-    return list;
   }
 
   render() {
@@ -141,18 +104,11 @@ class CivilizationEditor extends Component {
                 entries={this.props.worldData.civilizations}
                 pixi={this.props.pixi}
                 renders={this.props.renders}
-                primaryColor={
-                  this.props.worldData.civilizations[this.state.currentCiv]
-                    .primary_color
-                }
-                entryTemplate={{
-                  name: "New civilization",
-                  player: "New civilization's player",
-                  img: "00MWWGG0",
-                }}
-                onSelect={(e) => this.selectResource(e)}
-                onChange={(e) => this.handleResourceListChange(e)}
-                onNew={(e) => this.handleNewResource()}
+                primaryColor={this.state.civilization.primary_color}
+                value={this.state.currentCivilization}
+                onSelect={(e) => this.handleSelectCivilization(e)}
+                onRemove={(e) => this.handleRemoveCivilization(e)}
+                onAdd={() => this.handleAddCivilization()}
               ></EntryList>
             </Paper>
           </Grid>

@@ -32,13 +32,15 @@ class EntryList extends Component {
         primary_color: this.props.primaryColor,
       });
       const render = this.props.renders[str];
+      const disabled = this.props.value == i;
       entityList.push(
         <Stack direction="row" key={i}>
-          <IconButton color="error" onClick={() => this.handleRemoveEntry(i)}>
+          <IconButton color="error" onClick={() => this.props.onRemove(i)}>
             <Delete></Delete>
           </IconButton>
           <Button
             key={i}
+            disabled={disabled}
             startIcon={<img src={render != null ? render.src : ""}></img>}
             style={{ textTransform: "none", display: "flex" }}
             onClick={() => this.props.onSelect(i)}
@@ -51,27 +53,12 @@ class EntryList extends Component {
     return entityList;
   }
 
-  handleAddEntry() {
-    /*let newEntries = { ...this.props.entries };
-    newEntries["_new_entry"] = {
-      ...this.props.entryTemplate,
-    };
-    this.props.onChange(newEntries);*/
-    this.props.onNew();
-  }
-
-  handleRemoveEntry(i) {
-    let newEntries = { ...this.props.entries };
-    delete newEntries[i];
-    this.props.onChange(newEntries);
-  }
-
   render() {
     return (
       <Box>
         {this.renderEntryList()}
         <Tooltip title="Create new entry">
-          <Button onClick={() => this.handleAddEntry()}>
+          <Button onClick={() => this.props.onAdd()}>
             <AddCircle></AddCircle>
           </Button>
         </Tooltip>

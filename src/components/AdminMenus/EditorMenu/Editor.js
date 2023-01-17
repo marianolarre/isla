@@ -12,7 +12,7 @@ class Editor extends Component {
   constructor(props) {
     super(props);
     this.worldData = { ...this.props.worldData };
-    this.state = { tab: "civilizations", loaded: false };
+    this.state = { tab: "civilization", loaded: false };
   }
 
   componentWillMount() {
@@ -63,10 +63,10 @@ class Editor extends Component {
     this.setState({ tab: newValue });
   }
 
-  handleWorldDataChange(newValue) {
+  handleWorldDataChange(newValue, callback) {
     this.worldData = newValue;
     this.createAllGraphicsFromData(newValue);
-    this.forceUpdate();
+    this.forceUpdate(callback);
   }
 
   downloadWorldData() {
@@ -104,17 +104,17 @@ class Editor extends Component {
           value={this.state.tab}
           onChange={(ev, newValue) => this.handleTabChange(ev, newValue)}
         >
-          <Tab value="civilizations" label="Civilizaciónes" />
+          <Tab value="civilization" label="Civilizaciónes" />
           <Tab value="entity" label="Entidades" />
-          <Tab value="resources" label="Recursos" />
+          <Tab value="resource" label="Recursos" />
         </Tabs>
 
-        {this.state.loaded && this.state.tab == "civilizations" && (
+        {this.state.loaded && this.state.tab == "civilization" && (
           <CivilizationEditor
             worldData={this.worldData}
             pixi={this.pixi}
             renders={this.renders}
-            onChange={(e) => this.handleWorldDataChange(e)}
+            onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></CivilizationEditor>
         )}
         {this.state.loaded && this.state.tab == "entity" && (
@@ -122,15 +122,15 @@ class Editor extends Component {
             worldData={this.worldData}
             pixi={this.pixi}
             renders={this.renders}
-            onChange={(e) => this.handleWorldDataChange(e)}
+            onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></EntityEditor>
         )}
-        {this.state.loaded && this.state.tab == "resources" && (
+        {this.state.loaded && this.state.tab == "resource" && (
           <ResourceEditor
             worldData={this.worldData}
             pixi={this.pixi}
             renders={this.renders}
-            onChange={(e) => this.handleWorldDataChange(e)}
+            onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></ResourceEditor>
         )}
       </div>

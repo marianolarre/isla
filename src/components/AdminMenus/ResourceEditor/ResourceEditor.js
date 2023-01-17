@@ -46,7 +46,22 @@ class ResourceEditor extends Component {
     this.setState({ resource: newResource }, this.updateGraphicDataString);
   }
 
-  selectResource(resourceId) {
+  handleAddResource() {
+    let newWorldData = { ...this.props.worldData };
+    const newResource = {
+      name: "New resource",
+      desc: "New resource's description",
+      img: "00MWWGG0",
+    };
+
+    newWorldData.resources["new_entry"] = newResource;
+    this.applyChanges();
+    this.props.onChange(newWorldData, () =>
+      this.handleSelectResource("new_entry")
+    );
+  }
+
+  handleSelectResource(resourceId) {
     this.applyChanges();
     const resource = this.props.worldData.resources[resourceId];
     this.setState({
@@ -56,22 +71,17 @@ class ResourceEditor extends Component {
     });
   }
 
-  handleNewResource() {
-    this.setState({
-      currentResource: "new_entry",
-      keyChange: "new_entry",
-      resource: {
-        name: "New resource",
-        desc: "New resource's description",
-        img: "00MWWGG0",
-      },
-    });
-  }
-
-  handleResourceListChange(newList) {
+  handleRemoveResource(id) {
     let newWorldData = { ...this.props.worldData };
-    newWorldData.resources = newList;
-    this.props.onChange(newWorldData);
+    newWorldData.resources[id] = null;
+    delete newWorldData.resources[id];
+    if (id == this.state.currentResource) {
+      this.setState({ currentResource: "" }, () =>
+        this.props.onChange(newWorldData)
+      );
+    } else {
+      this.props.onChange(newWorldData);
+    }
   }
 
   applyChanges() {
@@ -149,9 +159,10 @@ class ResourceEditor extends Component {
                   desc: "New resource's description",
                   img: "00MWWGG0",
                 }}
-                onSelect={(e) => this.selectResource(e)}
-                onChange={(e) => this.handleResourceListChange(e)}
-                onNew={(e) => this.handleNewResource()}
+                value={this.state.currentResource}
+                onSelect={(e) => this.handleSelectResource(e)}
+                onRemove={(e) => this.handleRemoveResource(e)}
+                onAdd={(e) => this.handleAddResource()}
               ></EntryList>
             </Paper>
           </Grid>

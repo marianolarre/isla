@@ -49,12 +49,6 @@ class EntityEditor extends Component {
     this.setState({ base: newBase }, this.updateGraphicDataString);
   }
 
-  selectBase(baseId) {
-    this.applyChanges();
-    const base = this.props.worldData.bases[baseId];
-    this.setState({ base: base, currentBase: baseId, keyChange: baseId });
-  }
-
   renderEntityProductions() {
     let prodList = [];
     for (let i in this.state.base.prod) {
@@ -170,10 +164,13 @@ class EntityEditor extends Component {
           this.state.currentBase
         )
       );
+      newWorldData.bases[this.state.currentBase] = null;
       delete newWorldData.bases[this.state.currentBase];
     }
 
-    this.props.onChange(newWorldData);
+    this.props.onChange(newWorldData, () =>
+      this.setState({ currentBase: this.state.keyChange })
+    );
   }
 
   handleKeyChange(new_key) {
@@ -186,25 +183,37 @@ class EntityEditor extends Component {
     this.setState({ base: newBase });
   }
 
-  handleBaseListChange(newList) {
+  handleRemoveBase(id) {
     let newWorldData = { ...this.props.worldData };
-    newWorldData.bases = newList;
-    this.applyChanges();
-    this.props.onChange(newWorldData);
+    newWorldData.bases[id] = null;
+    delete newWorldData.bases[id];
+    if (id == this.state.currentBase) {
+      this.setState({ currentBase: "" }, () =>
+        this.props.onChange(newWorldData)
+      );
+    } else {
+      this.props.onChange(newWorldData);
+    }
   }
 
-  handleNewBase() {
-    this.setState({
-      keyChange: "new_entry",
-      currentBase: "new_entry",
-      base: {
-        name: "Unnamed entity",
-        desc: "Description unknown",
-        cost: {},
-        prod: [],
-        img: "000WWGG0",
-      },
-    });
+  handleAddBase() {
+    let newWorldData = { ...this.props.worldData };
+    const newBase = {
+      name: "Unnamed entity",
+      desc: "Description unknown",
+      cost: {},
+      prod: [],
+      img: "000WWGG0",
+    };
+    newWorldData.bases["new_entry"] = newBase;
+    this.applyChanges();
+    this.props.onChange(newWorldData, () => this.handleSelectBase("new_entry"));
+  }
+
+  handleSelectBase(baseId) {
+    this.applyChanges();
+    const base = this.props.worldData.bases[baseId];
+    this.setState({ base: base, currentBase: baseId, keyChange: baseId });
   }
 
   handleCivChange(civId) {
@@ -235,6 +244,11 @@ class EntityEditor extends Component {
     if (this.state.base === undefined) {
       return <CircularProgress></CircularProgress>;
     }
+    let primaryColor =
+      this.props.worldData.civilizations[this.state.currentCiv] == null
+        ? 5
+        : this.props.worldData.civilizations[this.state.currentCiv]
+            .primary_color;
     return (
       <div className="container">
         <Grid container spacing={2} justifyContent="center">
@@ -244,20 +258,11 @@ class EntityEditor extends Component {
                 entries={this.props.worldData.bases}
                 pixi={this.props.pixi}
                 renders={this.props.renders}
-                primaryColor={
-                  this.props.worldData.civilizations[this.state.currentCiv]
-                    .primary_color
-                }
-                entryTemplate={{
-                  name: "New entity",
-                  desc: "New entity's description",
-                  cost: {},
-                  prod: [],
-                  img: "000WWGG0",
-                }}
-                onSelect={(e) => this.selectBase(e)}
-                onChange={(e) => this.handleBaseListChange(e)}
-                onNew={(e) => this.handleNewBase(e)}
+                primaryColor={primaryColor}
+                value={this.state.currentBase}
+                onSelect={(e) => this.handleSelectBase(e)}
+                onRemove={(e) => this.handleRemoveBase(e)}
+                onAdd={(e) => this.handleAddBase(e)}
               ></EntryList>
             </Paper>
           </Grid>
