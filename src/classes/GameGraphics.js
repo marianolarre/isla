@@ -9,11 +9,15 @@ var extract = new PIXI.Extract(renderer);
 const outlineMultiplier = 6;
 
 class Graphics {
-  constructor(game) {
-    this.game = game;
+  constructor(worldData, onLoad, onHover, onClick, onExit) {
     this.spritePointers = [];
     this.spritePointerCounter = 0;
     this.renders = {};
+    this.worldData = worldData;
+    this.onLoad = onLoad;
+    this.onHover = onHover;
+    this.onClick = onClick;
+    this.onExit = onExit;
     // Initialize PIXI application and containers
     this.pixi = new IslandPIXI({
       width: window.innerWidth,
@@ -43,7 +47,8 @@ class Graphics {
 
     // Load Assets
     this.pixi.app.loader.load((loader, resources) => {
-      this.createAllGraphicsFromData(this.game.worldData);
+      this.createAllGraphicsFromData(this.worldData);
+      this.onLoad();
     });
   }
 
@@ -206,13 +211,17 @@ class Graphics {
   handleSpriteMouseOver(ev) {
     const sprite = ev.target;
     const data = this.spritePointers[ev.target.pointer];
+    this.onHover(data, ev.target.pointer);
   }
 
-  handleSpriteMouseOut(ev) {}
+  handleSpriteMouseOut() {
+    this.onExit();
+  }
 
   handleSpriteClick(ev) {
-    //const sprite = ev.target;
-    //const data = this.spritePointers[ev.target.pointer];
+    const sprite = ev.target;
+    const data = this.spritePointers[ev.target.pointer];
+    this.onClick(data, ev.target.pointer);
   }
   /* #endregion */
 }
