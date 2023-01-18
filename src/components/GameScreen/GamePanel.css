@@ -3,6 +3,10 @@ canvas {
     padding: 0;
 }
 
+.no-margin {
+    margin: 0;
+}
+
 #control-panel {
     position: absolute;
     top: 0;
@@ -13,16 +17,27 @@ canvas {
     display: flex;
     z-index: 1;
     backdrop-filter: blur(7px);
-    overflow-y: scroll;
+}
+
+.menu-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .render {
-    filter: drop-shadow(1px 1px 0 black) drop-shadow(-1px -1px 0 black) drop-shadow(-1px 1px 0 black) drop-shadow(1px -1px 0 black)
+    filter: drop-shadow(1px 1px 0 black) drop-shadow(-1px -1px 0 black) drop-shadow(-1px 1px 0 black) drop-shadow(1px -1px 0 black);
+    width: auto;
+    height: 32px;
 }
 
 .scroller {
-    max-height: 196px;
     overflow-y: auto;
+}
+
+.menu {
+    padding: 25px;
 }
 
 p {
@@ -37,7 +52,8 @@ h1 {
 
 h2 {
     display: block;
-    margin: 5px 0;
+    margin: auto;
+    font-size: 1em;
 }
 
 .MuiAccordionSummary-content {
@@ -56,4 +72,16 @@ img {
 
 .block {
     display: block;
+}
+
+.close-menu-fab {
+    position: absolute !important;
+    right: -75px;
+    top: 20px;
+}
+
+.open-menu-fab {
+    position: absolute !important;
+    left: 20px;
+    top: 20px;
 }

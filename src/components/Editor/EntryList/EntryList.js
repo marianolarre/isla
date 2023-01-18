@@ -3,6 +3,10 @@ import {
   Box,
   Button,
   IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
   Stack,
   Tooltip,
   Typography,
@@ -32,25 +36,30 @@ class EntryList extends Component {
         primary_color: this.props.primaryColor,
       });
       const render = this.props.renders[str];
-      const disabled = this.props.value == i;
+      const selected = this.props.value == i;
       entityList.push(
-        <Stack direction="row" key={i}>
-          <IconButton color="error" onClick={() => this.props.onRemove(i)}>
-            <Delete></Delete>
-          </IconButton>
-          <Button
-            key={i}
-            disabled={disabled}
-            startIcon={<img src={render != null ? render.src : ""}></img>}
-            style={{ textTransform: "none", display: "flex" }}
+        <ListItem
+          key={i}
+          secondaryAction={
+            <IconButton color="error" onClick={() => this.props.onRemove(i)}>
+              <Delete></Delete>
+            </IconButton>
+          }
+        >
+          <ListItemIcon></ListItemIcon>
+          <ListItemButton
+            selected={selected}
+            disabled={selected}
             onClick={() => this.props.onSelect(i)}
+            flex={1}
           >
-            {"[" + i + "] " + base.name}
-          </Button>
-        </Stack>
+            <img src={render != null ? render.src : ""}></img>
+            <Typography>{"[" + i + "] " + base.name}</Typography>
+          </ListItemButton>
+        </ListItem>
       );
     }
-    return entityList;
+    return <List dense={true}>{entityList}</List>;
   }
 
   render() {
