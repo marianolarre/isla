@@ -12,16 +12,17 @@
       "img": "0m8WgVR0;088WGMM0",
       "special": true
     },
+    "housing": {
+      "name": "Viviendas",
+      "desc": "Lugares para vivir. Si el pueblo es atractivo y hay espacio extra, más aldeanos se quedarán a vivir aquí.",
+      "img": "05NWfSS0;105WQWW0;0miWmLL0",
+      "special": true
+    },
     "work": {
       "name": "Trabajo",
       "desc": "Un dia de trabajo de un aldeano. Todos los días, tu trabajo se iguala a tu población.",
       "img": "0m8MfVR0;088MGMM0;08ReeUU0;08meeOO0;0o1eZGBC;0o1heDBO",
-      "special": true
-    },
-    "housing": {
-      "name": "Viviendas",
-      "desc": "Lugares para vivir. Si el pueblo es atractivo y hay espacio extra, más aldeanos se quedarán a vivir aquí.",
-      "img": "05NWfSS0;105WQWW0;0miWmLL0"
+      "hidden": true
     },
     "food": {
       "name": "Comida",
@@ -88,7 +89,7 @@
       "unlisted": true,
       "prod": [{ "population": 1 }],
       "vision": 4,
-      "img": "0m0WYHG0;08lWQBB0;311WQAA0;22jWNDA0;0M0bV99O;WM0RV99O"
+      "img": "0m0WYHG0;08lWQBB0;331WQAA0;22jWNDA0"
     },
     "flag": {
       "name": "Bandera",
@@ -96,6 +97,13 @@
       "cost": { "work": "1", "wood": "2" },
       "prod": [{ "satisfaction": "2" }],
       "img": "150cEGG0;13kWINN0;0hjWTDD0"
+    },
+    "castle": {
+      "name": "Castillo de Durloc",
+      "desc": "Culpa de mati",
+      "cost": { "stone": "1", "work": "1" },
+      "prod": [{ "satisfaction": "1" }],
+      "img": "00dWWWN0;0VdWLME0;00cETIR0;0UcEHIR0;00coTIR0;0UcoHIR0;0m1WbII0;17iWcGG0;19cWaJJ0;0m1EPCC0;0m1oPCC0;13jWGGG0;16IaFCE0;1CbEbFF0;1CboYFF0;1CcbPFF0"
     }
   },
   "civilizations": [
@@ -109,30 +117,27 @@
         "title": "Dia 1",
         "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "entities": {
-          "villager": [
-            { "p": [640, 320], "pointer": 0 },
-            { "p": [704, 320], "pointer": 1 }
-          ],
-          "house": [{ "p": [640, 352], "pointer": 2 }],
+          "villager": [{ "p": [640, 320] }, { "p": [704, 320] }],
+          "house": [{ "p": [640, 352] }],
           "wheat_farm": [
-            { "p": [640, 368], "pointer": 3 },
-            { "p": [656, 368], "pointer": 4 },
-            { "p": [672, 368], "pointer": 5 }
+            { "p": [640, 368] },
+            { "p": [656, 368] },
+            { "p": [672, 368] }
           ],
-          "wood_camp": [{ "p": [672, 336], "w": 1, "pointer": 6 }]
+          "wood_camp": [{ "p": [672, 336], "w": 1 }]
         },
         "resources": {
-          "sat": 50,
-          "pop": 4,
-          "viv": 4,
-          "mad": 10,
-          "pie": 8,
-          "com": 9
+          "satisfaction": [50, 5, 3],
+          "population": [4, 1, 0],
+          "housing": [4, 0, 0],
+          "wood": [10, 4, 2],
+          "stone": [8, 0, 0],
+          "food": [9, 0, 2]
         }
       }
     },
     {
-      "name": "Villa Emilla",
+      "name": "Emiland",
       "player": "Emeh",
       "img": "045WiVV0;005WKVV0;068WPVV0;23MWRTT0;321WPPP0",
       "primary_color": 5,
@@ -141,20 +146,40 @@
         "title": "Dia 1",
         "desc": "So it begins",
         "entities": {
-          "villager": [
-            { "p": [640, 160], "pointer": 7 },
-            { "p": [704, 160], "pointer": 8 }
-          ],
-          "house": [{ "p": [640, 176], "pointer": 9 }],
-          "wood_camp": [{ "p": [656, 176], "w": 1, "pointer": 10 }]
+          "villager": [{ "p": [640, 160] }, { "p": [704, 160] }],
+          "house": [{ "p": [640, 176] }],
+          "wood_camp": [{ "p": [656, 176], "w": 10 }]
         },
         "resources": {
-          "sat": 50,
-          "pop": 4,
-          "viv": 4,
-          "mad": 10,
-          "pie": 8,
-          "com": 9
+          "satisfaction": [50, 5, 3],
+          "population": [4, 1, 0],
+          "housing": [4, 0, 0],
+          "wood": [10, 4, 2],
+          "stone": [8, 0, 0],
+          "food": [9, 0, 2]
+        }
+      }
+    },
+    {
+      "name": "Dosa Nest",
+      "player": "Mati",
+      "img": "WXIWiVV0;WXIWLVV0;WX8UkRR0;WX8UNRR0;Wq1NVED0;0M0RRBBJ;0M0JRBBf;088LV660;088PV660",
+      "primary_color": 17,
+      "state": {
+        "day": 1,
+        "title": "Dia 1",
+        "desc": "So it begins",
+        "entities": {
+          "villager": [{ "p": [640, 240] }],
+          "house": [{ "p": [624, 240] }]
+        },
+        "resources": {
+          "satisfaction": [50, 5, 3],
+          "population": [4, 1, 0],
+          "housing": [4, 0, 0],
+          "wood": [10, 4, 2],
+          "stone": [8, 0, 0],
+          "food": [9, 0, 2]
         }
       }
     }

@@ -12,10 +12,10 @@ canvas {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 30%;
-    background-color: #222d;
+    width: 40%;
     display: flex;
     z-index: 1;
+    background-color: #222d;
     backdrop-filter: blur(7px);
 }
 
@@ -36,8 +36,18 @@ canvas {
     overflow-y: auto;
 }
 
-.menu {
-    padding: 25px;
+.tabs {
+    width: 100px;
+    border-right: 1px rgba(81, 81, 81, 1) solid;
+}
+
+.tab{
+    display: flex;
+    flex: 2;
+}
+
+.tab-panel {
+    width: 100%;
 }
 
 p {
@@ -78,10 +88,14 @@ img {
     position: absolute !important;
     right: -75px;
     top: 20px;
+    background: #222 !important; 
+    color: white !important;
 }
 
 .open-menu-fab {
     position: absolute !important;
     left: 20px;
     top: 20px;
+    background: #222 !important; 
+    color: white !important;
 }

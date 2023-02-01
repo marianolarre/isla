@@ -9,6 +9,7 @@ const outlineMultiplier = 6;
 class Graphics {
   constructor(worldData, onLoad, onHover, onClick, onExit) {
     this.spritePointers = [];
+    this.entitySprites = {};
     this.spritePointerCounter = 0;
     this.renders = {};
     this.worldData = worldData;
@@ -116,7 +117,8 @@ class Graphics {
     container.position.set(entity.p[0] * 16, entity.p[1] * 16);
     container.zIndex = entity.y;
     container.pointer = this.spritePointerCounter;
-    entity.pointer = this.spritePointerCounter;
+    this.entitySprites[entity] = container;
+    //entity.pointer = this.spritePointerCounter;
     //entity.civ = civ;
     this.spritePointers[this.spritePointerCounter] = {
       graphic: container,
@@ -199,7 +201,8 @@ class Graphics {
   }
 
   mouseInsidePlayArea(mouseX) {
-    return mouseX > $("#control-panel").outerWidth() || 0;
+    const elem = $("#control-panel");
+    return mouseX > elem.offset().left + elem.width() || 0;
   }
   /* #endregion */
 

@@ -12,6 +12,8 @@ import {
   Collapse,
   Zoom,
   Slide,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import GameGraphics from "../../classes/GameGraphics.js";
 import { Link } from "react-router-dom";
@@ -25,12 +27,31 @@ import {
   ChevronLeft,
   ChevronRight,
   Event,
+  Flag,
   House,
+  Lightbulb,
   ListAlt,
   LocationCity,
   Menu,
   TrendingUp,
 } from "@mui/icons-material";
+import ResourcesPanel from "./ResourcesPanel.js";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
 
 class GamePanel extends Component {
   constructor(props) {
@@ -108,44 +129,64 @@ class GamePanel extends Component {
     }
   }
 
+  renderResources() {
+    let elements = [];
+    const civ = this.props.worldData.civilizations[this.state.currentCiv];
+    for (let i in civ.state.resources) {
+      let singleResource = {};
+      singleResource[i] = civ.state.resources[i][0];
+      elements.push(
+        <ResourceDisplay
+          key={i}
+          resourceData={this.props.worldData.resources}
+          renders={this.graphics.renders}
+          value={singleResource}
+        />
+      );
+    }
+    return elements;
+  }
+
   renderIncome() {
     const civ = this.props.worldData.civilizations[this.state.currentCiv];
     const bases = this.props.worldData.bases;
     const options = {
       primary_color: civ.primary_color,
     };
+
     // Event income
     // Entity income
-    let entityIncome = {};
-    let entityIncomeElements = [];
+    let totalIncome = {};
+    let incomeElements = [];
+
     for (let b in civ.state.entities) {
       for (let i in civ.state.entities[b]) {
         const income = this.getEntityIncome(civ.state.entities[b][i], bases[b]);
         if (isEmptyObject(income)) continue;
-        this.addToProduction(entityIncome, income);
-        const str = this.graphics.pixi.transformImgString(
-          bases[b].img,
-          options
-        );
-        entityIncomeElements.push(
-          <Stack direction="row">
-            <Stack direction="row">
-              <img
-                className="render small-render"
-                src={this.graphics.renders[str].src}
-              ></img>
-              <h2>{bases[b].name}</h2>
-            </Stack>
+        this.addToProduction(totalIncome, income);
+      }
+    }
+
+    /*
+    for (let i in totalIncome) {
+      let singleResource = {};
+      singleResource[i] = totalIncome[i];
+      incomeElements.push(
+        <Accordion>
+          <AccordionSummary>
             <ResourceDisplay
-              value={income}
+              value={singleResource}
               resourceData={this.props.worldData.resources}
               renders={this.graphics.renders}
             ></ResourceDisplay>
-          </Stack>
-        );
-      }
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>{"A"}</Typography>
+          </AccordionDetails>
+        </Accordion>
+      );
     }
-    return entityIncomeElements;
+    return incomeElements;*/
   }
   /* #endregion */
 
@@ -161,13 +202,13 @@ class GamePanel extends Component {
       const base = this.props.worldData.bases[i];
       const str = this.graphics.pixi.transformImgString(base.img, options);
       imgList.push(
-        <Accordion>
+        <Accordion key={i}>
           <AccordionSummary>
             <img
               className="render small-render no-margin"
               src={this.graphics.renders[str].src}
             ></img>
-            <h2 style={{ margin: "auto" }}>{base.name}</h2>
+            <Typography style={{ margin: "auto" }}>{base.name}</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>{base.desc}</Typography>
@@ -222,90 +263,102 @@ class GamePanel extends Component {
         </Slide>
         <Slide direction="right" in={this.state.menuOpen}>
           <Box id="control-panel">
-            <Stack className="scroller">
-              {this.state.currentMenu == 0 && (
-                <Box className="menu">
-                  <h2>{civ.state.title}</h2>
-                  <p>{civ.state.desc}</p>
-                </Box>
-              )}
-
-              {this.state.currentMenu == 1 && (
-                <Box className="menu">{this.renderIncome()}</Box>
-              )}
-
-              {this.state.currentMenu == 2 && (
-                <Box className="menu">
-                  <div className="scroller">{this.renderEntities()}</div>
-                </Box>
-              )}
-
-              {this.state.currentMenu == 3 && (
-                <Box className="menu">
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                  </Typography>
-                </Box>
-              )}
-
-              {this.state.currentMenu == 4 && (
-                <Box className="menu">
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                  </Typography>
-                </Box>
-              )}
-
-              {this.state.currentMenu == 5 && (
-                <Box className="menu">
-                  <BottomNavigation value={this.state.currentCiv}>
-                    {this.renderCivButtons()}
-                  </BottomNavigation>
-                  <Link to="/editor">
-                    <Button>Editor</Button>
-                  </Link>
-                </Box>
-              )}
-            </Stack>
-            <BottomNavigation
+            <Tabs
+              orientation="vertical"
+              className="tabs"
               value={this.state.currentMenu}
-              className="menu-bottom-nav"
             >
-              <BottomNavigationAction
-                label="City"
-                icon={<LocationCity></LocationCity>}
+              <Tab
+                label="Overview"
+                icon={<Flag></Flag>}
                 onClick={() => this.setState({ currentMenu: 0 })}
-              ></BottomNavigationAction>
-              <BottomNavigationAction
-                label="Income"
+              ></Tab>
+              <Tab
+                label="Resources"
                 icon={<TrendingUp></TrendingUp>}
                 onClick={() => this.setState({ currentMenu: 1 })}
-              ></BottomNavigationAction>
-              <BottomNavigationAction
-                label="Entities"
-                icon={<House></House>}
+              ></Tab>
+              <Tab
+                label="Ideas"
+                icon={<Lightbulb></Lightbulb>}
                 onClick={() => this.setState({ currentMenu: 2 })}
-              ></BottomNavigationAction>
-              <BottomNavigationAction
-                label="Events"
-                icon={<Event></Event>}
-                onClick={() => this.setState({ currentMenu: 3 })}
-              ></BottomNavigationAction>
-              <BottomNavigationAction
+              ></Tab>
+              <Tab
                 label="Orders"
                 icon={<ListAlt></ListAlt>}
-                onClick={() => this.setState({ currentMenu: 4 })}
-              ></BottomNavigationAction>
-              <BottomNavigationAction
+                onClick={() => this.setState({ currentMenu: 3 })}
+              ></Tab>
+              <Tab
                 label="Game Master"
                 icon={<AutoStories></AutoStories>}
-                onClick={() => this.setState({ currentMenu: 5 })}
-              ></BottomNavigationAction>
-            </BottomNavigation>
+                onClick={() => this.setState({ currentMenu: 4 })}
+              ></Tab>
+            </Tabs>
+
+            <Box className="tab">
+              {/* Overview */}
+              <TabPanel
+                value={this.state.currentMenu}
+                index={0}
+                className="tab-panel"
+              >
+                <Box>
+                  <Typography>{civ.state.title}</Typography>
+                  <Typography>{civ.state.desc}</Typography>
+                  {this.renderResources()}
+                </Box>
+              </TabPanel>
+
+              {/* Resources */}
+              <TabPanel
+                value={this.state.currentMenu}
+                index={1}
+                className="tab-panel"
+              >
+                <ResourcesPanel
+                  worldData={this.props.worldData}
+                  civilization={this.state.currentCiv}
+                  graphics={this.graphics}
+                ></ResourcesPanel>
+              </TabPanel>
+
+              {/* Ideas */}
+              <TabPanel
+                value={this.state.currentMenu}
+                index={2}
+                className="tab-panel"
+              >
+                <span>{this.renderEntities()}</span>
+              </TabPanel>
+
+              {/* Orders */}
+              <TabPanel
+                value={this.state.currentMenu}
+                index={3}
+                className="tab-panel"
+              >
+                <Typography>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                  eget.
+                </Typography>
+              </TabPanel>
+
+              {/* Game Master */}
+              <TabPanel
+                value={this.state.currentMenu}
+                index={4}
+                className="tab-panel"
+              >
+                <BottomNavigation value={this.state.currentCiv}>
+                  {this.renderCivButtons()}
+                </BottomNavigation>
+                <Link to="/editor">
+                  <Button>Editor</Button>
+                </Link>
+              </TabPanel>
+            </Box>
+
             <Fab className="close-menu-fab" onClick={() => this.toggleMenu()}>
               <ChevronLeft></ChevronLeft>
             </Fab>

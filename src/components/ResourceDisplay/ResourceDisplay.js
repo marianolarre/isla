@@ -33,7 +33,7 @@ class ResourceDisplay extends Component {
       let element = (
         <div className="resource-setter" key={index}>
           <img
-            className="resource-icon"
+            className="render resource-icon"
             src={this.props.renders[this.props.resourceData[i].img].src}
           />
           <Typography className="resource-number">
@@ -61,7 +61,7 @@ class ResourceDisplay extends Component {
 
   render() {
     return (
-      <Box>
+      <Box display="inline">
         {this.props.label != null && (
           <Typography
             className="inline"
