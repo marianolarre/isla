@@ -35,8 +35,7 @@ class IdeaPanel extends Component {
             title={
               <EntityCard
                 worldData={this.props.worldData}
-                pixi={this.props.graphics.pixi}
-                renders={this.props.graphics.renders}
+                graphics={this.props.graphics}
                 civilization={this.props.civilization}
                 entity={unlock}
               ></EntityCard>
@@ -58,7 +57,7 @@ class IdeaPanel extends Component {
           <Button key={a} fullWidth>
             <ResourceDisplay
               resourceData={this.props.worldData.resources}
-              renders={this.props.graphics.renders}
+              graphics={this.props.graphics}
               value={idea.actions[a]}
             ></ResourceDisplay>
           </Button>

@@ -22,7 +22,7 @@ class EntityCard extends Component {
         <Box className="entity-production">
           <ResourceDisplay
             resourceData={this.props.worldData.resources}
-            renders={this.props.renders}
+            graphics={this.props.graphics}
             value={this.props.entity.prod[a]}
           ></ResourceDisplay>
         </Box>
@@ -36,8 +36,7 @@ class EntityCard extends Component {
     const options = {
       primary_color: civ.primary_color,
     };
-    console.log(this.props);
-    const str = this.props.pixi.transformImgString(
+    const str = this.props.graphics.pixi.transformImgString(
       this.props.entity.img,
       options
     );
@@ -52,14 +51,14 @@ class EntityCard extends Component {
               <ResourceDisplay
                 negated
                 resourceData={this.props.worldData.resources}
-                renders={this.props.renders}
+                graphics={this.props.graphics}
                 value={this.props.entity.cost}
               ></ResourceDisplay>
             </Box>
             <Box></Box>
             <Forward style={{ margin: "auto" }}></Forward>
             <img
-              src={this.props.renders[str].src}
+              src={this.props.graphics.renders[str].src}
               className="render big-render no-margin"
             ></img>
           </Stack>

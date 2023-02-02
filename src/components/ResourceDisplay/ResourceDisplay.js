@@ -44,7 +44,10 @@ class ResourceDisplay extends Component {
             <div>
               <img
                 className="render resource-icon"
-                src={this.props.renders[this.props.resourceData[i].img].src}
+                src={
+                  this.props.graphics.renders[this.props.resourceData[i].img]
+                    .src
+                }
               />
 
               <Typography className="resource-number">

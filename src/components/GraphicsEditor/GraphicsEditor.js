@@ -38,7 +38,9 @@ class GraphicsEditor extends Component {
   constructor(props) {
     super(props);
     this.lastValue = "";
-    this.graphicData = this.props.pixi.deserializeFullString(this.props.value);
+    this.graphicData = this.props.graphics.pixi.deserializeFullString(
+      this.props.value
+    );
     this.state = {
       graphicString: this.props.value,
       currentImage: 0,
@@ -47,10 +49,10 @@ class GraphicsEditor extends Component {
   }
 
   componentDidMount() {
-    if (this.props.pixi == null) {
+    if (this.props.graphics.pixi == null) {
       this.pixi = new IslandPIXI(this.props.options);
     } else {
-      this.pixi = this.props.pixi;
+      this.pixi = this.props.graphics.pixi;
     }
     this.preview = new PIXI.Container();
     if (this.props.scale != null) {

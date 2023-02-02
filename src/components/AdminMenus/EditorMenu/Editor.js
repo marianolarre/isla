@@ -24,27 +24,32 @@ class Editor extends Component {
   }
 
   componentWillMount() {
-    this.pixi = new IslandPIXI({
+    this.graphics = {};
+
+    this.graphics.pixi = new IslandPIXI({
       width: 256,
       height: 256,
       scale: 1,
     });
 
-    this.renders = [];
-    this.pixi.app.loader.load((loader, resources) => {
+    this.graphics.renders = [];
+    this.graphics.pixi.app.loader.load((loader, resources) => {
       this.createAllGraphicsFromData(this.props.worldData);
       this.setState({ loaded: true });
     });
   }
 
   renderHTMLFromString(graphicString, options) {
-    if (this.renders[graphicString] == null) {
+    if (this.graphics.renders[graphicString] == null) {
       let str = graphicString;
       if (options != null) {
-        str = this.pixi.transformImgString(str, options);
+        str = this.graphics.pixi.transformImgString(str, options);
       }
-      const container = this.pixi.imgStringToContainer(str);
-      this.renders[str] = this.pixi.renderHTMLImage(container, 0.25);
+      const container = this.graphics.pixi.imgStringToContainer(str);
+      this.graphics.renders[str] = this.graphics.pixi.renderHTMLImage(
+        container,
+        0.25
+      );
       container.destroy();
     }
   }
@@ -130,32 +135,28 @@ class Editor extends Component {
         {this.state.loaded && this.state.tab == "civilization" && (
           <CivilizationEditor
             worldData={this.worldData}
-            pixi={this.pixi}
-            renders={this.renders}
+            graphics={this.graphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></CivilizationEditor>
         )}
         {this.state.loaded && this.state.tab == "entity" && (
           <EntityEditor
             worldData={this.worldData}
-            pixi={this.pixi}
-            renders={this.renders}
+            graphics={this.graphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></EntityEditor>
         )}
         {this.state.loaded && this.state.tab == "resource" && (
           <ResourceEditor
             worldData={this.worldData}
-            pixi={this.pixi}
-            renders={this.renders}
+            graphics={this.graphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></ResourceEditor>
         )}
         {this.state.loaded && this.state.tab == "idea" && (
           <IdeaEditor
             worldData={this.worldData}
-            pixi={this.pixi}
-            renders={this.renders}
+            graphics={this.graphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></IdeaEditor>
         )}

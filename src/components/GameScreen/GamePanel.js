@@ -141,7 +141,7 @@ class GamePanel extends Component {
         <ResourceDisplay
           key={i}
           resourceData={this.props.worldData.resources}
-          renders={this.graphics.renders}
+          graphics={this.graphics}
           value={singleResource}
         />
       );
@@ -179,7 +179,7 @@ class GamePanel extends Component {
             <ResourceDisplay
               value={singleResource}
               resourceData={this.props.worldData.resources}
-              renders={this.graphics.renders}
+              graphics={this.graphics}
             ></ResourceDisplay>
           </AccordionSummary>
           <AccordionDetails>

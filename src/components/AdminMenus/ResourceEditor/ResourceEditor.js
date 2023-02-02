@@ -128,7 +128,7 @@ class ResourceEditor extends Component {
           onClick={() => this.handleCivChange(index)}
           icon={
             <img
-              src={this.props.renders[value.img].src}
+              src={this.props.graphics.renders[value.img].src}
               style={{ margin: 0 }}
             ></img>
           }
@@ -147,8 +147,7 @@ class ResourceEditor extends Component {
             <Paper elevation={2} id="list" className="scrolling-panel">
               <EntryList
                 entries={this.props.worldData.resources}
-                pixi={this.props.pixi}
-                renders={this.props.renders}
+                graphics={this.props.graphics}
                 primaryColor={1}
                 entryTemplate={{
                   name: "New resource",
@@ -196,7 +195,7 @@ class ResourceEditor extends Component {
               <Typography>Graphic</Typography>
               <GraphicsEditor
                 containerId="entity-preview"
-                pixi={this.props.pixi}
+                graphics={this.props.graphics}
                 disableSpecialColors={true}
                 primaryColor={1}
                 value={this.state.resource.img}

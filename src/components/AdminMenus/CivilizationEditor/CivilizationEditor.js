@@ -102,8 +102,7 @@ class CivilizationEditor extends Component {
             <Paper elevation={2} id="list" className="scrolling-panel">
               <EntryList
                 entries={this.props.worldData.civilizations}
-                pixi={this.props.pixi}
-                renders={this.props.renders}
+                graphics={this.props.graphics}
                 primaryColor={this.state.civilization.primary_color}
                 value={this.state.currentCivilization}
                 onSelect={(e) => this.handleSelectCivilization(e)}
@@ -149,7 +148,7 @@ class CivilizationEditor extends Component {
               <Typography>Graphic</Typography>
               <GraphicsEditor
                 containerId="entity-preview"
-                pixi={this.props.pixi}
+                graphics={this.props.graphics}
                 disableSpecialColors
                 value={this.state.civilization.img}
                 scale={1}

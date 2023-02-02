@@ -36,10 +36,10 @@ class EntryList extends Component {
     let entityList = [];
     for (let i in this.props.entries) {
       const base = this.props.entries[i];
-      const str = this.props.pixi.transformImgString(base.img, {
+      const str = this.props.graphics.pixi.transformImgString(base.img, {
         primary_color: this.props.primaryColor,
       });
-      const render = this.props.renders[str];
+      const render = this.props.graphics.renders[str];
       const selected = this.props.value == i;
       entityList.push(
         <TableRow

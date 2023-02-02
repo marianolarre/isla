@@ -188,16 +188,18 @@ class IdeaEditor extends Component {
 
     for (let u in this.state.idea.unlocks) {
       const unlock = this.props.worldData.bases[this.state.idea.unlocks[u]];
-      const unlockstr = this.props.pixi.transformImgString(unlock.img, options);
-      if (this.props.renders[unlockstr] == null) continue;
+      const unlockstr = this.props.graphics.pixi.transformImgString(
+        unlock.img,
+        options
+      );
+      if (this.props.graphics.renders[unlockstr] == null) continue;
       unlockList.push(
         <Tooltip
           key={u}
           title={
             <EntityCard
               worldData={this.props.worldData}
-              renders={this.props.renders}
-              pixi={this.props.pixi}
+              graphics={this.props.graphics}
               civilization={this.props.civilization}
               entity={unlock}
             ></EntityCard>
@@ -205,7 +207,7 @@ class IdeaEditor extends Component {
         >
           <Button>
             <img
-              src={this.props.renders[unlockstr].src}
+              src={this.props.graphics.renders[unlockstr].src}
               className="render no-margin"
             ></img>
           </Button>
@@ -226,7 +228,7 @@ class IdeaEditor extends Component {
             <ResourceDisplay
               value={this.state.idea.actions[i]}
               resourceData={this.props.worldData.resources}
-              renders={this.props.renders}
+              graphics={this.props.graphics}
             ></ResourceDisplay>
           </Button>
           <Box style={{ float: "right" }}>
@@ -257,8 +259,7 @@ class IdeaEditor extends Component {
             <Paper elevation={2} id="list" className="scrolling-panel">
               <EntryList
                 entries={this.props.worldData.ideas}
-                pixi={this.props.pixi}
-                renders={this.props.renders}
+                graphics={this.props.graphics}
                 primaryColor={1}
                 entryTemplate={{
                   name: "New idea",
@@ -315,7 +316,7 @@ class IdeaEditor extends Component {
               <Typography>Graphic</Typography>
               <GraphicsEditor
                 containerId="entity-preview"
-                pixi={this.props.pixi}
+                graphics={this.props.graphics}
                 disableSpecialColors={true}
                 primaryColor={1}
                 value={this.state.idea.img}
@@ -329,7 +330,7 @@ class IdeaEditor extends Component {
           resourceData={this.props.worldData.resources}
           open={this.state.resourceSelectorOpen}
           value={this.getCurrentResource()}
-          renders={this.props.renders}
+          graphics={this.props.graphics}
           onClose={() => this.handleResourceSelectorClose()}
           onChange={(e) => this.handleResourceSelectorChange(e)}
         ></ResourceSelector>

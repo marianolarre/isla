@@ -61,7 +61,7 @@ class EntityEditor extends Component {
             <ResourceDisplay
               value={this.state.base.prod[i]}
               resourceData={this.props.worldData.resources}
-              renders={this.props.renders}
+              graphics={this.props.graphics}
             ></ResourceDisplay>
           </Button>
           <Box style={{ float: "right" }}>
@@ -87,6 +87,7 @@ class EntityEditor extends Component {
   handleEditResource(type, id) {
     this.setState({
       currentResourceID: id,
+      currentResourceType: type,
       resourceSelectorOpen: true,
     });
   }
@@ -127,6 +128,7 @@ class EntityEditor extends Component {
 
   getCurrentResource() {
     // If its an array, use the Id. Otherwise, just return it.
+    console.log(this.state);
     if (Array.isArray(this.state.base[this.state.currentResourceType])) {
       return this.state.base[this.state.currentResourceType][
         this.state.currentResourceID
@@ -229,7 +231,7 @@ class EntityEditor extends Component {
           onClick={() => this.handleCivChange(index)}
           icon={
             <img
-              src={this.props.renders[value.img].src}
+              src={this.props.graphics.renders[value.img].src}
               style={{ margin: 0 }}
             ></img>
           }
@@ -256,8 +258,7 @@ class EntityEditor extends Component {
             <Paper elevation={2} id="list" className="scrolling-panel">
               <EntryList
                 entries={this.props.worldData.bases}
-                pixi={this.props.pixi}
-                renders={this.props.renders}
+                graphics={this.props.graphics}
                 primaryColor={primaryColor}
                 value={this.state.currentBase}
                 onSelect={(e) => this.handleSelectBase(e)}
@@ -304,7 +305,7 @@ class EntityEditor extends Component {
                     <ResourceDisplay
                       value={this.state.base.cost}
                       resourceData={this.props.worldData.resources}
-                      renders={this.props.renders}
+                      graphics={this.props.graphics}
                     ></ResourceDisplay>
                   </Button>
                 </Grid>
@@ -324,7 +325,7 @@ class EntityEditor extends Component {
               <br></br>
               <GraphicsEditor
                 containerId="entity-preview"
-                pixi={this.props.pixi}
+                graphics={this.props.graphics}
                 primaryColor={primaryColor}
                 value={this.state.base.img}
                 scale={1}
@@ -337,7 +338,7 @@ class EntityEditor extends Component {
           resourceData={this.props.worldData.resources}
           open={this.state.resourceSelectorOpen}
           value={this.getCurrentResource()}
-          renders={this.props.renders}
+          graphics={this.props.graphics}
           onClose={() => this.handleResourceSelectorClose()}
           onChange={(e) => this.handleResourceSelectorChange(e)}
         ></ResourceSelector>

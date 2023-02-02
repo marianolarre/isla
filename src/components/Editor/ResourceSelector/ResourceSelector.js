@@ -1,4 +1,13 @@
-import { Box, Button, Grid, Modal, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Modal,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { isEmptyObject } from "jquery";
 import React, { Component } from "react";
 import "./ResourceSelector.css";
@@ -20,27 +29,27 @@ class ResourceSelector extends Component {
     let resourceList = [];
     Object.keys(this.props.resourceData).map((i, index) =>
       resourceList.push(
-        <Grid container className="table-resource" key={index}>
-          <Grid item xs={9} className="table-resource-label">
+        <Stack direction="row" className="table-resource">
+          <Tooltip
+            disableInteractive
+            title={<Typography>{this.props.resourceData[i].name}</Typography>}
+          >
             <img
               className="resource-icon"
-              src={this.props.renders[this.props.resourceData[i].img].src}
+              src={
+                this.props.graphics.renders[this.props.resourceData[i].img].src
+              }
             />
-            <Typography className="resource-number">
-              {this.props.resourceData[i].name}
-            </Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              fullWidth
-              type="number"
-              variant="filled"
-              className="resource-textfield"
-              value={this.getResources(i) || ""}
-              onChange={(e) => this.handleResourceChange(i, e.target.value)}
-            ></TextField>
-          </Grid>
-        </Grid>
+          </Tooltip>
+          <TextField
+            fullWidth
+            type="number"
+            variant="filled"
+            className="resource-textfield"
+            value={this.getResources(i) || ""}
+            onChange={(e) => this.handleResourceChange(i, e.target.value)}
+          ></TextField>
+        </Stack>
       )
     );
     return resourceList;
