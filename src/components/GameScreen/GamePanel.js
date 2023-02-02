@@ -36,6 +36,8 @@ import {
   TrendingUp,
 } from "@mui/icons-material";
 import ResourcesPanel from "./ResourcesPanel.js";
+import IdeaPanel from "./IdeaPanel.js";
+import EntityCard from "../EntityCard/EntityCard.js";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -328,7 +330,11 @@ class GamePanel extends Component {
                 index={2}
                 className="tab-panel"
               >
-                <span>{this.renderEntities()}</span>
+                <IdeaPanel
+                  worldData={this.props.worldData}
+                  civilization={this.state.currentCiv}
+                  graphics={this.graphics}
+                ></IdeaPanel>
               </TabPanel>
 
               {/* Orders */}

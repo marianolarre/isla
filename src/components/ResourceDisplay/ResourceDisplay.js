@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { isEmptyObject } from "jquery";
-import { Typography, Box, Stack } from "@mui/material";
-import { ArrowRight, Forward } from "@mui/icons-material";
+import { Typography, Box, Stack, Tooltip } from "@mui/material";
+import { ArrowRight, Clear, Forward, NotInterested } from "@mui/icons-material";
+import "./ResourceDisplay.css";
 
 class ResourceDisplay extends Component {
   state = {};
@@ -24,21 +25,33 @@ class ResourceDisplay extends Component {
     let results = [];
     if (this.getResources() == null) {
       return (
-        <Typography style={{ padding: 0, margin: 0 }} variant="p">
-          Nothing
-        </Typography>
+        <Tooltip disableInteractive title={<Typography>Hacer nada</Typography>}>
+          <Clear className="resource-arrow"></Clear>
+        </Tooltip>
       );
     }
     Object.keys(this.props.value).map((i, index) => {
       let element = (
         <div className="resource-setter" key={index}>
-          <img
-            className="render resource-icon"
-            src={this.props.renders[this.props.resourceData[i].img].src}
-          />
-          <Typography className="resource-number">
-            {this.props.value[i]}
-          </Typography>
+          <Tooltip
+            title={
+              <Typography>
+                {this.props.value[i]} {this.props.resourceData[i].name}
+              </Typography>
+            }
+            disableInteractive
+          >
+            <div>
+              <img
+                className="render resource-icon"
+                src={this.props.renders[this.props.resourceData[i].img].src}
+              />
+
+              <Typography className="resource-number">
+                {this.props.value[i]}
+              </Typography>
+            </div>
+          </Tooltip>
         </div>
       );
       if (this.props.value[i] < 0) {
@@ -51,9 +64,9 @@ class ResourceDisplay extends Component {
       return costs.concat(results);
     }
     return (
-      <Stack direction="row">
+      <Stack direction="row" className="resource-display">
         {costs}
-        <Forward style={{ margin: "auto" }}></Forward>
+        <Forward className="resource-arrow"></Forward>
         {results}
       </Stack>
     );

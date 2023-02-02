@@ -1,3 +1,9 @@
+.resource-display {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
 .resource-setter {
     display: inline-block;
     padding: 0;
@@ -9,4 +15,16 @@
     display: inline-block;
     margin: 0;
     position: relative;
+}
+
+.resource-arrow {
+    padding: 10px;
+}
+
+.resource-number {
+    position: relative;
+    right: 10px;
+    top: 3px;
+    padding-bottom: 5px;
+    font-size: 1.1rem !important;
 }

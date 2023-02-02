@@ -152,7 +152,7 @@ class GraphicsEditor extends Component {
     let parts = [...this.graphicData];
     parts.push({
       imageId: 0,
-      colorId: 0,
+      colorId: this.props.disableSpecialColors ? 22 : 0,
       xPos: 32,
       yPos: 32,
       xScale: 16,

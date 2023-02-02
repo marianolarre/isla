@@ -1,0 +1,63 @@
+.resource-setter {
+    display: inline-block;
+    padding: 0;
+    color: white;
+    margin: 5px;
+}
+
+.resource-icon {
+    display: inline-block;
+    margin: 0;
+    top: 5px;
+    position: relative;
+}
+
+.resource-number {
+    display: inline-block;
+    position: relative;
+    font-weight: bolder !important;
+    vertical-align: baseline;
+    text-shadow: -2px -2px 2px black,
+    2px 2px 2px black,
+    -2px 2px 2px black,
+    2px -2px 2px black,
+    0 -2px 2px black,
+    2px 0 2px black,
+    0 2px 2px black,
+    -2px 0 2px black;
+}
+
+.resource-textfield {
+    display: inline-block;
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    border: 2px solid #000;
+    box-shadow: 24;
+    background-color: #333;
+}
+
+.modal input {
+    padding: 5px;
+}
+
+.resource-list {
+    max-height: 80vh;
+    padding: 30px;
+    overflow-y: auto;
+} 
+
+.table-resource {
+    width: 200px;
+    display: inline-block;
+}
+
+.table-resource-label {
+    position: relative;
+    bottom: 5px;
+}

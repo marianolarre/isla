@@ -27,7 +27,7 @@
     "food": {
       "name": "Comida",
       "desc": "Se obtiene de buscar comida en un bosque, hacer plantaciones o criar animales. Los aldeanos necesitan 1 de comida por día.",
-      "img": "0uDZGEE0;0q5bZOT3;0q5RZOTL;0gCRBKKH;08PKRFCH"
+      "img": "0uDZGEE0;0q5bZOT3;0q5RZOTL;2PCRAKKg;08PKRFCH"
     },
     "wood": {
       "name": "Madera",
@@ -43,13 +43,18 @@
       "name": "Herramientas básicas",
       "desc": "Herramientas de piedra y madera",
       "img": "43clMOM5;0qcKKOFJ;0pjYVYYH;0pkUWYYV"
+    },
+    "fishing_spear_crude": {
+      "name": "Lanza de pezca primitiva",
+      "desc": "Usada en la pesca en ríos y orillas",
+      "img": "a0jWWNf6;0nKVKLFG;0gKjRRNI;0gJiXUOK;YSJcPMMg;WY1kXDDg;0nKXYFEX"
     }
   },
   "bases": {
     "house": {
       "name": "Casa",
       "desc": "Es una casita bonita",
-      "cost": { "work": 1, "wood": 5 },
+      "cost": { "work": "-1", "wood": "-5" },
       "prod": [{ "housing": 4 }],
       "vision": 2,
       "img": "05wWcQN0;100WQSP0;0miRhHH0;00LbfCC0;11ibfCC0;12ddHJJ0;0X0dNBFC"
@@ -57,7 +62,7 @@
     "house_2": {
       "name": "Casa II",
       "desc": "Es una casita mas bonita",
-      "cost": { "work": 2, "wood": 6, "stone": 2 },
+      "cost": { "work": "-2", "wood": "-6", "stone": "-2" },
       "prod": [{ "population": 8 }],
       "vision": 2,
       "img": "00wXXYO0;00wKfOL0;000XLZP0;100KVRO0;0miKjHH0;00LjcHC0;11igcCC0;12dkDJJ0;11imcCC0"
@@ -65,14 +70,14 @@
     "wheat_farm": {
       "name": "Granja de trigo",
       "desc": "Genera comida",
-      "cost": { "work": 2 },
+      "cost": { "work": "-2" },
       "prod": [{ "work": -1, "food": 4 }],
       "img": "00iWWZZ0;0SjWWYYC;0S7LFMP0;0S7hFMP0;0S8LdMP0;0S8hdMP0"
     },
     "wood_camp": {
       "name": "Campamento Acerradero",
       "desc": "Recolecta maderita",
-      "cost": { "work": 1, "wood": 4 },
+      "cost": { "work": "-1", "wood": "-4" },
       "prod": [
         {},
         { "work": -1, "wood": 4 },
@@ -81,7 +86,7 @@
         { "work": "-2", "basic_tools": "-2", "wood": "16" }
       ],
       "vision": 4,
-      "img": "13kMKII0;180MQMM0;13kMUII0;1DkdJCF0;1DkhQCF0;43ZnPAAh;0pkoRDDV;45kjmMMF;45kepMMF;45kgjMMF"
+      "img": "13kMKII0;180MQMM0;13kMUII0;1DkdJCF0;1DkhQCF0;43ZnPAAh;0pkoRDDV;2CkjmMMF;45kepMMF;45kgjMMF"
     },
     "villager": {
       "name": "Aldeano",
@@ -89,21 +94,34 @@
       "unlisted": true,
       "prod": [{ "population": 1 }],
       "vision": 4,
-      "img": "0m0WYHG0;08lWQBB0;331WQAA0;22jWNDA0"
+      "img": "0m0WYHG0;08lWQBB0;331WQAA0;25jWNDA0"
     },
     "flag": {
       "name": "Bandera",
       "desc": "Lo más patriótico",
-      "cost": { "work": "1", "wood": "2" },
+      "cost": { "work": "-1", "wood": "-2" },
       "prod": [{ "satisfaction": "2" }],
       "img": "150cEGG0;13kWINN0;0hjWTDD0"
     },
     "castle": {
       "name": "Castillo de Durloc",
       "desc": "Culpa de mati",
-      "cost": { "stone": "1", "work": "1" },
+      "cost": { "stone": "-1", "work": "-1" },
       "prod": [{ "satisfaction": "1" }],
       "img": "00dWWWN0;0VdWLME0;00cETIR0;0UcEHIR0;00coTIR0;0UcoHIR0;0m1WbII0;17iWcGG0;19cWaJJ0;0m1EPCC0;0m1oPCC0;13jWGGG0;16IaFCE0;1CbEbFF0;1CboYFF0;1CcbPFF0"
+    }
+  },
+  "ideas": {
+    "fishing_basic": {
+      "name": "Pezca básica",
+      "description": "Caza peces usando una lanza de madera afilada",
+      "actions": [{ "work": "-1", "wood": "-1", "fishing_spear_crude": "4" }],
+      "img": "a0jWWNf6;0nKVKLFG;0gKjRRNI;0gJiXUOK;YSJcPMMg;WY1kXDDg;0nKXYFEX"
+    },
+    "building_basic": {
+      "name": "Construcción básica",
+      "unlocks": ["house", "house_2", "castle"],
+      "img": "0pjOPXTI;0qkVINIU;05kjlKK0;10jjeNN0;0mijpEE0"
     }
   },
   "civilizations": [
@@ -133,13 +151,14 @@
           "wood": [10, 4, 2],
           "stone": [8, 0, 0],
           "food": [9, 0, 2]
-        }
+        },
+        "ideas": ["fishing_basic", "building_basic"]
       }
     },
     {
       "name": "Emiland",
       "player": "Emeh",
-      "img": "045WiVV0;005WKVV0;068WPVV0;23MWRTT0;321WPPP0",
+      "img": "045WiVV0;005WKVV0;068WPVV0;2BMWRTT0;321WPPP0",
       "primary_color": 5,
       "state": {
         "day": 1,
@@ -163,7 +182,7 @@
     {
       "name": "Dosa Nest",
       "player": "Mati",
-      "img": "WXIWiVV0;WXIWLVV0;WX8UkRR0;WX8UNRR0;Wq1NVED0;0M0RRBBJ;0M0JRBBf;088LV660;088PV660",
+      "img": "WXIWiVV0;WXIWLVV0;WX8UkRR0;WX8UNRR0;Wq1NVED0;0M1RRBBJ;0M1JRBBf;088LV660;088PV660",
       "primary_color": 17,
       "state": {
         "day": 1,

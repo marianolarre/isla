@@ -1,0 +1,47 @@
+.container {
+    display: block;
+    width: 100%;
+    margin: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    overflow: auto;
+    background-color: #444;
+}
+
+.scrolling-panel {
+overflow-y: auto;
+max-height: 80vh;
+}
+
+.inline {
+display: inline-block;
+}
+
+.field {
+    display: flex;
+    justify-content: left;
+}
+
+.spacer {
+    margin: 20px;
+}
+
+.fullWidth {
+width: 100%;
+}
+
+.panel {
+    padding: 20px;
+}
+
+.resource-button {
+    display: flex;
+    flex: 1;
+    padding: 0 !important;
+}
+
+canvas {
+    position: static;
+    margin: auto;
+    padding: 20px;
+}

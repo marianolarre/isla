@@ -86,7 +86,6 @@ class EntityEditor extends Component {
 
   handleEditResource(type, id) {
     this.setState({
-      currentResourceType: type,
       currentResourceID: id,
       resourceSelectorOpen: true,
     });
@@ -205,9 +204,10 @@ class EntityEditor extends Component {
       prod: [],
       img: "000WWGG0",
     };
-    newWorldData.bases["new_entry"] = newBase;
+    let newKey = prompt("Ingrese un nombre único");
+    newWorldData.bases[newKey] = newBase;
     this.applyChanges();
-    this.props.onChange(newWorldData, () => this.handleSelectBase("new_entry"));
+    this.props.onChange(newWorldData, () => this.handleSelectBase(newKey));
   }
 
   handleSelectBase(baseId) {

@@ -8,6 +8,10 @@ import {
   ListItemButton,
   ListItemIcon,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -38,40 +42,47 @@ class EntryList extends Component {
       const render = this.props.renders[str];
       const selected = this.props.value == i;
       entityList.push(
-        <ListItem
+        <TableRow
           key={i}
-          secondaryAction={
+          onClick={() => this.props.onSelect(i)}
+          sx={selected ? { backgroundColor: "#555" } : {}}
+        >
+          <TableCell>
+            <img src={render != null ? render.src : ""}></img>
+          </TableCell>
+          <TableCell>
+            <Typography>{"[" + i + "]"}</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>{base.name}</Typography>
+          </TableCell>
+          <TableCell>
             <IconButton color="error" onClick={() => this.props.onRemove(i)}>
               <Delete></Delete>
             </IconButton>
-          }
-        >
-          <ListItemIcon></ListItemIcon>
-          <ListItemButton
-            selected={selected}
-            disabled={selected}
-            onClick={() => this.props.onSelect(i)}
-            flex={1}
-          >
-            <img src={render != null ? render.src : ""}></img>
-            <Typography>{"[" + i + "] " + base.name}</Typography>
-          </ListItemButton>
-        </ListItem>
+          </TableCell>
+        </TableRow>
       );
     }
-    return <List dense={true}>{entityList}</List>;
+    return <>{entityList}</>;
   }
 
   render() {
     return (
-      <Box>
-        {this.renderEntryList()}
-        <Tooltip title="Create new entry">
-          <Button onClick={() => this.props.onAdd()}>
-            <AddCircle></AddCircle>
-          </Button>
-        </Tooltip>
-      </Box>
+      <Table size="small">
+        <TableBody>
+          {this.renderEntryList()}
+          <TableRow>
+            <TableCell colSpan={4}>
+              <Tooltip title="Create new entry">
+                <Button onClick={() => this.props.onAdd()} fullWidth>
+                  <AddCircle></AddCircle>
+                </Button>
+              </Tooltip>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     );
   }
 }

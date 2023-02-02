@@ -54,11 +54,10 @@ class ResourceEditor extends Component {
       img: "00MWWGG0",
     };
 
-    newWorldData.resources["new_entry"] = newResource;
+    let newKey = prompt("Ingrese un nombre único");
+    newWorldData.resources[newKey] = newResource;
     this.applyChanges();
-    this.props.onChange(newWorldData, () =>
-      this.handleSelectResource("new_entry")
-    );
+    this.props.onChange(newWorldData, () => this.handleSelectResource(newKey));
   }
 
   handleSelectResource(resourceId) {

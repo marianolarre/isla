@@ -6,6 +6,7 @@ import {
   Table,
   TableCell,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { Component } from "react";
@@ -55,16 +56,15 @@ class ResourceRow extends Component {
             </IconButton>
           </TableCell>
           <TableCell align="center">
-            <img
-              className="render small-render no-margin"
-              src={this.props.graphics.renders[str].src}
-            ></img>
-            <Typography
-              display="inline"
-              style={{ marginLeft: "5px", position: "relative", bottom: "7px" }}
+            <Tooltip
+              title={<Typography>{resource.name}</Typography>}
+              placement="left"
             >
-              {resource.name}
-            </Typography>
+              <img
+                className="render small-render no-margin"
+                src={this.props.graphics.renders[str].src}
+              ></img>
+            </Tooltip>
           </TableCell>
           <TableCell align="center">
             <Collapse in={!this.state.open}>
@@ -88,7 +88,12 @@ class ResourceRow extends Component {
               <Table size="small">
                 <TableRow>
                   <TableCell>
-                    <Typography>Stored:</Typography>
+                    <Typography fontSize={"1.5rem"}>{resource.name}</Typography>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography>Current:</Typography>
                   </TableCell>
                   <TableCell>{this.props.stored}</TableCell>
                 </TableRow>

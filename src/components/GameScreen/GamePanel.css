@@ -15,8 +15,8 @@ canvas {
     width: 40%;
     display: flex;
     z-index: 1;
-    background-color: #222d;
-    backdrop-filter: blur(7px);
+    background-color: rgba(23, 28, 28, 0.927);
+    backdrop-filter: blur(15px);
 }
 
 .menu-bottom-nav {
@@ -30,6 +30,10 @@ canvas {
     filter: drop-shadow(1px 1px 0 black) drop-shadow(-1px -1px 0 black) drop-shadow(-1px 1px 0 black) drop-shadow(1px -1px 0 black);
     width: auto;
     height: 32px;
+}
+
+.big-render {
+    height: 64px;
 }
 
 .scroller {
@@ -76,7 +80,7 @@ h2 {
 }
 
 img {
-    margin: 8px 0 8px 0;
+    margin: 0;
     height: 32px;
 }
 

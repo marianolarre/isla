@@ -73,10 +73,14 @@ class Graphics {
   /* #region  Sprite Creation */
 
   createAllGraphicsFromData(worldData) {
-    const civilizations = worldData.civilizations;
     for (var resource in worldData.resources) {
       this.renderHTMLFromString(worldData.resources[resource].img);
     }
+    for (var idea in worldData.ideas) {
+      this.renderHTMLFromString(worldData.ideas[idea].img);
+    }
+
+    const civilizations = worldData.civilizations;
     for (var civId in civilizations) {
       const civ = civilizations[civId];
       const state = civ.state;
@@ -84,6 +88,8 @@ class Graphics {
       const options = {
         primary_color: civ.primary_color,
       };
+
+      // Load all entity graphics
       for (var entityBase in state.entities) {
         let entityList = state.entities[entityBase];
         for (var entityId in entityList) {
@@ -94,6 +100,18 @@ class Graphics {
           );
           this.renderHTMLFromString(str);
           this.createEntityGraphics(worldData.bases[entityBase], entity, civ);
+        }
+      }
+
+      // Load all graphics from bases that get unlocked by an idea
+      for (var i in state.ideas) {
+        const ideaId = state.ideas[i];
+        const unlocks = worldData.ideas[ideaId].unlocks;
+        for (var u in unlocks) {
+          const unlockId = unlocks[u];
+          const unlock = worldData.bases[unlockId];
+          const str = this.pixi.transformImgString(unlock.img, options);
+          this.renderHTMLFromString(str);
         }
       }
     }

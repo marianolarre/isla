@@ -42,7 +42,7 @@ class ResourcesPanel extends Component {
             <Typography>Resource</Typography>
           </TableCell>
           <TableCell align="center">
-            <Typography>Stored</Typography>
+            <Typography>Current</Typography>
           </TableCell>
           <TableCell align="center">
             <Typography>Prod.</Typography>
