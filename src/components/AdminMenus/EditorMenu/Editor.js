@@ -29,6 +29,13 @@ class Editor extends Component {
     this.graphics.pixi = new IslandPIXI({
       width: 256,
       height: 256,
+      scale: 0.1,
+    });
+
+    this.editorGraphics = {};
+    this.editorGraphics.pixi = new IslandPIXI({
+      width: 256,
+      height: 256,
       scale: 1,
     });
 
@@ -40,11 +47,11 @@ class Editor extends Component {
   }
 
   renderHTMLFromString(graphicString, options) {
-    if (this.graphics.renders[graphicString] == null) {
-      let str = graphicString;
-      if (options != null) {
-        str = this.graphics.pixi.transformImgString(str, options);
-      }
+    let str = graphicString;
+    if (options != null) {
+      str = this.graphics.pixi.transformImgString(str, options);
+    }
+    if (this.graphics.renders[str] == null) {
       const container = this.graphics.pixi.imgStringToContainer(str);
       this.graphics.renders[str] = this.graphics.pixi.renderHTMLImage(
         container,
@@ -61,7 +68,12 @@ class Editor extends Component {
     for (var idea in worldData.ideas) {
       this.renderHTMLFromString(worldData.ideas[idea].img);
     }
-
+    for (var base in worldData.bases) {
+      this.renderHTMLFromString(worldData.bases[base].img);
+    }
+    for (var civ in worldData.civilizations) {
+      this.renderHTMLFromString(worldData.civilizations[civ].img);
+    }
     for (let i in worldData.civilizations) {
       const civ = worldData.civilizations[i];
       this.renderHTMLFromString(civ.img);
@@ -136,6 +148,7 @@ class Editor extends Component {
           <CivilizationEditor
             worldData={this.worldData}
             graphics={this.graphics}
+            editorGraphics={this.editorGraphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></CivilizationEditor>
         )}
@@ -143,6 +156,7 @@ class Editor extends Component {
           <EntityEditor
             worldData={this.worldData}
             graphics={this.graphics}
+            editorGraphics={this.editorGraphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></EntityEditor>
         )}
@@ -150,6 +164,7 @@ class Editor extends Component {
           <ResourceEditor
             worldData={this.worldData}
             graphics={this.graphics}
+            editorGraphics={this.editorGraphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></ResourceEditor>
         )}
@@ -157,6 +172,7 @@ class Editor extends Component {
           <IdeaEditor
             worldData={this.worldData}
             graphics={this.graphics}
+            editorGraphics={this.editorGraphics}
             onChange={(e, callback) => this.handleWorldDataChange(e, callback)}
           ></IdeaEditor>
         )}

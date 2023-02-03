@@ -1,7 +1,7 @@
 .resource-display {
-    display: block;
-    margin: auto;
-    text-align: center;
+    justify-content: center;
+    display: flex;
+    margin: 0 4px 4px 4px;
 }
 
 .resource-setter {
@@ -17,6 +17,10 @@
     position: relative;
 }
 
+.resource-icon-stack {
+    margin: auto;
+}
+
 .resource-arrow {
     padding: 10px;
 }
@@ -27,4 +31,11 @@
     top: 3px;
     padding-bottom: 5px;
     font-size: 1.1rem !important;
+}
+
+.resource-extra-info {
+    text-transform: none;
+    display: block;
+    width: auto;
+    padding: 5px;
 }

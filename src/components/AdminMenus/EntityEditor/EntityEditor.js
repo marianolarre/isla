@@ -55,6 +55,8 @@ class EntityEditor extends Component {
       prodList.push(
         <Stack key={i} direction="row">
           <Button
+            fullWidth
+            sx={{ display: "block" }}
             className="resource-button"
             onClick={() => this.handleEditResource("prod", i)}
           >
@@ -128,7 +130,6 @@ class EntityEditor extends Component {
 
   getCurrentResource() {
     // If its an array, use the Id. Otherwise, just return it.
-    console.log(this.state);
     if (Array.isArray(this.state.base[this.state.currentResourceType])) {
       return this.state.base[this.state.currentResourceType][
         this.state.currentResourceID
@@ -295,11 +296,12 @@ class EntityEditor extends Component {
               ></TextField>
               <div className="spacer"></div>
               <Grid container>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                   <Typography>Cost</Typography>
                   <Button
-                    className="resource-button"
                     fullWidth
+                    sx={{ display: "block" }}
+                    className="resource-button"
                     onClick={() => this.handleEditResource("cost", 0)}
                   >
                     <ResourceDisplay
@@ -309,7 +311,7 @@ class EntityEditor extends Component {
                     ></ResourceDisplay>
                   </Button>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={6}>
                   <Typography>Production</Typography>
                   {this.renderEntityProductions()}
                   <Button onClick={() => this.addProduction()}>
@@ -325,7 +327,7 @@ class EntityEditor extends Component {
               <br></br>
               <GraphicsEditor
                 containerId="entity-preview"
-                graphics={this.props.graphics}
+                graphics={this.props.editorGraphics}
                 primaryColor={primaryColor}
                 value={this.state.base.img}
                 scale={1}

@@ -9,10 +9,8 @@ import {
   Restaurant,
 } from "@mui/icons-material";
 
-// removed color: 141013
-
 export const colorPalette = [
-  "000000",
+  "ff00ff",
   "060608",
   "301120",
   "73172d",

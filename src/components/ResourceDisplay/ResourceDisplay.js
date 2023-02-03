@@ -23,73 +23,104 @@ class ResourceDisplay extends Component {
   renderResourceList() {
     let costs = [];
     let results = [];
+    let requirements = null;
+    let textResult = null;
     if (this.getResources() == null) {
       return (
-        <Tooltip disableInteractive title={<Typography>Hacer nada</Typography>}>
-          <Clear className="resource-arrow"></Clear>
-        </Tooltip>
+        <Box className="resource-display">
+          <Tooltip
+            disableInteractive
+            title={<Typography>Hacer nada</Typography>}
+          >
+            <Clear className="resource-arrow"></Clear>
+          </Tooltip>
+        </Box>
       );
     }
     Object.keys(this.props.value).map((i, index) => {
-      let element = (
-        <div className="resource-setter" key={index}>
-          <Tooltip
-            title={
-              <Typography>
-                {this.props.value[i]} {this.props.resourceData[i].name}
-              </Typography>
-            }
-            disableInteractive
-          >
-            <div>
-              <img
-                className="render resource-icon"
-                src={
-                  this.props.graphics.renders[this.props.resourceData[i].img]
-                    .src
-                }
-              />
+      if (this.props.resourceData[i] != null) {
+        let element = (
+          <div className="resource-setter" key={index}>
+            <Tooltip
+              title={
+                <Typography>
+                  {this.props.value[i]} {this.props.resourceData[i].name}
+                </Typography>
+              }
+              disableInteractive
+            >
+              <div>
+                <img
+                  className="render resource-icon"
+                  src={
+                    this.props.graphics.renders[this.props.resourceData[i].img]
+                      .src
+                  }
+                />
 
-              <Typography className="resource-number">
-                {this.props.value[i]}
-              </Typography>
-            </div>
-          </Tooltip>
-        </div>
-      );
-      if (this.props.value[i] < 0) {
-        costs.push(element);
+                <Typography className="resource-number">
+                  {this.props.value[i]}
+                </Typography>
+              </div>
+            </Tooltip>
+          </div>
+        );
+
+        if (this.props.value[i] < 0) {
+          costs.push(element);
+        } else {
+          results.push(element);
+        }
       } else {
-        results.push(element);
+        if (i === "_requirement") {
+          requirements = (
+            <Typography color={"#ff0"} className={"resource-extra-info"}>
+              {this.props.value[i]}
+            </Typography>
+          );
+        }
+        if (i === "_result") {
+          textResult = (
+            <Typography color={"#8ff"} className={"resource-extra-info"}>
+              {this.props.value[i]}
+            </Typography>
+          );
+        }
       }
     });
-    if (costs.length == 0 || results.length == 0) {
-      return costs.concat(results);
+
+    let middle = null;
+
+    if (costs.length === 0 || results.length === 0) {
+      middle = (
+        <Box className="resource-icon-stack">
+          {costs}
+          {results}
+        </Box>
+      );
+    } else {
+      middle = (
+        <Stack direction="row" className="resource-icon-stack">
+          {costs}
+          <Forward className="resource-arrow"></Forward>
+          {results}
+        </Stack>
+      );
     }
+
     return (
-      <Stack direction="row" className="resource-display">
-        {costs}
-        <Forward className="resource-arrow"></Forward>
-        {results}
-      </Stack>
+      <Box className="resource-display">
+        <Stack>
+          {requirements}
+          {middle}
+          {textResult}
+        </Stack>
+      </Box>
     );
   }
 
   render() {
-    return (
-      <Box display="inline">
-        {this.props.label != null && (
-          <Typography
-            className="inline"
-            variant="p"
-            style={{ margin: 0, padding: 0 }}
-          >
-            {this.props.label}
-          </Typography>
-        )}
-        {this.renderResourceList()}
-      </Box>
-    );
+    return this.renderResourceList();
   }
 }
 

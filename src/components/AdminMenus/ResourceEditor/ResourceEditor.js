@@ -195,7 +195,7 @@ class ResourceEditor extends Component {
               <Typography>Graphic</Typography>
               <GraphicsEditor
                 containerId="entity-preview"
-                graphics={this.props.graphics}
+                graphics={this.props.editorGraphics}
                 disableSpecialColors={true}
                 primaryColor={1}
                 value={this.state.resource.img}

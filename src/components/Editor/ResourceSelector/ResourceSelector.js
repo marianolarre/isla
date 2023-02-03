@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Grid,
+  Input,
   Modal,
   Stack,
   TextField,
@@ -22,36 +23,46 @@ class ResourceSelector extends Component {
     super(props);
     this.state = {
       open: false,
+      filter: "",
     };
   }
 
   renderResourceTable() {
     let resourceList = [];
-    Object.keys(this.props.resourceData).map((i, index) =>
-      resourceList.push(
-        <Stack direction="row" className="table-resource">
-          <Tooltip
-            disableInteractive
-            title={<Typography>{this.props.resourceData[i].name}</Typography>}
-          >
-            <img
-              className="resource-icon"
-              src={
-                this.props.graphics.renders[this.props.resourceData[i].img].src
-              }
-            />
-          </Tooltip>
-          <TextField
-            fullWidth
-            type="number"
-            variant="filled"
-            className="resource-textfield"
-            value={this.getResources(i) || ""}
-            onChange={(e) => this.handleResourceChange(i, e.target.value)}
-          ></TextField>
-        </Stack>
-      )
-    );
+    Object.keys(this.props.resourceData).map((i, index) => {
+      if (
+        this.props.resourceData[i].name
+          .toLowerCase()
+          .includes(this.state.filter.toLowerCase())
+      ) {
+        resourceList.push(
+          <Stack direction="row" className="table-resource" key={i}>
+            <Tooltip
+              disableInteractive
+              title={<Typography>{this.props.resourceData[i].name}</Typography>}
+            >
+              <img
+                className="render resource-icon"
+                src={
+                  this.props.graphics.renders[this.props.resourceData[i].img]
+                    .src
+                }
+              />
+            </Tooltip>
+            <Input
+              fullWidth
+              size="small"
+              type="number"
+              variant="filled"
+              className="resource-textfield"
+              value={this.getResources(i) || ""}
+              onChange={(e) => this.handleResourceChange(i, e.target.value)}
+            ></Input>
+          </Stack>
+        );
+      }
+    });
+
     return resourceList;
   }
 
@@ -84,11 +95,48 @@ class ResourceSelector extends Component {
   }
 
   render() {
+    if (this.props.value === undefined) {
+      return <></>;
+    }
     return (
       <div>
         <Modal open={this.props.open} onClose={this.props.onClose}>
           <Box className="modal">
+            <Box className="resource-input">
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Requerimiento"
+                value={this.props.value._requirement}
+                onChange={(e) =>
+                  this.handleResourceChange("_requirement", e.target.value)
+                }
+              ></TextField>
+            </Box>
+            <Box className="resource-input">
+              <TextField
+                fullWidth
+                className="resource-input"
+                variant="filled"
+                label="Resultado"
+                value={this.props.value._result}
+                onChange={(e) =>
+                  this.handleResourceChange("_result", e.target.value)
+                }
+              ></TextField>
+            </Box>
+            <Box className="resource-input">
+              <TextField
+                fullWidth
+                label="Filtro"
+                size="small"
+                className="resource-input"
+                value={this.state.filter}
+                onChange={(e) => this.setState({ filter: e.target.value })}
+              ></TextField>
+            </Box>
             <Box className="resource-list">{this.renderResourceTable()}</Box>
+
             <Button onClick={this.props.onClose} style={{ float: "right" }}>
               Accept
             </Button>

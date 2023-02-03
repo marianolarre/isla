@@ -19,6 +19,7 @@ import ResourceDisplay from "../../ResourceDisplay/ResourceDisplay";
 import { ArrowUpward, Delete } from "@mui/icons-material";
 import ResourceSelector from "../../Editor/ResourceSelector/ResourceSelector";
 import EntityCard from "../../EntityCard/EntityCard";
+import BaseSelector from "../../Editor/BaseSelector/BaseSelector";
 
 class IdeaEditor extends Component {
   constructor(props) {
@@ -28,6 +29,8 @@ class IdeaEditor extends Component {
         name: "",
         desc: "",
         img: "",
+        unlocks: [],
+        actions: [],
       },
       keyChange: "",
       currentIdea: "",
@@ -35,6 +38,7 @@ class IdeaEditor extends Component {
       currentImage: 0,
       currentResourceID: 0,
       resourceSelectorOpen: false,
+      unlockSelectorOpen: false,
       currentCiv: 0,
     };
   }
@@ -76,6 +80,16 @@ class IdeaEditor extends Component {
   handleResourceSelectorChange(newValue) {
     let newIdea = { ...this.state.idea };
     newIdea.actions[this.state.currentResourceID] = newValue;
+    this.setState({ idea: newIdea });
+  }
+
+  handleUnlockSelectorClose() {
+    this.setState({ unlockSelectorOpen: false });
+  }
+
+  handleUnlockSelectorChange(newValue) {
+    let newIdea = { ...this.state.idea };
+    newIdea.unlocks = newValue;
     this.setState({ idea: newIdea });
   }
 
@@ -169,8 +183,13 @@ class IdeaEditor extends Component {
     });
   }
 
+  setUnlocks() {
+    this.setState({
+      unlockSelectorOpen: true,
+    });
+  }
+
   addAction() {
-    console.log(this.state.idea);
     let newIdea = { ...this.state.idea };
     if (newIdea.actions == null || newIdea.actions.length == 0) {
       newIdea.actions = [];
@@ -181,18 +200,10 @@ class IdeaEditor extends Component {
 
   renderIdeaUnlocks() {
     let unlockList = [];
-    const civ = this.props.worldData.civilizations[0];
-    const options = {
-      primary_color: civ.primary_color,
-    };
 
     for (let u in this.state.idea.unlocks) {
       const unlock = this.props.worldData.bases[this.state.idea.unlocks[u]];
-      const unlockstr = this.props.graphics.pixi.transformImgString(
-        unlock.img,
-        options
-      );
-      if (this.props.graphics.renders[unlockstr] == null) continue;
+      if (this.props.graphics.renders[unlock.img] == null) continue;
       unlockList.push(
         <Tooltip
           key={u}
@@ -200,20 +211,21 @@ class IdeaEditor extends Component {
             <EntityCard
               worldData={this.props.worldData}
               graphics={this.props.graphics}
-              civilization={this.props.civilization}
               entity={unlock}
             ></EntityCard>
           }
         >
           <Button>
             <img
-              src={this.props.graphics.renders[unlockstr].src}
+              src={this.props.graphics.renders[unlock.img].src}
               className="render no-margin"
             ></img>
           </Button>
         </Tooltip>
       );
     }
+
+    return unlockList;
   }
 
   renderIdeaActions() {
@@ -222,6 +234,8 @@ class IdeaEditor extends Component {
       actionsList.push(
         <Stack key={i} direction="row">
           <Button
+            fullWidth
+            sx={{ display: "block" }}
             className="resource-button"
             onClick={() => this.handleEditResource(i)}
           >
@@ -303,8 +317,13 @@ class IdeaEditor extends Component {
               <Grid container>
                 <Grid item xs={6}>
                   <Typography>Unlocks</Typography>
-                  {this.renderIdeaUnlocks()}
-                  <Button onClick={() => this.addAction()}>Add Unlocks</Button>
+
+                  <Button onClick={() => this.setUnlocks()}>
+                    {((this.state.idea.unlocks === undefined ||
+                      this.state.idea.unlocks.length === 0) &&
+                      "Add Unlocks") ||
+                      this.renderIdeaUnlocks()}
+                  </Button>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography>Actions</Typography>
@@ -316,7 +335,7 @@ class IdeaEditor extends Component {
               <Typography>Graphic</Typography>
               <GraphicsEditor
                 containerId="entity-preview"
-                graphics={this.props.graphics}
+                graphics={this.props.editorGraphics}
                 disableSpecialColors={true}
                 primaryColor={1}
                 value={this.state.idea.img}
@@ -334,6 +353,14 @@ class IdeaEditor extends Component {
           onClose={() => this.handleResourceSelectorClose()}
           onChange={(e) => this.handleResourceSelectorChange(e)}
         ></ResourceSelector>
+        <BaseSelector
+          worldData={this.props.worldData}
+          open={this.state.unlockSelectorOpen}
+          value={this.state.idea.unlocks}
+          graphics={this.props.graphics}
+          onClose={() => this.handleUnlockSelectorClose()}
+          onChange={(e) => this.handleUnlockSelectorChange(e)}
+        ></BaseSelector>
       </div>
     );
   }

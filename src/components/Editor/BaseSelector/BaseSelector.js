@@ -1,6 +1,18 @@
-import { Box, Button, Grid, Modal, TextField, Typography } from "@mui/material";
+import { Check, CheckCircle } from "@mui/icons-material";
+import {
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  Grid,
+  Modal,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { isEmptyObject } from "jquery";
 import React, { Component } from "react";
+import EntityCard from "../../EntityCard/EntityCard";
 import "./BaseSelector.css";
 
 // Hacer que este selector permita crear un objeto
@@ -16,53 +28,67 @@ class BaseSelector extends Component {
     };
   }
 
-  renderResourceTable() {
-    let resourceList = [];
-    Object.keys(this.props.resourceData).map((i, index) =>
-      resourceList.push(
-        <Grid container className="table-resource" key={index}>
-          <Grid item xs={9} className="table-resource-label">
-            <img
-              className="resource-icon"
-              src={this.props.renders[this.props.resourceData[i].img].src}
-            />
-            <Typography className="resource-number">
-              {this.props.resourceData[i].name}
-            </Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              fullWidth
-              type="number"
-              variant="filled"
-              className="resource-textfield"
-              value={this.isBaseSelected(i) || ""}
-              onChange={(e) => this.handleResourceChange(i, e.target.value)}
-            ></TextField>
-          </Grid>
-        </Grid>
-      )
-    );
-    return resourceList;
-  }
-
-  isBaseSelected(id) {
-    return this.props.value[id] !== undefined;
-  }
-
-  handleResourceChange(resource, newValue) {
-    let newList = { ...this.props.value };
-    if (newValue != 0) {
-      newList[resource] = newValue;
+  toggle(base) {
+    let newList = [];
+    if (this.props.value != null) {
+      newList = [...this.props.value];
+    }
+    if (this.isBaseSelected(base)) {
+      const index = newList.indexOf(base);
+      newList.splice(index, 1);
     } else {
-      delete newList[resource];
+      newList.push(base);
     }
     this.props.onChange(newList);
   }
 
-  handleResourceRemove() {
-    this.closeModal();
-    this.props.onRemove();
+  isBaseSelected(base) {
+    if (this.props.value === undefined) {
+      return false;
+    }
+    if (this.props.value.length === 0) {
+      return false;
+    }
+    return this.props.value.includes(base);
+  }
+
+  renderBases() {
+    let baseList = [];
+    Object.keys(this.props.worldData.bases).map((i, index) => {
+      const base = this.props.worldData.bases[i];
+      baseList.push(
+        <Tooltip
+          key={i}
+          enterDelay={500}
+          leaveDelay={0}
+          title={
+            <EntityCard
+              worldData={this.props.worldData}
+              graphics={this.props.graphics}
+              entity={base}
+            ></EntityCard>
+          }
+        >
+          <Button className="base-button" onClick={() => this.toggle(i)}>
+            <Badge
+              badgeContent={<CheckCircle></CheckCircle>}
+              variant="string"
+              invisible={!this.isBaseSelected(i)}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+            >
+              <img
+                className="render base-icon"
+                src={this.props.graphics.renders[base.img].src}
+              />
+            </Badge>
+          </Button>
+        </Tooltip>
+      );
+    });
+    return baseList;
   }
 
   render() {
@@ -70,7 +96,7 @@ class BaseSelector extends Component {
       <div>
         <Modal open={this.props.open} onClose={this.props.onClose}>
           <Box className="modal">
-            <Box className="resource-list">{this.renderResourceTable()}</Box>
+            <Box className="base-list">{this.renderBases()}</Box>
             <Button onClick={this.props.onClose} style={{ float: "right" }}>
               Accept
             </Button>

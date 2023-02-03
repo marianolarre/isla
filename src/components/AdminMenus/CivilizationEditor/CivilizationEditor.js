@@ -148,7 +148,7 @@ class CivilizationEditor extends Component {
               <Typography>Graphic</Typography>
               <GraphicsEditor
                 containerId="entity-preview"
-                graphics={this.props.graphics}
+                graphics={this.props.editorGraphics}
                 disableSpecialColors
                 value={this.state.civilization.img}
                 scale={1}

@@ -45,7 +45,7 @@
       "img": "43clMOM5;0qcKKOFJ;0pjYVYYH;0pkUWYYV"
     },
     "fishing_spear_crude": {
-      "name": "Lanza de pezca primitiva",
+      "name": "Lanza de pesca primitiva",
       "desc": "Usada en la pesca en ríos y orillas",
       "img": "a0jWWNf6;0nKVKLFG;0gKjRRNI;0gJiXUOK;YSJcPMMg;WY1kXDDg;0nKXYFEX"
     }
@@ -63,14 +63,14 @@
       "name": "Casa II",
       "desc": "Es una casita mas bonita",
       "cost": { "work": "-2", "wood": "-6", "stone": "-2" },
-      "prod": [{ "population": 8 }],
+      "prod": [{ "housing": "8" }],
       "vision": 2,
       "img": "00wXXYO0;00wKfOL0;000XLZP0;100KVRO0;0miKjHH0;00LjcHC0;11igcCC0;12dkDJJ0;11imcCC0"
     },
     "wheat_farm": {
       "name": "Granja de trigo",
       "desc": "Genera comida",
-      "cost": { "work": "-2" },
+      "cost": { "_requirement": "Requiere tierra fertil", "work": "-2" },
       "prod": [{ "work": -1, "food": 4 }],
       "img": "00iWWZZ0;0SjWWYYC;0S7LFMP0;0S7hFMP0;0S8LdMP0;0S8hdMP0"
     },
@@ -115,13 +115,40 @@
     "fishing_basic": {
       "name": "Pezca básica",
       "description": "Caza peces usando una lanza de madera afilada",
-      "actions": [{ "work": "-1", "wood": "-1", "fishing_spear_crude": "4" }],
+      "actions": [
+        { "work": "-1", "wood": "-1", "fishing_spear_crude": "4" },
+        {
+          "population": "-1",
+          "fishing_spear_crude": "-1",
+          "food": "4",
+          "_requirement": "Requiere peces cercanos"
+        }
+      ],
       "img": "a0jWWNf6;0nKVKLFG;0gKjRRNI;0gJiXUOK;YSJcPMMg;WY1kXDDg;0nKXYFEX"
     },
     "building_basic": {
       "name": "Construcción básica",
-      "unlocks": ["house", "house_2", "castle"],
+      "unlocks": ["house_2", "castle", "flag"],
       "img": "0pjOPXTI;0qkVINIU;05kjlKK0;10jjeNN0;0mijpEE0"
+    },
+    "starting_civilization": {
+      "name": "Ideas iniciales",
+      "desc": "Conocimiento traído a esta nueva tierra por los primeros colonizadores",
+      "img": "159ZPRR0;13jKWaa0",
+      "unlocks": ["house", "wheat_farm", "wood_camp"],
+      "actions": [
+        {
+          "_requirement": "Requiere bosque cercano",
+          "work": "-1",
+          "wood": "2"
+        },
+        {
+          "_requirement": "Requiere piedra cercana",
+          "work": "-1",
+          "stone": "2"
+        },
+        { "_requirement": "Requiere bosque cercano", "work": "-1", "food": "2" }
+      ]
     }
   },
   "civilizations": [
@@ -152,7 +179,7 @@
           "stone": [8, 0, 0],
           "food": [9, 0, 2]
         },
-        "ideas": ["fishing_basic", "building_basic"]
+        "ideas": ["starting_civilization", "fishing_basic", "building_basic"]
       }
     },
     {

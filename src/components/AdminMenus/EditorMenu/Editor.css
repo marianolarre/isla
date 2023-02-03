@@ -10,3 +10,10 @@
 p,h1,h2,h3,h4,h5,h6,br {
     user-select: none;
 }
+
+.action-container{
+    justify-content: center;
+    display: flex;
+    margin: 0 4px 4px 4px;
+    background-color:#333;
+}

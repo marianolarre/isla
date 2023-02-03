@@ -48,7 +48,10 @@ class EntryList extends Component {
           sx={selected ? { backgroundColor: "#555" } : {}}
         >
           <TableCell>
-            <img src={render != null ? render.src : ""}></img>
+            <img
+              className="render"
+              src={render != null ? render.src : ""}
+            ></img>
           </TableCell>
           <TableCell>
             <Typography>{"[" + i + "]"}</Typography>

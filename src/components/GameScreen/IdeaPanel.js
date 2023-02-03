@@ -54,13 +54,15 @@ class IdeaPanel extends Component {
       let actionList = [];
       for (let a in idea.actions) {
         actionList.push(
-          <Button key={a} fullWidth>
-            <ResourceDisplay
-              resourceData={this.props.worldData.resources}
-              graphics={this.props.graphics}
-              value={idea.actions[a]}
-            ></ResourceDisplay>
-          </Button>
+          <Box className="action-container">
+            <Button key={a} fullWidth>
+              <ResourceDisplay
+                resourceData={this.props.worldData.resources}
+                graphics={this.props.graphics}
+                value={idea.actions[a]}
+              ></ResourceDisplay>
+            </Button>
+          </Box>
         );
       }
 
@@ -72,13 +74,18 @@ class IdeaPanel extends Component {
             <>
               <Typography sx={{ fontSize: "1.2rem" }}>{idea.name}</Typography>
               <Typography>{idea.description}</Typography>
+              {actionList.length > 0 && (
+                <>
+                  <Typography>Permite las siguientes acciones:</Typography>
+                  {actionList}
+                </>
+              )}
               {unlockList.length > 0 && (
                 <>
                   <Typography>Permite la construcción de:</Typography>
                   {unlockList}
                 </>
               )}
-              {actionList}
             </>
           }
         >
