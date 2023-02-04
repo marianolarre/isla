@@ -14,6 +14,7 @@ import {
   Slide,
   Tabs,
   Tab,
+  Popover,
 } from "@mui/material";
 import GameGraphics from "../../classes/GameGraphics.js";
 import { Link } from "react-router-dom";
@@ -63,6 +64,10 @@ class GamePanel extends Component {
       currentCiv: 0,
       currentMenu: 0,
       menuOpen: true,
+      selectionOpen: false,
+      selectedData: {},
+      selectedPointer: 0,
+      selectionAnchor: null,
     };
   }
 
@@ -73,7 +78,9 @@ class GamePanel extends Component {
       () => this.handleGraphicsLoaded(),
       (d, sp) => this.handleSpriteHover(d, sp),
       (d, sp) => this.handleSpriteClick(d, sp),
-      () => this.handleSpriteExit()
+      () => this.handleSpriteExit(),
+      () => this.handleDeselect(),
+      () => this.handleDeselect()
     );
   }
 
@@ -96,11 +103,28 @@ class GamePanel extends Component {
     this.setState({ popperOpen: true });
   }
 
-  handleSpriteClick(data, spritePointer) {}
+  handleSpriteClick(bounds, data, spritePointer) {
+    $("#selection-anchor").css({
+      left: bounds.x,
+      top: bounds.y,
+      width: bounds.width,
+      height: bounds.height,
+    });
+    this.setState({
+      selectionOpen: true,
+      selectedData: data,
+      selectedPointer: spritePointer,
+    });
+  }
 
   handleSpriteExit() {
     this.setState({ popperOpen: false });
   }
+
+  handleDeselect() {
+    this.setState({ selectionOpen: false });
+  }
+
   /* #endregion */
 
   /* #region Menu Control */
@@ -138,12 +162,14 @@ class GamePanel extends Component {
       let singleResource = {};
       singleResource[i] = civ.state.resources[i][0];
       elements.push(
-        <ResourceDisplay
-          key={i}
-          resourceData={this.props.worldData.resources}
-          graphics={this.graphics}
-          value={singleResource}
-        />
+        <Box display="inline-block" key={i}>
+          <ResourceDisplay
+            key={i}
+            resourceData={this.props.worldData.resources}
+            graphics={this.graphics}
+            value={singleResource}
+          />
+        </Box>
       );
     }
     return elements;
@@ -370,6 +396,27 @@ class GamePanel extends Component {
             </Fab>
           </Box>
         </Slide>
+        <Box id="selection-anchor">
+          <Box
+            className="selection-outline"
+            sx={{ display: this.state.selectionOpen ? "block" : "none" }}
+          ></Box>
+        </Box>
+        <Popper
+          open={this.state.selectionOpen}
+          anchorEl={$("#selection-anchor").get(0)}
+          placement="top"
+          sx={{ zIndex: 1 }}
+        >
+          <Box className="selection-popup">
+            <EntityCard
+              worldData={this.props.worldData}
+              graphics={this.graphics}
+              entity={this.state.selectedData.base}
+              civilization={this.state.selectedData.civilization}
+            ></EntityCard>
+          </Box>
+        </Popper>
       </>
     );
   }

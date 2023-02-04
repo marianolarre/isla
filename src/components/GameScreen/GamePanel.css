@@ -12,11 +12,34 @@ canvas {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 40%;
+    width: 33%;
     display: flex;
     z-index: 1;
     background-color: rgba(23, 28, 28, 0.927);
     backdrop-filter: blur(15px);
+}
+
+#selection-anchor {
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 1px;
+    padding: 32px;
+    transform: translate(-32px, -32px);
+    pointer-events: none;
+}
+
+.selection-popup {
+    position: relative;
+}
+
+.selection-outline {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    transform: translate(-15px, -15px);
+    border: white 5px solid;
+    border-radius: 15px;
 }
 
 .menu-bottom-nav {

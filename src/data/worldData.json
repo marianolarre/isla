@@ -179,7 +179,16 @@
           "stone": [8, 0, 0],
           "food": [9, 0, 2]
         },
-        "ideas": ["starting_civilization", "fishing_basic", "building_basic"]
+        "ideas": ["starting_civilization", "fishing_basic", "building_basic"],
+        "orders": [
+          {
+            "type": "build",
+            "p": [688, 336],
+            "notes": "Lo quiero al lado de este",
+            "entity": "wood_camp",
+            "state": "send"
+          }
+        ]
       }
     },
     {
@@ -203,7 +212,9 @@
           "wood": [10, 4, 2],
           "stone": [8, 0, 0],
           "food": [9, 0, 2]
-        }
+        },
+        "ideas": ["starting_civilization"],
+        "orders": []
       }
     },
     {
@@ -226,7 +237,9 @@
           "wood": [10, 4, 2],
           "stone": [8, 0, 0],
           "food": [9, 0, 2]
-        }
+        },
+        "ideas": ["starting_civilization"],
+        "orders": []
       }
     }
   ]

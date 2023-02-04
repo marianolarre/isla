@@ -7,16 +7,26 @@ var previousMousePos = { x: 0, y: 0 };
 const outlineMultiplier = 6;
 
 class Graphics {
-  constructor(worldData, onLoad, onHover, onClick, onExit) {
-    this.spritePointers = [];
-    this.entitySprites = {};
-    this.spritePointerCounter = 0;
+  constructor(
+    worldData,
+    onLoad,
+    onHover,
+    onClick,
+    onExit,
+    onCameraPan,
+    onCameraZoom
+  ) {
+    this.entityInstances = [];
+    //this.entitySprites = {};
+    this.instanceCounter = 0;
     this.renders = {};
     this.worldData = worldData;
     this.onLoad = onLoad;
     this.onHover = onHover;
     this.onClick = onClick;
     this.onExit = onExit;
+    this.onCameraPan = onCameraPan;
+    this.onCameraZoom = onCameraZoom;
     // Initialize PIXI application and containers
     this.pixi = new IslandPIXI({
       width: window.innerWidth,
@@ -99,7 +109,7 @@ class Graphics {
             options
           );
           this.renderHTMLFromString(str);
-          this.createEntityGraphics(worldData.bases[entityBase], entity, civ);
+          this.createEntityGraphics(worldData.bases[entityBase], entity, civId);
         }
       }
 
@@ -125,23 +135,25 @@ class Graphics {
     }
   }
 
-  createEntityGraphics(base, entity, civ) {
+  createEntityGraphics(base, entity, civId) {
     const options = {
-      primary_color: civ.primary_color,
+      primary_color: this.worldData.civilizations[civId].primary_color,
     };
     const str = this.pixi.transformImgString(base.img, options);
     const container = this.pixi.imgStringToContainer(str);
 
     container.position.set(entity.p[0] * 16, entity.p[1] * 16);
     container.zIndex = entity.y;
-    container.pointer = this.spritePointerCounter;
-    this.entitySprites[entity] = container;
-    //entity.pointer = this.spritePointerCounter;
+    container.pointer = this.instanceCounter;
+    //this.entitySprites[entity] = container;
+    //entity.pointer = this.instanceCounter;
     //entity.civ = civ;
-    this.spritePointers[this.spritePointerCounter] = {
+
+    this.entityInstances[this.instanceCounter] = {
       graphic: container,
       base: base,
       entity: entity,
+      civilization: civId,
       enabled: true,
     };
 
@@ -160,7 +172,7 @@ class Graphics {
 
     this.entitiesView.addChild(container);
 
-    this.spritePointerCounter++;
+    this.instanceCounter++;
   }
   /* #endregion */
 
@@ -189,6 +201,7 @@ class Graphics {
       gameView.position.y = Math.floor(
         event.clientY - (deltaY * newzoom) / zoom
       );
+      this.onCameraZoom();
     }
   }
 
@@ -210,6 +223,7 @@ class Graphics {
     const { gameView } = this;
     if (clicking) {
       //dragged = true;
+      this.onCameraPan();
       let deltaX = event.clientX - previousMousePos.x;
       let deltaY = event.clientY - previousMousePos.y;
       gameView.position.x += deltaX;
@@ -229,7 +243,7 @@ class Graphics {
   // TODO: Interacción con los sprites
   handleSpriteMouseOver(ev) {
     const sprite = ev.target;
-    const data = this.spritePointers[ev.target.pointer];
+    const data = this.entityInstances[ev.target.pointer];
     this.onHover(data, ev.target.pointer);
   }
 
@@ -239,8 +253,9 @@ class Graphics {
 
   handleSpriteClick(ev) {
     const sprite = ev.target;
-    const data = this.spritePointers[ev.target.pointer];
-    this.onClick(data, ev.target.pointer);
+    const data = this.entityInstances[ev.target.pointer];
+    const bounds = sprite.getBounds();
+    this.onClick(bounds, data, ev.target.pointer);
   }
   /* #endregion */
 }
