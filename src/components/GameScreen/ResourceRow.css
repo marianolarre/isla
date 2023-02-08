@@ -1,0 +1,9 @@
+.resource-positive {
+    color: #8f8;
+    display: inline;
+}
+
+.resource-negative {
+    color: #f86;
+    display: inline;
+}

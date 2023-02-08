@@ -39,6 +39,7 @@ import {
 import ResourcesPanel from "./ResourcesPanel.js";
 import IdeaPanel from "./IdeaPanel.js";
 import EntityCard from "../EntityCard/EntityCard.js";
+import GameMasterPanel from "./GameMasterPanel.js";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -218,6 +219,10 @@ class GamePanel extends Component {
   }
   /* #endregion */
 
+  handleCivChange(civId) {
+    this.setState({ currentCiv: civId });
+  }
+
   /* #region Entities Panel */
   renderEntities() {
     const civ = this.props.worldData.civilizations[this.state.currentCiv];
@@ -246,33 +251,6 @@ class GamePanel extends Component {
     }
     return <>{imgList}</>;
   }
-  /* #endregion */
-
-  /* #region Game Master Panel */
-  renderCivButtons() {
-    let list = [];
-    this.props.worldData.civilizations.map((value, index) =>
-      list.push(
-        <BottomNavigationAction
-          key={index}
-          onClick={() => this.handleCivChange(index)}
-          icon={
-            <img
-              src={this.graphics.renders[value.img].src}
-              style={{ margin: 0 }}
-            ></img>
-          }
-          label={value.name}
-        ></BottomNavigationAction>
-      )
-    );
-    return list;
-  }
-
-  handleCivChange(civId) {
-    this.setState({ currentCiv: civId });
-  }
-
   /* #endregion */
 
   render() {
@@ -382,12 +360,12 @@ class GamePanel extends Component {
                 index={4}
                 className="tab-panel"
               >
-                <BottomNavigation value={this.state.currentCiv}>
-                  {this.renderCivButtons()}
-                </BottomNavigation>
-                <Link to="/editor">
-                  <Button>Editor</Button>
-                </Link>
+                <GameMasterPanel
+                  worldData={this.props.worldData}
+                  civilization={this.state.currentCiv}
+                  graphics={this.graphics}
+                  onCivChange={(civId) => this.handleCivChange(civId)}
+                ></GameMasterPanel>
               </TabPanel>
             </Box>
 
@@ -405,7 +383,7 @@ class GamePanel extends Component {
         <Popper
           open={this.state.selectionOpen}
           anchorEl={$("#selection-anchor").get(0)}
-          placement="top"
+          placement="right"
           sx={{ zIndex: 1 }}
         >
           <Box className="selection-popup">

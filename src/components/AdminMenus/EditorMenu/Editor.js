@@ -96,7 +96,7 @@ class Editor extends Component {
   }
 
   downloadWorldData() {
-    this.downloadObjectAsJson(this.worldData, "textWorldData");
+    this.downloadObjectAsJson(this.worldData, "testWorldData");
   }
 
   downloadObjectAsJson(exportObj, exportName) {

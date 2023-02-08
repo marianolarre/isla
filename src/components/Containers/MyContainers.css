@@ -1,0 +1,31 @@
+.pretty-button{
+    justify-content: center;
+    display: flex;
+    margin: 0 4px 4px 4px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 0 rgb(25, 48, 37);
+    background-color: #418A5Eff;
+    margin-bottom: "5px";
+    color: white;
+    text-transform: none;
+    width: 100%;
+}
+
+.pretty-box-outline {
+    display: block;
+    width: 300px;
+    background-color: rgb(25, 48, 37);
+    border-radius: 10px;
+    color:white;
+    border: 5px black solid;
+    box-shadow: 5px 5px 2 black;
+}
+
+.pretty-box-container {
+    display: block;
+    background-color: rgb(37, 68, 53);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 10px;
+}

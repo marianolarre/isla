@@ -1,6 +1,9 @@
 import { Forward } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
+import { isEmptyObject } from "jquery";
 import React, { Component } from "react";
+import PrettyBox from "../Containers/PrettyBox";
+import PrettyButton from "../Containers/PrettyButton";
 import ResourceDisplay from "../ResourceDisplay/ResourceDisplay";
 import "./EntityCard.css";
 
@@ -19,16 +22,16 @@ class EntityCard extends Component {
     }
     for (let a in this.props.entity.prod) {
       optionList.push(
-        <Box className="action-container" key={a}>
+        <PrettyButton key={a}>
           <ResourceDisplay
             resourceData={this.props.worldData.resources}
             graphics={this.props.graphics}
             value={this.props.entity.prod[a]}
           ></ResourceDisplay>
-        </Box>
+        </PrettyButton>
       );
     }
-    return optionList;
+    return <Stack spacing={1}>{optionList}</Stack>;
   }
 
   render() {
@@ -50,12 +53,14 @@ class EntityCard extends Component {
     if (this.props.entity.cost != null) {
       let req = this.props.entity.cost._requirement;
       if (req !== null) {
-        requirements = <Typography color={"#ff0"}>{req}</Typography>;
+        requirements = (
+          <Typography className="card-requirement">{req}</Typography>
+        );
       }
 
       let res = this.props.entity.cost._result;
       if (res !== null) {
-        results = <Typography color={"#8ff"}>{res}</Typography>;
+        results = <Typography className="cardResult">{res}</Typography>;
       }
     }
 
@@ -64,33 +69,43 @@ class EntityCard extends Component {
     delete cost._result;
 
     return (
-      <Box className="entity-card">
+      <PrettyBox>
         <Stack>
           <Typography className="title">{this.props.entity.name}</Typography>
           {requirements}
-          <Stack direction="row" sx={{ margin: "auto" }} spacing={2}>
-            <Box sx={{ marginTop: "10px" }}>
-              <ResourceDisplay
-                negated
-                resourceData={this.props.worldData.resources}
-                graphics={this.props.graphics}
-                value={cost}
-              ></ResourceDisplay>
+          {((cost == null || isEmptyObject(cost)) && (
+            <Box>
+              <img
+                src={this.props.graphics.renders[str].src}
+                className="render big-render no-margin"
+              ></img>
             </Box>
-            <Box></Box>
-            <Forward style={{ margin: "auto" }}></Forward>
-            <img
-              src={this.props.graphics.renders[str].src}
-              className="render big-render no-margin"
-            ></img>
-          </Stack>
+          )) || (
+            <Stack direction="row" sx={{ margin: "auto" }} spacing={2}>
+              <Box sx={{ marginTop: "10px" }}>
+                <ResourceDisplay
+                  negated
+                  resourceData={this.props.worldData.resources}
+                  graphics={this.props.graphics}
+                  value={cost}
+                ></ResourceDisplay>
+              </Box>
+              <Box></Box>
+              <Forward style={{ margin: "auto" }}></Forward>
+              <img
+                src={this.props.graphics.renders[str].src}
+                className="render big-render no-margin"
+              ></img>
+            </Stack>
+          )}
+
           {results}
           <Typography className="description">
             {this.props.entity.desc}
           </Typography>
           {this.renderOptions()}
         </Stack>
-      </Box>
+      </PrettyBox>
     );
   }
 }

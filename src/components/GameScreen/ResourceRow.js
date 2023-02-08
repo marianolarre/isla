@@ -10,28 +10,21 @@ import {
   Typography,
 } from "@mui/material";
 import React, { Component } from "react";
+import "./ResourceRow.css";
 
 function Delta(value) {
   if (value == 0) return <Typography display="inline">-</Typography>;
   if (value > 0)
     return (
       <>
-        <Typography display="inline" color={"#8f8"}>
-          {value}
-        </Typography>
-        <Typography display="inline" color={"#8f8"}>
-          ▲
-        </Typography>
+        <Typography className="resource-positive">{value}</Typography>
+        <Typography className="resource-positive">▲</Typography>
       </>
     );
   return (
     <>
-      <Typography display="inline" color={"#f86"}>
-        {value}
-      </Typography>
-      <Typography display="inline" color={"#f86"}>
-        ▼
-      </Typography>
+      <Typography className="resource-negative">{value}</Typography>
+      <Typography className="resource-negative">▼</Typography>
     </>
   );
 }

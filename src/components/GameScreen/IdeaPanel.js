@@ -1,5 +1,7 @@
-import { Box, Button, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
 import React, { Component } from "react";
+import PrettyBox from "../Containers/PrettyBox";
+import PrettyButton from "../Containers/PrettyButton";
 import EntityCard from "../EntityCard/EntityCard";
 import ResourceDisplay from "../ResourceDisplay/ResourceDisplay";
 import "./IdeaPanel.css";
@@ -31,6 +33,7 @@ class IdeaPanel extends Component {
         if (this.props.graphics.renders[unlockstr] == null) continue;
         unlockList.push(
           <Tooltip
+            sx={{ backgroundColor: "#0000" }}
             key={u}
             title={
               <EntityCard
@@ -41,11 +44,23 @@ class IdeaPanel extends Component {
               ></EntityCard>
             }
           >
-            <Button>
-              <img
-                src={this.props.graphics.renders[unlockstr].src}
-                className="render no-margin"
-              ></img>
+            <Button
+              variant="filled"
+              className="pretty-button"
+              sx={{
+                backgroundColor: "#418A5Eff",
+                marginBottom: "5px",
+                paddingTop: "10px",
+                width: "auto",
+                margin: "5px",
+              }}
+            >
+              <Box className="pretty-button-box">
+                <img
+                  src={this.props.graphics.renders[unlockstr].src}
+                  className="render no-margin"
+                ></img>
+              </Box>
             </Button>
           </Tooltip>
         );
@@ -55,29 +70,30 @@ class IdeaPanel extends Component {
       for (let a in idea.actions) {
         actionList.push(
           <Box className="action-container">
-            <Button key={a} fullWidth>
+            <PrettyButton key={a} fullWidth>
               <ResourceDisplay
                 resourceData={this.props.worldData.resources}
                 graphics={this.props.graphics}
                 value={idea.actions[a]}
               ></ResourceDisplay>
-            </Button>
+            </PrettyButton>
           </Box>
         );
       }
 
       imgList.push(
         <Tooltip
+          className="invisible-tooltip"
           key={i}
           enterDelay={400}
           title={
-            <>
+            <PrettyBox>
               <Typography sx={{ fontSize: "1.2rem" }}>{idea.name}</Typography>
               <Typography>{idea.description}</Typography>
               {actionList.length > 0 && (
                 <>
                   <Typography>Permite las siguientes acciones:</Typography>
-                  {actionList}
+                  <Stack spacing={1}>{actionList}</Stack>
                 </>
               )}
               {unlockList.length > 0 && (
@@ -86,7 +102,7 @@ class IdeaPanel extends Component {
                   {unlockList}
                 </>
               )}
-            </>
+            </PrettyBox>
           }
         >
           <Button>

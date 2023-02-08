@@ -118,10 +118,10 @@
       "actions": [
         { "work": "-1", "wood": "-1", "fishing_spear_crude": "4" },
         {
-          "population": "-1",
           "fishing_spear_crude": "-1",
           "food": "4",
-          "_requirement": "Requiere peces cercanos"
+          "_requirement": "Requiere peces cercanos",
+          "work": "-1"
         }
       ],
       "img": "a0jWWNf6;0nKVKLFG;0gKjRRNI;0gJiXUOK;YSJcPMMg;WY1kXDDg;0nKXYFEX"
