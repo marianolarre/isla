@@ -19,6 +19,8 @@ class Graphics {
     this.entityInstances = [];
     //this.entitySprites = {};
     this.instanceCounter = 0;
+    this.orders = [];
+    this.orderCounter = 0;
     this.renders = {};
     this.worldData = worldData;
     this.onLoad = onLoad;
@@ -56,7 +58,8 @@ class Graphics {
 
     // Load Assets
     this.pixi.app.loader.load((loader, resources) => {
-      this.createAllGraphicsFromData(this.worldData);
+      this.renderAllGraphicsFromData(this.worldData);
+      this.createAllStateGraphics(this.worldData);
       this.onLoad();
     });
   }
@@ -82,14 +85,18 @@ class Graphics {
   }
   /* #region  Sprite Creation */
 
-  createAllGraphicsFromData(worldData) {
+  renderAllGraphicsFromData(worldData) {
+    // Load resource graphics
     for (var resource in worldData.resources) {
       this.renderHTMLFromString(worldData.resources[resource].img);
     }
+
+    // Load idea graphics
     for (var idea in worldData.ideas) {
       this.renderHTMLFromString(worldData.ideas[idea].img);
     }
 
+    // Load civilization graphics
     const civilizations = worldData.civilizations;
     for (var civId in civilizations) {
       const civ = civilizations[civId];
@@ -99,7 +106,19 @@ class Graphics {
         primary_color: civ.primary_color,
       };
 
-      // Load all entity graphics
+      // Load graphics from bases that get unlocked by an idea
+      for (var i in state.ideas) {
+        const ideaId = state.ideas[i];
+        const unlocks = worldData.ideas[ideaId].unlocks;
+        for (var u in unlocks) {
+          const unlockId = unlocks[u];
+          const unlock = worldData.bases[unlockId];
+          const str = this.pixi.transformImgString(unlock.img, options);
+          this.renderHTMLFromString(str);
+        }
+      }
+
+      // Load entity graphics
       for (var entityBase in state.entities) {
         let entityList = state.entities[entityBase];
         for (var entityId in entityList) {
@@ -108,19 +127,6 @@ class Graphics {
             worldData.bases[entityBase].img,
             options
           );
-          this.renderHTMLFromString(str);
-          this.createEntityGraphics(worldData.bases[entityBase], entity, civId);
-        }
-      }
-
-      // Load all graphics from bases that get unlocked by an idea
-      for (var i in state.ideas) {
-        const ideaId = state.ideas[i];
-        const unlocks = worldData.ideas[ideaId].unlocks;
-        for (var u in unlocks) {
-          const unlockId = unlocks[u];
-          const unlock = worldData.bases[unlockId];
-          const str = this.pixi.transformImgString(unlock.img, options);
           this.renderHTMLFromString(str);
         }
       }
@@ -135,7 +141,35 @@ class Graphics {
     }
   }
 
-  createEntityGraphics(base, entity, civId) {
+  createAllStateGraphics(worldData) {
+    const civilizations = worldData.civilizations;
+    for (var civId in civilizations) {
+      const civ = civilizations[civId];
+      const state = civ.state;
+      this.renderHTMLFromString(civ.img);
+      const options = {
+        primary_color: civ.primary_color,
+      };
+
+      for (var entityBase in state.entities) {
+        let entityList = state.entities[entityBase];
+        for (var entityId in entityList) {
+          let entity = entityList[entityId];
+          const str = this.pixi.transformImgString(
+            worldData.bases[entityBase].img,
+            options
+          );
+          this.createEntityGraphic(worldData.bases[entityBase], entity, civId);
+        }
+      }
+
+      for (var orderId in state.orders) {
+        this.createOrderGraphic(state.orders[orderId], civId);
+      }
+    }
+  }
+
+  createEntityGraphic(base, entity, civId) {
     const options = {
       primary_color: this.worldData.civilizations[civId].primary_color,
     };
@@ -175,6 +209,38 @@ class Graphics {
     this.instanceCounter++;
   }
   /* #endregion */
+
+  createOrderGraphic(order, civId) {
+    const container = this.pixi.orderContainer();
+    container.position.set(order.p[0] * 16, order.p[1] * 16);
+    container.zIndex = order.p[1] + 100;
+    container.pointer = this.orderCounter;
+    /*
+    this.entityInstances[this.instanceCounter] = {
+      graphic: container,
+      base: base,
+      entity: entity,
+      civilization: civId,
+      enabled: true,
+    };
+
+    container.interactive = true;
+    container.buttonMode = true;
+    container
+      .on("pointerover", (ev) => {
+        this.handleSpriteMouseOver(ev);
+      })
+      .on("pointerout", (ev) => {
+        this.handleSpriteMouseOut(ev);
+      })
+      .on("click", (ev) => {
+        this.handleSpriteClick(ev);
+      });
+*/
+    this.entitiesView.addChild(container);
+
+    this.orderCounter++;
+  }
 
   /* #region Mouse Event Handlers  */
   mouseWheelHandler(event) {

@@ -1,10 +1,27 @@
-import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  Tooltip,
+  Typography,
+  tooltipClasses,
+} from "@mui/material";
 import React, { Component } from "react";
 import PrettyBox from "../Containers/PrettyBox";
 import PrettyButton from "../Containers/PrettyButton";
 import EntityCard from "../EntityCard/EntityCard";
 import ResourceDisplay from "../ResourceDisplay/ResourceDisplay";
+import { styled } from "@mui/material/styles";
 import "./IdeaPanel.css";
+
+const IdeaTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: "none",
+    backgroundColor: "#0000",
+  },
+});
 
 class IdeaPanel extends Component {
   state = {};
@@ -32,7 +49,7 @@ class IdeaPanel extends Component {
         );
         if (this.props.graphics.renders[unlockstr] == null) continue;
         unlockList.push(
-          <Tooltip
+          <IdeaTooltip
             sx={{ backgroundColor: "#0000" }}
             key={u}
             title={
@@ -62,7 +79,7 @@ class IdeaPanel extends Component {
                 ></img>
               </Box>
             </Button>
-          </Tooltip>
+          </IdeaTooltip>
         );
       }
 
@@ -82,7 +99,7 @@ class IdeaPanel extends Component {
       }
 
       imgList.push(
-        <Tooltip
+        <IdeaTooltip
           className="invisible-tooltip"
           key={i}
           enterDelay={400}
@@ -111,7 +128,7 @@ class IdeaPanel extends Component {
               src={this.props.graphics.renders[str].src}
             ></img>
           </Button>
-        </Tooltip>
+        </IdeaTooltip>
       );
     }
     return <>{imgList}</>;

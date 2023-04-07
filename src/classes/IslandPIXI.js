@@ -200,6 +200,18 @@ export class IslandPIXI {
     return this.serializeSprite(parts);
   }
 
+  orderContainer() {
+    const container = new PIXI.Container();
+    const sprite = new PIXI.Sprite(this.orderTexture);
+    sprite.pivot.x = 64;
+    sprite.pivot.y = 128;
+    sprite.scale.x = 0.5;
+    sprite.scale.y = 0.5;
+    container.addChild(sprite);
+    container.filters = [this.blackOutline];
+    return container;
+  }
+
   imgStringToContainer(string) {
     const container = new PIXI.Container();
     var imgArray = string.split(";");
@@ -227,6 +239,9 @@ export class IslandPIXI {
 
   loadAssets() {
     if (this.loaded) return;
+
+    this.loadMiscSprites();
+
     let fileList = [];
     for (let i in partPages) {
       fileList.push(partPages[i].file);
@@ -255,6 +270,10 @@ export class IslandPIXI {
     pixiObject.scale.x /= quality;
     pixiObject.scale.y /= quality;
     return render;
+  }
+
+  loadMiscSprites() {
+    this.orderTexture = PIXI.Texture.from("img/order.png");
   }
 
   // Once assets are loaded

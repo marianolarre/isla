@@ -20,18 +20,36 @@ class EntityCard extends Component {
         </Box>
       );
     }
-    for (let a in this.props.entity.prod) {
-      optionList.push(
-        <PrettyButton key={a}>
-          <ResourceDisplay
-            resourceData={this.props.worldData.resources}
-            graphics={this.props.graphics}
-            value={this.props.entity.prod[a]}
-          ></ResourceDisplay>
-        </PrettyButton>
-      );
+    if (this.props.informative || this.props.entity.prod.length == 1) {
+      for (let a in this.props.entity.prod) {
+        optionList.push(
+          <Box key={a}>
+            <ResourceDisplay
+              resourceData={this.props.worldData.resources}
+              graphics={this.props.graphics}
+              value={this.props.entity.prod[a]}
+            ></ResourceDisplay>
+          </Box>
+        );
+      }
+    } else {
+      for (let a in this.props.entity.prod) {
+        optionList.push(
+          <PrettyButton key={a}>
+            <ResourceDisplay
+              resourceData={this.props.worldData.resources}
+              graphics={this.props.graphics}
+              value={this.props.entity.prod[a]}
+            ></ResourceDisplay>
+          </PrettyButton>
+        );
+      }
     }
-    return <Stack spacing={1}>{optionList}</Stack>;
+    return (
+      <Stack spacing={1} className="vertical-center">
+        {optionList}
+      </Stack>
+    );
   }
 
   render() {
@@ -70,39 +88,37 @@ class EntityCard extends Component {
 
     return (
       <PrettyBox>
-        <Stack>
-          <Typography className="title">{this.props.entity.name}</Typography>
-          {requirements}
-          {((cost == null || isEmptyObject(cost)) && (
+        <Box className="card-header">
+          <Typography className="card-title">
+            {this.props.entity.name}
+          </Typography>
+          {this.props.entity.cost != null && (
+            <Box className="card-cost">
+              <ResourceDisplay
+                negated
+                resourceData={this.props.worldData.resources}
+                graphics={this.props.graphics}
+                value={cost}
+              ></ResourceDisplay>
+            </Box>
+          )}
+        </Box>
+        <Stack direction="row" spacing={4}>
+          <Stack className="vertical-center">
+            {requirements}
             <Box>
               <img
                 src={this.props.graphics.renders[str].src}
                 className="render big-render no-margin"
               ></img>
             </Box>
-          )) || (
-            <Stack direction="row" sx={{ margin: "auto" }} spacing={2}>
-              <Box sx={{ marginTop: "10px" }}>
-                <ResourceDisplay
-                  negated
-                  resourceData={this.props.worldData.resources}
-                  graphics={this.props.graphics}
-                  value={cost}
-                ></ResourceDisplay>
-              </Box>
-              <Box></Box>
-              <Forward style={{ margin: "auto" }}></Forward>
-              <img
-                src={this.props.graphics.renders[str].src}
-                className="render big-render no-margin"
-              ></img>
-            </Stack>
-          )}
-
-          {results}
-          <Typography className="description">
-            {this.props.entity.desc}
-          </Typography>
+            {results}
+            <Box sx={{ maxWidth: "200px" }}>
+              <Typography className="description">
+                {this.props.entity.desc}
+              </Typography>
+            </Box>
+          </Stack>
           {this.renderOptions()}
         </Stack>
       </PrettyBox>

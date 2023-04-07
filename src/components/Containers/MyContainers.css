@@ -13,8 +13,8 @@
 }
 
 .pretty-box-outline {
-    display: block;
-    width: 300px;
+    display: flex;
+    width: auto;
     background-color: rgb(25, 48, 37);
     border-radius: 10px;
     color:white;

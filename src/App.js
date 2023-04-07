@@ -5,6 +5,7 @@ import Editor from "./components/AdminMenus/EditorMenu/Editor";
 import { createTheme, ThemeProvider } from "@mui/material";
 import GamePanel from "./components/GameScreen/GamePanel";
 import worldData from "./data/worldData.json";
+import MainMenu from "./components/MainMenu";
 
 const darkTheme = createTheme({
   palette: {
@@ -22,8 +23,9 @@ class App extends Component {
       <ThemeProvider theme={darkTheme}>
         <BrowserRouter>
           <Routes>
+            <Route path="" element={<MainMenu></MainMenu>}></Route>
             <Route
-              path="/"
+              path="/play"
               element={
                 <GamePanel
                   worldData={worldData}
