@@ -32,8 +32,24 @@ import {
 } from "@mui/icons-material";
 
 var clicking = false;
+var pressingShift = false;
+var pressingCtrl = false;
+var movingAll = false;
 var startMousePos = { x: 0, y: 0 };
 var startPartPos = { x: 0, y: 0 };
+var allStartPartPos = [];
+
+onkeydown = (event) => {
+  if (event.key == "Shift") {
+    pressingShift = true;
+  }
+};
+
+onkeyup = (event) => {
+  if (event.key == "Shift") {
+    pressingShift = false;
+  }
+};
 
 class GraphicsEditor extends Component {
   constructor(props) {
@@ -242,11 +258,22 @@ class GraphicsEditor extends Component {
       x: event.data.global.x,
       y: event.data.global.y,
     };
-    const part = this.graphicData[this.state.currentImage];
-    startPartPos = {
-      x: part.xPos,
-      y: part.yPos,
-    };
+    movingAll = pressingShift;
+
+    if (movingAll) {
+      for (let i = 0; i < this.graphicData.length; i++) {
+        allStartPartPos[i] = {
+          x: this.graphicData[i].xPos,
+          y: this.graphicData[i].yPos,
+        };
+      }
+    } else {
+      const part = this.graphicData[this.state.currentImage];
+      startPartPos = {
+        x: part.xPos,
+        y: part.yPos,
+      };
+    }
   }
 
   mouseUpHandler(event) {
@@ -264,14 +291,25 @@ class GraphicsEditor extends Component {
     if (clicking) {
       let deltaX = event.data.global.x - startMousePos.x;
       let deltaY = event.data.global.y - startMousePos.y;
-
-      let part = this.graphicData[this.state.currentImage];
-      part.xPos = startPartPos.x + deltaX / 4 / this.props.scale;
-      if (part.xPos < 0) part.xPos = 0;
-      if (part.xPos > 63) part.xPos = 63;
-      part.yPos = startPartPos.y + deltaY / 4 / this.props.scale;
-      if (part.yPos < 0) part.yPos = 0;
-      if (part.yPos > 63) part.yPos = 63;
+      if (movingAll) {
+        for (let i = 0; i < this.graphicData.length; i++) {
+          let part = this.graphicData[i];
+          part.xPos = allStartPartPos[i].x + deltaX / 4 / this.props.scale;
+          if (part.xPos < 0) part.xPos = 0;
+          if (part.xPos > 63) part.xPos = 63;
+          part.yPos = allStartPartPos[i].y + deltaY / 4 / this.props.scale;
+          if (part.yPos < 0) part.yPos = 0;
+          if (part.yPos > 63) part.yPos = 63;
+        }
+      } else {
+        let part = this.graphicData[this.state.currentImage];
+        part.xPos = startPartPos.x + deltaX / 4 / this.props.scale;
+        if (part.xPos < 0) part.xPos = 0;
+        if (part.xPos > 63) part.xPos = 63;
+        part.yPos = startPartPos.y + deltaY / 4 / this.props.scale;
+        if (part.yPos < 0) part.yPos = 0;
+        if (part.yPos > 63) part.yPos = 63;
+      }
 
       this.props.onChange(this.pixi.serializeSprite(this.graphicData));
     }
@@ -487,7 +525,10 @@ class GraphicsEditor extends Component {
           </Box>
           <Box>
             <Box id={this.props.containerId}></Box>
-            <Typography>Click and drag to move part</Typography>
+            <Typography>Click and drag to move selected part</Typography>
+            <Typography>
+              Hold shift, click and drag to move everything together
+            </Typography>
           </Box>
         </Stack>
         <Stack direction="row">

@@ -24,7 +24,6 @@ class Draw extends Component {
   }
 
   render() {
-    console.log("Render");
     return (
       <Box sx={{ width: "100%", paddingTop: "50px", color: "white" }}>
         <Box sx={{ maxWidth: "1000px", margin: "auto" }}>

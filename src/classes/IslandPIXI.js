@@ -87,31 +87,31 @@ export const partPages = [
     name: "Basic shapes",
     file: "img/shapes_basic.png",
     icon: <Hexagon></Hexagon>,
-    count: 58,
+    count: 59,
   },
   {
     name: "Architecture",
     file: "img/shapes_architecture.png",
     icon: <House></House>,
-    count: 16,
+    count: 20,
   },
   {
     name: "Nature",
     file: "img/shapes_nature.png",
     icon: <Park></Park>,
-    count: 29,
+    count: 25,
   },
   {
     name: "Creatures",
     file: "img/shapes_creatures.png",
     icon: <EmojiPeople></EmojiPeople>,
-    count: 5,
+    count: 16,
   },
   {
     name: "Items",
     file: "img/shapes_items.png",
     icon: <Restaurant></Restaurant>,
-    count: 9,
+    count: 8,
   },
 ];
 
