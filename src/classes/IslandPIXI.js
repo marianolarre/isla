@@ -99,7 +99,7 @@ export const partPages = [
     name: "Nature",
     file: "img/shapes_nature.png",
     icon: <Park></Park>,
-    count: 25,
+    count: 29,
   },
   {
     name: "Creatures",
