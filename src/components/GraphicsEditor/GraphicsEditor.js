@@ -18,6 +18,7 @@ import {
   Box,
   Tooltip,
   Link,
+  Typography,
 } from "@mui/material";
 import "./GraphicsEditor.css";
 import {
@@ -71,13 +72,14 @@ class GraphicsEditor extends Component {
     this.preview.sortableChildren = true;
     this.pixi.app.stage.addChild(this.preview);
 
-    $(() => {
-      $("#" + this.props.containerId).append(this.pixi.app.view);
-    });
     this.pixi.app.loader.load((loader, resources) => {
       this.renderString(this.pixi.serializeSprite(this.props.value));
       this.graphicData = [];
       this.addNewPart();
+      $(() => {
+        console.log("Mounting");
+        $("#" + this.props.containerId).append(this.pixi.app.view);
+      });
     });
 
     background.interactive = true;
@@ -373,13 +375,16 @@ class GraphicsEditor extends Component {
     }
     return (
       <Box>
-        <label>Code </label>
-        <input
-          label="String"
-          className="string-display"
-          value={this.props.value}
-          onChange={(e) => this.handleCodeChange(e)}
-        />
+        <Box display="flex" flex={1} padding={2}>
+          <label style={{ marginRight: "10px" }}>Code:</label>
+          <input
+            label="String"
+            className="string-display"
+            value={this.props.value}
+            onChange={(e) => this.handleCodeChange(e)}
+            style={{ flex: 1 }}
+          />
+        </Box>
 
         <Stack direction="row">
           <Box flex={1}>
@@ -480,7 +485,10 @@ class GraphicsEditor extends Component {
               </Box>
             </Stack>
           </Box>
-          <Box id={this.props.containerId}></Box>
+          <Box>
+            <Box id={this.props.containerId}></Box>
+            <Typography>Click and drag to move part</Typography>
+          </Box>
         </Stack>
         <Stack direction="row">
           <Box flex={2}>

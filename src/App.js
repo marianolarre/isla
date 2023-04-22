@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import GamePanel from "./components/GameScreen/GamePanel";
 import worldData from "./data/worldData.json";
 import MainMenu from "./components/MainMenu";
+import Draw from "./components/Draw/Draw";
 
 const darkTheme = createTheme({
   palette: {
@@ -42,6 +43,7 @@ class App extends Component {
                 ></Editor>
               }
             ></Route>
+            <Route path="/draw" element={<Draw></Draw>}></Route>
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

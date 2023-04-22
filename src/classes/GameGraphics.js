@@ -6,6 +6,9 @@ var clicking = false;
 var previousMousePos = { x: 0, y: 0 };
 const outlineMultiplier = 6;
 
+const ENTITY = 1;
+const ORDER = 2;
+
 class Graphics {
   constructor(
     worldData,
@@ -215,28 +218,27 @@ class Graphics {
     container.position.set(order.p[0] * 16, order.p[1] * 16);
     container.zIndex = order.p[1] + 100;
     container.pointer = this.orderCounter;
-    /*
-    this.entityInstances[this.instanceCounter] = {
+
+    this.orders[this.orderCounter] = {
       graphic: container,
-      base: base,
-      entity: entity,
       civilization: civId,
       enabled: true,
+      data: order,
     };
 
     container.interactive = true;
     container.buttonMode = true;
     container
       .on("pointerover", (ev) => {
-        this.handleSpriteMouseOver(ev);
+        this.handleOrderMouseOver(ev);
       })
       .on("pointerout", (ev) => {
-        this.handleSpriteMouseOut(ev);
+        this.handleOrderMouseOut(ev);
       })
       .on("click", (ev) => {
-        this.handleSpriteClick(ev);
+        this.handleOrderClick(ev);
       });
-*/
+
     this.entitiesView.addChild(container);
 
     this.orderCounter++;
@@ -305,8 +307,6 @@ class Graphics {
   /* #endregion */
 
   /* #region Sprite Event Handlers */
-
-  // TODO: Interacción con los sprites
   handleSpriteMouseOver(ev) {
     const sprite = ev.target;
     const data = this.entityInstances[ev.target.pointer];
@@ -321,7 +321,25 @@ class Graphics {
     const sprite = ev.target;
     const data = this.entityInstances[ev.target.pointer];
     const bounds = sprite.getBounds();
-    this.onClick(bounds, data, ev.target.pointer);
+    this.onClick(bounds, data, ev.target.pointer, ENTITY);
+  }
+  /* #endregion */
+
+  /* #region Order Event Handlers */
+  handleOrderMouseOver(ev) {
+    const order = ev.target;
+    const data = this.orders[ev.target.pointer];
+    this.onHover(data, ev.target.pointer);
+  }
+
+  handleOrderMouseOut() {
+    this.onExit();
+  }
+
+  handleOrderClick(ev) {
+    const order = this.orders[ev.target.pointer];
+    const bounds = ev.target.getBounds();
+    this.onClick(bounds, order, ev.target.pointer, ORDER);
   }
   /* #endregion */
 }

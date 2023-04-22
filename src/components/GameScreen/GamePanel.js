@@ -40,6 +40,10 @@ import ResourcesPanel from "./ResourcesPanel.js";
 import IdeaPanel from "./IdeaPanel.js";
 import EntityCard from "../EntityCard/EntityCard.js";
 import GameMasterPanel from "./GameMasterPanel.js";
+import OrderCard from "../OrderCard/OrderCard.js";
+
+const ENTITY = 1;
+const ORDER = 2;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -67,6 +71,7 @@ class GamePanel extends Component {
       menuOpen: true,
       selectionOpen: false,
       selectedData: {},
+      selectedType: 0,
       selectedPointer: 0,
       selectionAnchor: null,
     };
@@ -78,7 +83,8 @@ class GamePanel extends Component {
       this.props.worldData,
       () => this.handleGraphicsLoaded(),
       (d, sp) => this.handleSpriteHover(d, sp),
-      (d, sp) => this.handleSpriteClick(d, sp),
+      (bounds, data, pointer, type) =>
+        this.handleSpriteClick(bounds, data, pointer, type),
       () => this.handleSpriteExit(),
       () => this.handleDeselect(),
       () => this.handleDeselect()
@@ -104,7 +110,7 @@ class GamePanel extends Component {
     this.setState({ popperOpen: true });
   }
 
-  handleSpriteClick(bounds, data, spritePointer) {
+  handleSpriteClick(bounds, data, spritePointer, type) {
     $("#selection-anchor").css({
       left: bounds.x,
       top: bounds.y,
@@ -115,6 +121,7 @@ class GamePanel extends Component {
       selectionOpen: true,
       selectedData: data,
       selectedPointer: spritePointer,
+      selectedType: type,
     });
   }
 
@@ -387,12 +394,22 @@ class GamePanel extends Component {
           sx={{ zIndex: 1 }}
         >
           <Box className="selection-popup">
-            <EntityCard
-              worldData={this.props.worldData}
-              graphics={this.graphics}
-              entity={this.state.selectedData.base}
-              civilization={this.state.selectedData.civilization}
-            ></EntityCard>
+            {this.state.selectedType == ENTITY && (
+              <EntityCard
+                worldData={this.props.worldData}
+                graphics={this.graphics}
+                entity={this.state.selectedData.base}
+                civilization={this.state.selectedData.civilization}
+              ></EntityCard>
+            )}
+            {this.state.selectedType == ORDER && (
+              <OrderCard
+                worldData={this.props.worldData}
+                graphics={this.graphics}
+                order={this.state.selectedData}
+                civilization={this.state.selectedData.civilization}
+              ></OrderCard>
+            )}
           </Box>
         </Popper>
       </>

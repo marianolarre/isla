@@ -1,0 +1,48 @@
+.card-header {
+    display: inline-flex;
+    width: 100%;
+    border-bottom: #418A5Eff 1px solid;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    text-align: left;
+    font-size: 1.5rem !important;
+    flex-grow: 1;
+    padding-right: 20px;
+}
+
+.card-cost {
+    position: relative;
+    left: 5px;
+    bottom: 5px;
+}
+
+.vertical-center {
+    height: 100%;
+    margin: auto;
+}
+
+.centered {
+    text-align: center;
+    margin: auto;
+}
+
+.description {
+    text-align: center;
+    font-style: italic;
+}
+
+.card-requirement {
+    color: #ff8;
+}
+
+.card-result {
+    color: #088;
+}
+
+.MuiTableCell-sizeSmall {
+    margin: 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}

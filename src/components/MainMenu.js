@@ -17,6 +17,11 @@ class MainMenu extends Component {
             <Typography>Master</Typography>
           </Button>
         </Link>
+        <Link to="draw">
+          <Button variant="contained">
+            <Typography>Draw</Typography>
+          </Button>
+        </Link>
       </Stack>
     );
   }
