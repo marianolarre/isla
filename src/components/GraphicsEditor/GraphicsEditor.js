@@ -170,12 +170,12 @@ class GraphicsEditor extends Component {
   addNewPart() {
     let parts = [...this.graphicData];
     parts.push({
-      imageId: 27,
+      imageId: 0,
       colorId: this.props.disableSpecialColors ? 22 : 0,
       xPos: 32,
       yPos: 32,
-      xScale: 40,
-      yScale: 4,
+      xScale: 16,
+      yScale: 16,
       rotation: 0,
     });
     this.uploadNewPartList(parts, parts.length - 1);
