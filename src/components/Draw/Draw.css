@@ -4,7 +4,7 @@ canvas {
     padding: 20px;
 }
 
-.container {
+.drawing-container {
     display: block;
     width: 100%;
     margin: auto;
@@ -12,4 +12,10 @@ canvas {
     padding-bottom: 30px;
     overflow: auto;
     background-color: #444;
+    color: "white";
+}
+
+.scrolling-panel {
+    overflow-y: auto;
+    max-height: 100vh;
 }

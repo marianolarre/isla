@@ -56,7 +56,16 @@ class Draw extends Component {
 
   render() {
     return (
-      <Box sx={{ width: "100%", paddingTop: "50px", color: "white" }}>
+      <Box
+        sx={{
+          paddingTop: "5vh",
+          width: "100%",
+          height: "90vh",
+          paddingBottom: "5vh",
+          color: "white",
+          overflow: "auto",
+        }}
+      >
         <Box sx={{ maxWidth: "1000px", margin: "auto" }}>
           <GraphicsEditor
             containerId="preview"
