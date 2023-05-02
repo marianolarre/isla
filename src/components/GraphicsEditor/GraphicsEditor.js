@@ -93,7 +93,6 @@ class GraphicsEditor extends Component {
       this.graphicData = [];
       this.addNewPart();
       $(() => {
-        console.log("Mounting");
         $("#" + this.props.containerId).append(this.pixi.app.view);
       });
     });
@@ -171,12 +170,12 @@ class GraphicsEditor extends Component {
   addNewPart() {
     let parts = [...this.graphicData];
     parts.push({
-      imageId: 0,
+      imageId: 27,
       colorId: this.props.disableSpecialColors ? 22 : 0,
       xPos: 32,
       yPos: 32,
-      xScale: 16,
-      yScale: 16,
+      xScale: 40,
+      yScale: 4,
       rotation: 0,
     });
     this.uploadNewPartList(parts, parts.length - 1);

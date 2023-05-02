@@ -9,6 +9,8 @@ import {
   Restaurant,
 } from "@mui/icons-material";
 
+PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES.OFF;
+
 export const colorPalette = [
   "ff00ff",
   "060608",
@@ -263,7 +265,6 @@ export class IslandPIXI {
     const renderTexture = PIXI.RenderTexture.create({
       width: 256 * quality,
       height: 256 * quality,
-      scaleMode: PIXI.settings.SCALE_MODE.NEAREST,
     });
     renderer.render(pixiObject, renderTexture);
     let render = extract.image(renderTexture);
