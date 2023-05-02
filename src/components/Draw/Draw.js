@@ -21,6 +21,10 @@ const examples = [
   ],
   ["Fish", "3EKKWMMC;0nKZOMEk;0gJcWWWC;351jUNN0;0nKYeGJQ"],
   ["Tree", "2EkWhRR0;24DWNXX0;25CWKWWP;26BZHKKP;2LDEp99A;2LDmrBBa;2LDsn999"],
+  [
+    "Duck",
+    "0p5WjHKC;0IbTTSSO;39bFXFK0;39MOWNN2;08MfQKK0;0A6mUFIF;351gPMM0;2OMhKGGY;055Yn8Ca;0p6SlHKC;056Uq8Ca",
+  ],
 ];
 
 class Draw extends Component {
