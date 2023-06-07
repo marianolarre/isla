@@ -1,0 +1,10 @@
+.text-render {
+    position: relative;
+    top: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.MuiTooltip-tooltip {
+    background-color: #0000,
+}

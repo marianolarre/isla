@@ -1,7 +1,6 @@
 canvas {
     position: static;
     margin: auto;
-    padding: 20px;
 }
 
 .drawing-container {
@@ -17,5 +16,5 @@ canvas {
 
 .scrolling-panel {
     overflow-y: auto;
-    max-height: 100vh;
+    max-height: 80vh;
 }

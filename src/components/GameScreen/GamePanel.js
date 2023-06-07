@@ -38,6 +38,7 @@ import {
 } from "@mui/icons-material";
 import ResourcesPanel from "./ResourcesPanel.js";
 import IdeaPanel from "./IdeaPanel.js";
+import OrderPanel from "./OrderPanel.js";
 import EntityCard from "../EntityCard/EntityCard.js";
 import GameMasterPanel from "./GameMasterPanel.js";
 import OrderCard from "../OrderCard/OrderCard.js";
@@ -354,11 +355,11 @@ class GamePanel extends Component {
                 index={3}
                 className="tab-panel"
               >
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
+                <OrderPanel
+                  worldData={this.props.worldData}
+                  civilization={this.state.currentCiv}
+                  graphics={this.graphics}
+                ></OrderPanel>
               </TabPanel>
 
               {/* Game Master */}

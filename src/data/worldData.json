@@ -71,7 +71,7 @@
       "name": "Granja de trigo",
       "desc": "Genera comida",
       "cost": { "_requirement": "Requiere tierra fertil", "work": "-2" },
-      "prod": [{ "work": -1, "food": 4 }],
+      "prod": [{}, { "work": -1, "food": 4 }],
       "img": "00iWWZZ0;0SjWWYYC;2R7JDMM0;2R7WDMM0;YR7jDMM0;YR8jRMM0;2R8WRMM0;YR8JRMM0;2R9JfMM0;YR9WfMM0;YR9jfMM0"
     },
     "wood_camp": {
@@ -124,7 +124,7 @@
           "work": "-1"
         }
       ],
-      "img": "a0jWWNf6;0nKVKLFG;0gKjRRNI;0gJiXUOK;YSJcPMMg;WY1kXDDg;0nKXYFEX"
+      "img": "a0jWWNf6;3EKTKLFG;0gKjRRNI;0gJiXUOK;YOJcPPPg;WY1kXDDg;0nKXYFEX"
     },
     "building_basic": {
       "name": "Construcción básica",
@@ -186,6 +186,12 @@
             "p": [688, 336],
             "notes": "Lo quiero al lado de este",
             "entity": "wood_camp",
+            "state": "send"
+          },
+          {
+            "type": "build",
+            "p": [688, 400],
+            "entity": "house",
             "state": "send"
           }
         ]

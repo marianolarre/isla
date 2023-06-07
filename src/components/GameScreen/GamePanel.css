@@ -13,6 +13,7 @@ canvas {
     left: 0;
     bottom: 0;
     width: 33%;
+    min-width: 550px;
     display: flex;
     z-index: 1;
     background-color: #314A3Edd;
@@ -33,7 +34,7 @@ canvas {
     width: 1px;
     height: 1px;
     padding: 32px;
-    transform: translate(-12px, -12px);
+    transform: translate(-32px, -32px);
     pointer-events: none;
 }
 
