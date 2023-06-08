@@ -188,11 +188,11 @@ export class IslandPIXI {
     return parts.join(";");
   }
 
-  transformImgString(string, options) {
-    var imgArray = string.split(";");
+  transformImageString(string, options) {
+    var imageArray = string.split(";");
     let parts = [];
-    for (let i in imgArray) {
-      let spriteData = this.deserializeSingleSprite(imgArray[i]);
+    for (let i in imageArray) {
+      let spriteData = this.deserializeSingleSprite(imageArray[i]);
       // Things with colorId 0 should be changed to have the color of their civ
       if (spriteData.colorId == 0 && options.primary_color != null) {
         spriteData.colorId = options.primary_color;
@@ -214,11 +214,11 @@ export class IslandPIXI {
     return container;
   }
 
-  imgStringToContainer(string) {
+  imageStringToContainer(string) {
     const container = new PIXI.Container();
-    var imgArray = string.split(";");
-    for (let i in imgArray) {
-      const spriteData = this.deserializeSingleSprite(imgArray[i]);
+    var imageArray = string.split(";");
+    for (let i in imageArray) {
+      const spriteData = this.deserializeSingleSprite(imageArray[i]);
       const sprite = new PIXI.Sprite(this.spriteTextures[spriteData.imageId]);
       sprite.pivot.x = 128;
       sprite.pivot.y = 128;

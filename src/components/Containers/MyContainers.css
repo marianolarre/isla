@@ -4,8 +4,8 @@
     margin: 0 4px 4px 4px;
     border-radius: 5px;
     margin-bottom: 10px;
-    box-shadow: 0 5px 0 rgb(25, 48, 37);
-    background-color: #418A5Eff;
+    box-shadow: 0 5px 0 rgb(47, 47, 47);
+    background-color: rgb(120, 120, 120);
     margin-bottom: "5px";
     color: white;
     text-transform: none;
@@ -15,7 +15,7 @@
 .pretty-box-outline {
     display: flex;
     width: auto;
-    background-color: rgb(25, 48, 37);
+    background-color: rgb(44, 44, 44);
     border-radius: 10px;
     color:white;
     border: 5px black solid;
@@ -24,7 +24,7 @@
 
 .pretty-box-container {
     display: block;
-    background-color: rgb(37, 68, 53);
+    background-color: rgb(68, 68, 68);
     border-radius: 5px;
     margin-bottom: 15px;
     padding: 10px;

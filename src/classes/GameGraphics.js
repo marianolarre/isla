@@ -11,7 +11,7 @@ const ORDER = 2;
 
 class Graphics {
   constructor(
-    worldData,
+    gameData,
     onLoad,
     onHover,
     onClick,
@@ -25,7 +25,7 @@ class Graphics {
     this.orders = [];
     this.orderCounter = 0;
     this.renders = {};
-    this.worldData = worldData;
+    this.gameData = gameData;
     this.onLoad = onLoad;
     this.onHover = onHover;
     this.onClick = onClick;
@@ -61,8 +61,8 @@ class Graphics {
 
     // Load Assets
     this.pixi.app.loader.load((loader, resources) => {
-      this.renderAllGraphicsFromData(this.worldData);
-      this.createAllStateGraphics(this.worldData);
+      this.renderAllGraphicsFromData(this.gameData);
+      this.createAllStateGraphics(this.gameData);
       this.onLoad();
     });
   }
@@ -88,82 +88,70 @@ class Graphics {
   }
   /* #region  Sprite Creation */
 
-  renderAllGraphicsFromData(worldData) {
-    // Load resource graphics
-    for (var resource in worldData.resources) {
-      this.renderHTMLFromString(worldData.resources[resource].img);
-    }
-
+  renderAllGraphicsFromData(gameData) {
     // Load idea graphics
-    for (var idea in worldData.ideas) {
-      this.renderHTMLFromString(worldData.ideas[idea].img);
-    }
+    /*for (var idea in gameData.ideas) {
+      this.renderHTMLFromString(gameData.ideas[idea].image);
+    }*/
 
     // Load civilization graphics
-    const civilizations = worldData.civilizations;
+    const civilizations = gameData.civilizations;
     for (var civId in civilizations) {
       const civ = civilizations[civId];
       const state = civ.state;
-      this.renderHTMLFromString(civ.img);
+      this.renderHTMLFromString(civ.flag_image);
       const options = {
         primary_color: civ.primary_color,
       };
 
       // Load graphics from bases that get unlocked by an idea
-      for (var i in state.ideas) {
+      /*for (var i in state.ideas) {
         const ideaId = state.ideas[i];
-        const unlocks = worldData.ideas[ideaId].unlocks;
+        const unlocks = gameData.ideas[ideaId].unlocks;
         for (var u in unlocks) {
           const unlockId = unlocks[u];
-          const unlock = worldData.bases[unlockId];
-          const str = this.pixi.transformImgString(unlock.img, options);
+          const unlock = gameData.bases[unlockId];
+          const str = this.pixi.transformImageString(unlock.image, options);
           this.renderHTMLFromString(str);
         }
-      }
+      }*/
 
       // Load entity graphics
-      for (var entityBase in state.entities) {
-        let entityList = state.entities[entityBase];
-        for (var entityId in entityList) {
-          let entity = entityList[entityId];
-          const str = this.pixi.transformImgString(
-            worldData.bases[entityBase].img,
-            options
-          );
-          this.renderHTMLFromString(str);
-        }
+      for (var e in state.entities) {
+        let entity = state.entities[e];
+        const str = this.pixi.transformImageString(entity.image, options);
+        this.renderHTMLFromString(str);
+      }
+
+      // Load resource graphics
+      for (var resource in state.resources) {
+        this.renderHTMLFromString(state.resources[resource].image);
       }
     }
   }
 
   renderHTMLFromString(graphicString) {
     if (this.renders[graphicString] == null) {
-      const container = this.pixi.imgStringToContainer(graphicString);
-      this.renders[graphicString] = this.pixi.renderHTMLImage(container, 0.25);
+      const container = this.pixi.imageStringToContainer(graphicString);
+      this.renders[graphicString] = this.pixi.renderHTMLImage(container, 0.5);
       container.destroy();
     }
   }
 
-  createAllStateGraphics(worldData) {
-    const civilizations = worldData.civilizations;
+  createAllStateGraphics(gameData) {
+    const civilizations = gameData.civilizations;
     for (var civId in civilizations) {
       const civ = civilizations[civId];
       const state = civ.state;
-      this.renderHTMLFromString(civ.img);
+      this.renderHTMLFromString(civ.flag_image);
       const options = {
         primary_color: civ.primary_color,
       };
 
-      for (var entityBase in state.entities) {
-        let entityList = state.entities[entityBase];
-        for (var entityId in entityList) {
-          let entity = entityList[entityId];
-          const str = this.pixi.transformImgString(
-            worldData.bases[entityBase].img,
-            options
-          );
-          this.createEntityGraphic(worldData.bases[entityBase], entity, civId);
-        }
+      for (var e in state.entities) {
+        let entity = state.entities[e];
+        const str = this.pixi.transformImageString(entity.image, options);
+        this.createEntityGraphic(entity, civId);
       }
 
       for (var orderId in state.orders) {
@@ -172,15 +160,15 @@ class Graphics {
     }
   }
 
-  createEntityGraphic(base, entity, civId) {
+  createEntityGraphic(entity, civId) {
     const options = {
-      primary_color: this.worldData.civilizations[civId].primary_color,
+      primary_color: this.gameData.civilizations[civId].primary_color,
     };
-    const str = this.pixi.transformImgString(base.img, options);
-    const container = this.pixi.imgStringToContainer(str);
+    const str = this.pixi.transformImageString(entity.image, options);
+    const container = this.pixi.imageStringToContainer(str);
 
-    container.position.set(entity.p[0] * 16, entity.p[1] * 16);
-    container.zIndex = entity.y;
+    container.position.set(entity.position.x * 16, entity.position.y * 16);
+    container.zIndex = entity.position.y;
     container.pointer = this.instanceCounter;
     //this.entitySprites[entity] = container;
     //entity.pointer = this.instanceCounter;
@@ -188,7 +176,6 @@ class Graphics {
 
     this.entityInstances[this.instanceCounter] = {
       graphic: container,
-      base: base,
       entity: entity,
       civilization: civId,
       enabled: true,
@@ -209,6 +196,13 @@ class Graphics {
 
     this.entitiesView.addChild(container);
 
+    container.calculateBounds();
+    container.hitArea = new PIXI.Rectangle(
+      0,
+      0,
+      container.getBounds().width * 12,
+      container.getBounds().height * 12
+    );
     this.instanceCounter++;
   }
   /* #endregion */
@@ -308,9 +302,13 @@ class Graphics {
 
   /* #region Sprite Event Handlers */
   handleSpriteMouseOver(ev) {
+    /*const sprite = ev.target;
+    const data = this.entityInstances[ev.target.pointer];
+    this.onHover(data, ev.target.pointer);*/
     const sprite = ev.target;
     const data = this.entityInstances[ev.target.pointer];
-    this.onHover(data, ev.target.pointer);
+    const bounds = sprite.getBounds();
+    this.onHover(bounds, data, ev.target.pointer, ENTITY);
   }
 
   handleSpriteMouseOut() {

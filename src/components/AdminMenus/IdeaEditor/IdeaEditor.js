@@ -239,11 +239,11 @@ class IdeaEditor extends Component {
             className="resource-button"
             onClick={() => this.handleEditResource(i)}
           >
-            <ResourceDisplay
+            {/*<ResourceDisplay
               value={this.state.idea.actions[i]}
               resourceData={this.props.worldData.resources}
               graphics={this.props.graphics}
-            ></ResourceDisplay>
+            ></ResourceDisplay>*/}
           </Button>
           <Box style={{ float: "right" }}>
             <IconButton

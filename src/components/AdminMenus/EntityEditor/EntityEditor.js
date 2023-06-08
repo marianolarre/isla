@@ -60,11 +60,11 @@ class EntityEditor extends Component {
             className="resource-button"
             onClick={() => this.handleEditResource("prod", i)}
           >
-            <ResourceDisplay
+            {/*<ResourceDisplay
               value={this.state.base.prod[i]}
               resourceData={this.props.worldData.resources}
               graphics={this.props.graphics}
-            ></ResourceDisplay>
+            ></ResourceDisplay>*/}
           </Button>
           <Box style={{ float: "right" }}>
             <IconButton
@@ -304,11 +304,11 @@ class EntityEditor extends Component {
                     className="resource-button"
                     onClick={() => this.handleEditResource("cost", 0)}
                   >
-                    <ResourceDisplay
+                    {/*<ResourceDisplay
                       value={this.state.base.cost}
                       resourceData={this.props.worldData.resources}
                       graphics={this.props.graphics}
-                    ></ResourceDisplay>
+                    ></ResourceDisplay>*/}
                   </Button>
                 </Grid>
                 <Grid item xs={6}>

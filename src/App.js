@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Editor from "./components/AdminMenus/EditorMenu/Editor";
 import { createTheme, ThemeProvider } from "@mui/material";
 import GamePanel from "./components/GameScreen/GamePanel";
-import worldData from "./data/worldData.json";
 import MainMenu from "./components/MainMenu";
 import Draw from "./components/Draw/Draw";
 
@@ -25,24 +24,8 @@ class App extends Component {
         <BrowserRouter>
           <Routes>
             <Route path="" element={<MainMenu></MainMenu>}></Route>
-            <Route
-              path="/play"
-              element={
-                <GamePanel
-                  worldData={worldData}
-                  onChange={(e) => this.handleWorldDataChange(e)}
-                ></GamePanel>
-              }
-            ></Route>
-            <Route
-              path="/editor"
-              element={
-                <Editor
-                  worldData={worldData}
-                  onChange={(e) => this.handleWorldDataChange(e)}
-                ></Editor>
-              }
-            ></Route>
+            <Route path="/play" element={<GamePanel></GamePanel>}></Route>
+            <Route path="/editor" element={<Editor></Editor>}></Route>
             <Route path="/draw" element={<Draw></Draw>}></Route>
           </Routes>
         </BrowserRouter>

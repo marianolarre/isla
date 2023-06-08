@@ -25,7 +25,7 @@ class EntityCard extends Component {
         optionList.push(
           <Box key={a}>
             <ResourceDisplay
-              resourceData={this.props.worldData.resources}
+              resourceData={this.props.gameData.resources}
               graphics={this.props.graphics}
               value={this.props.entity.prod[a]}
             ></ResourceDisplay>
@@ -37,7 +37,7 @@ class EntityCard extends Component {
         optionList.push(
           <PrettyButton key={a}>
             <ResourceDisplay
-              resourceData={this.props.worldData.resources}
+              resourceData={this.props.gameData.resources}
               graphics={this.props.graphics}
               value={this.props.entity.prod[a]}
             ></ResourceDisplay>
@@ -53,14 +53,14 @@ class EntityCard extends Component {
   }
 
   render() {
-    const civ = this.props.worldData.civilizations[this.props.civilization];
-    let str = this.props.entity.img;
+    const civ = this.props.gameData.civilizations[this.props.civilization];
+    let str = this.props.entity.image;
     if (civ != null) {
       const options = {
         primary_color: civ.primary_color,
       };
-      str = this.props.graphics.pixi.transformImgString(
-        this.props.entity.img,
+      str = this.props.graphics.pixi.transformImageString(
+        this.props.entity.image,
         options
       );
     }
@@ -68,23 +68,17 @@ class EntityCard extends Component {
     let requirements = null;
     let results = null;
 
-    if (this.props.entity.cost != null) {
-      let req = this.props.entity.cost._requirement;
-      if (req !== null) {
-        requirements = (
-          <Typography className="card-requirement">{req}</Typography>
-        );
-      }
-
-      let res = this.props.entity.cost._result;
-      if (res !== null) {
-        results = <Typography className="cardResult">{res}</Typography>;
-      }
+    let req = this.props.entity.requirement;
+    if (req !== null) {
+      requirements = (
+        <Typography className="card-requirement">{req}</Typography>
+      );
     }
 
-    let cost = { ...this.props.entity.cost };
-    delete cost._requirement;
-    delete cost._result;
+    let res = this.props.entity.result;
+    if (res !== null) {
+      results = <Typography className="cardResult">{res}</Typography>;
+    }
 
     return (
       <PrettyBox>
@@ -92,34 +86,42 @@ class EntityCard extends Component {
           <Typography className="card-title">
             {this.props.entity.name}
           </Typography>
-          {this.props.entity.cost != null && (
-            <Box className="card-cost">
-              <ResourceDisplay
-                negated
-                resourceData={this.props.worldData.resources}
-                graphics={this.props.graphics}
-                value={cost}
-              ></ResourceDisplay>
-            </Box>
-          )}
         </Box>
         <Stack direction="row" spacing={4}>
-          <Stack className="vertical-center">
-            {requirements}
-            <Box>
-              <img
-                src={this.props.graphics.renders[str].src}
-                className="render big-render no-margin"
-              ></img>
-            </Box>
-            {results}
-            <Box sx={{ maxWidth: "200px" }}>
-              <Typography className="description">
-                {this.props.entity.desc}
-              </Typography>
-            </Box>
+          <Box className="vertical-center">
+            <img
+              src={this.props.graphics.renders[str].src}
+              className="render huge-render no-margin"
+            ></img>
+          </Box>
+          <Box sx={{ maxWidth: "200px", display: "flex" }}>
+            <Typography className="description">
+              {this.props.entity.description}
+            </Typography>
+          </Box>
+          <Stack>
+            <Typography>Trabajo actual</Typography>
+            <ResourceDisplay
+              resourceData={civ.state.resources}
+              graphics={this.props.graphics}
+              value={this.props.entity.action}
+            ></ResourceDisplay>
+
+            <Box className="card-separator"></Box>
+            <Typography>Costo de construcción</Typography>
+            {this.props.entity.cost != null && (
+              <Box className="card-cost">
+                {requirements}
+                <ResourceDisplay
+                  negated
+                  resourceData={civ.state.resources}
+                  graphics={this.props.graphics}
+                  value={this.props.entity.cost}
+                ></ResourceDisplay>
+                {results}
+              </Box>
+            )}
           </Stack>
-          {this.renderOptions()}
         </Stack>
       </PrettyBox>
     );

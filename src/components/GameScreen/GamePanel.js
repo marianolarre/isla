@@ -42,6 +42,7 @@ import OrderPanel from "./OrderPanel.js";
 import EntityCard from "../EntityCard/EntityCard.js";
 import GameMasterPanel from "./GameMasterPanel.js";
 import OrderCard from "../OrderCard/OrderCard.js";
+import gameData from "../../data/deserializedTestGameData.js";
 
 const ENTITY = 1;
 const ORDER = 2;
@@ -71,19 +72,20 @@ class GamePanel extends Component {
       currentMenu: 0,
       menuOpen: true,
       selectionOpen: false,
-      selectedData: {},
+      /*selectedData: {},
       selectedType: 0,
       selectedPointer: 0,
-      selectionAnchor: null,
+      selectionAnchor: null,*/
     };
   }
 
   /* #region React lifecycle */
   componentWillMount() {
     this.graphics = new GameGraphics(
-      this.props.worldData,
+      gameData,
       () => this.handleGraphicsLoaded(),
-      (d, sp) => this.handleSpriteHover(d, sp),
+      (bounds, data, pointer, type) =>
+        this.handleSpriteHover(bounds, data, pointer, type),
       (bounds, data, pointer, type) =>
         this.handleSpriteClick(bounds, data, pointer, type),
       () => this.handleSpriteExit(),
@@ -107,11 +109,24 @@ class GamePanel extends Component {
     this.setState({ ready: true });
   }
 
-  handleSpriteHover(data, spritePointer) {
-    this.setState({ popperOpen: true });
+  handleSpriteHover(bounds, data, spritePointer, type) {
+    //this.showEntityCard(bounds, data, spritePointer, type);
   }
 
   handleSpriteClick(bounds, data, spritePointer, type) {
+    this.showEntityCard(bounds, data, spritePointer, type);
+  }
+
+  handleSpriteExit() {
+    //this.setState({ popperOpen: false });
+    //this.setState({ selectionOpen: false });
+  }
+
+  handleDeselect() {
+    this.setState({ selectionOpen: false });
+  }
+
+  showEntityCard(bounds, data, spritePointer, type) {
     $("#selection-anchor").css({
       left: bounds.x,
       top: bounds.y,
@@ -124,14 +139,6 @@ class GamePanel extends Component {
       selectedPointer: spritePointer,
       selectedType: type,
     });
-  }
-
-  handleSpriteExit() {
-    this.setState({ popperOpen: false });
-  }
-
-  handleDeselect() {
-    this.setState({ selectionOpen: false });
   }
 
   /* #endregion */
@@ -166,18 +173,21 @@ class GamePanel extends Component {
 
   renderResources() {
     let elements = [];
-    const civ = this.props.worldData.civilizations[this.state.currentCiv];
+    const civ = gameData.civilizations[this.state.currentCiv];
     for (let i in civ.state.resources) {
       let singleResource = {};
-      singleResource[i] = civ.state.resources[i][0];
+      let resource = civ.state.resources[i];
+      singleResource[i] = resource.current;
       elements.push(
         <Box display="inline-block" key={i}>
-          <ResourceDisplay
-            key={i}
-            resourceData={this.props.worldData.resources}
-            graphics={this.graphics}
-            value={singleResource}
-          />
+          {
+            <ResourceDisplay
+              key={i}
+              resourceData={civ.state.resources}
+              graphics={this.graphics}
+              value={singleResource}
+            />
+          }
         </Box>
       );
     }
@@ -185,8 +195,8 @@ class GamePanel extends Component {
   }
 
   renderIncome() {
-    const civ = this.props.worldData.civilizations[this.state.currentCiv];
-    const bases = this.props.worldData.bases;
+    const civ = gameData.civilizations[this.state.currentCiv];
+    const bases = gameData.bases;
     const options = {
       primary_color: civ.primary_color,
     };
@@ -213,7 +223,7 @@ class GamePanel extends Component {
           <AccordionSummary>
             <ResourceDisplay
               value={singleResource}
-              resourceData={this.props.worldData.resources}
+              resourceData={gameData.resources}
               graphics={this.graphics}
             ></ResourceDisplay>
           </AccordionSummary>
@@ -233,14 +243,14 @@ class GamePanel extends Component {
 
   /* #region Entities Panel */
   renderEntities() {
-    const civ = this.props.worldData.civilizations[this.state.currentCiv];
-    const bases = this.props.worldData.bases;
+    const civ = gameData.civilizations[this.state.currentCiv];
+    const bases = gameData.bases;
     const options = {
       primary_color: civ.primary_color,
     };
     let imgList = [];
     for (let i in civ.state.entities) {
-      const base = this.props.worldData.bases[i];
+      const base = gameData.bases[i];
       const str = this.graphics.pixi.transformImgString(base.img, options);
       imgList.push(
         <Accordion key={i}>
@@ -262,7 +272,7 @@ class GamePanel extends Component {
   /* #endregion */
 
   render() {
-    const civ = this.props.worldData.civilizations[this.state.currentCiv];
+    const civ = gameData.civilizations[this.state.currentCiv];
     if (!this.state.ready) {
       return <p>Loading</p>;
     }
@@ -287,7 +297,7 @@ class GamePanel extends Component {
                 icon={<Flag></Flag>}
                 onClick={() => this.setState({ currentMenu: 0 })}
               ></Tab>
-              <Tab
+              {/*<Tab
                 label="Resources"
                 icon={<TrendingUp></TrendingUp>}
                 onClick={() => this.setState({ currentMenu: 1 })}
@@ -306,7 +316,7 @@ class GamePanel extends Component {
                 label="Game Master"
                 icon={<AutoStories></AutoStories>}
                 onClick={() => this.setState({ currentMenu: 4 })}
-              ></Tab>
+    ></Tab>*/}
             </Tabs>
 
             <Box className="tab">
@@ -318,7 +328,7 @@ class GamePanel extends Component {
               >
                 <Box>
                   <Typography>{civ.state.title}</Typography>
-                  <Typography>{civ.state.desc}</Typography>
+                  <Typography>{civ.state.description}</Typography>
                   {this.renderResources()}
                 </Box>
               </TabPanel>
@@ -330,7 +340,7 @@ class GamePanel extends Component {
                 className="tab-panel"
               >
                 <ResourcesPanel
-                  worldData={this.props.worldData}
+                  worldData={gameData}
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
                 ></ResourcesPanel>
@@ -343,7 +353,7 @@ class GamePanel extends Component {
                 className="tab-panel"
               >
                 <IdeaPanel
-                  worldData={this.props.worldData}
+                  worldData={gameData}
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
                 ></IdeaPanel>
@@ -356,7 +366,7 @@ class GamePanel extends Component {
                 className="tab-panel"
               >
                 <OrderPanel
-                  worldData={this.props.worldData}
+                  worldData={gameData}
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
                 ></OrderPanel>
@@ -369,7 +379,7 @@ class GamePanel extends Component {
                 className="tab-panel"
               >
                 <GameMasterPanel
-                  worldData={this.props.worldData}
+                  worldData={gameData}
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
                   onCivChange={(civId) => this.handleCivChange(civId)}
@@ -383,29 +393,42 @@ class GamePanel extends Component {
           </Box>
         </Slide>
         <Box id="selection-anchor">
-          <Box
+          {/*<Box
             className="selection-outline"
             sx={{ display: this.state.selectionOpen ? "block" : "none" }}
-          ></Box>
+          ></Box>*/}
         </Box>
         <Popper
           open={this.state.selectionOpen}
           anchorEl={$("#selection-anchor").get(0)}
-          placement="right"
+          placement="top"
+          modifiers={[
+            {
+              name: "preventOverflow",
+              enabled: true,
+              options: {
+                altAxis: true,
+                altBoundary: true,
+                tether: true,
+                rootBoundary: "document",
+                padding: 8,
+              },
+            },
+          ]}
           sx={{ zIndex: 1 }}
         >
           <Box className="selection-popup">
             {this.state.selectedType == ENTITY && (
               <EntityCard
-                worldData={this.props.worldData}
+                gameData={gameData}
                 graphics={this.graphics}
-                entity={this.state.selectedData.base}
+                entity={this.state.selectedData.entity}
                 civilization={this.state.selectedData.civilization}
               ></EntityCard>
             )}
             {this.state.selectedType == ORDER && (
               <OrderCard
-                worldData={this.props.worldData}
+                worldData={gameData}
                 graphics={this.graphics}
                 order={this.state.selectedData}
                 civilization={this.state.selectedData.civilization}

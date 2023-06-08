@@ -37,6 +37,10 @@ class ResourceDisplay extends Component {
         </Box>
       );
     }
+    let sign = 1;
+    if (this.props.negated) {
+      sign = -1;
+    }
     Object.keys(this.props.value).map((i, index) => {
       if (this.props.resourceData[i] != null) {
         let element = (
@@ -44,7 +48,7 @@ class ResourceDisplay extends Component {
             <Tooltip
               title={
                 <Typography>
-                  {this.props.value[i]} {this.props.resourceData[i].name}
+                  {this.props.value[i] * sign} {this.props.resourceData[i].name}
                 </Typography>
               }
               disableInteractive
@@ -53,13 +57,14 @@ class ResourceDisplay extends Component {
                 <img
                   className="render resource-icon"
                   src={
-                    this.props.graphics.renders[this.props.resourceData[i].img]
-                      .src
+                    this.props.graphics.renders[
+                      this.props.resourceData[i].image
+                    ].src
                   }
                 />
 
                 <Typography className="resource-number">
-                  {this.props.value[i]}
+                  {this.props.value[i] * sign}
                 </Typography>
               </div>
             </Tooltip>

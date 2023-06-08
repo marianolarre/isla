@@ -16,7 +16,7 @@ canvas {
     min-width: 550px;
     display: flex;
     z-index: 1;
-    background-color: #314A3Edd;
+    background-color: #3b3b3bdd;
     backdrop-filter: blur(10px);
     color: white;
     border-right: 5px black solid;
@@ -49,6 +49,7 @@ canvas {
     transform: translate(-15px, -15px);
     border: white 5px solid;
     border-radius: 15px;
+    pointer-events: none;
 }
 
 .menu-bottom-nav {
@@ -66,6 +67,10 @@ canvas {
 
 .big-render {
     height: 64px;
+}
+
+.huge-render {
+    height: 128px;
 }
 
 .scroller {

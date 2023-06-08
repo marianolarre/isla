@@ -1,8 +1,15 @@
 .card-header {
     display: inline-flex;
     width: 100%;
-    border-bottom: #418A5Eff 1px solid;
+    border-bottom: rgb(139, 139, 139) 1px solid;
     margin-bottom: 10px;
+    min-width: 200px;
+}
+
+.card-separator {
+    width: 100%;
+    margin: 10px 0px;
+    border-bottom: rgb(139, 139, 139) 1px solid;
 }
 
 .card-title {
@@ -30,7 +37,8 @@
 
 .description {
     text-align: center;
-    font-style: italic;
+    /*font-style: italic;*/
+    margin: auto !important;
 }
 
 .card-requirement {
