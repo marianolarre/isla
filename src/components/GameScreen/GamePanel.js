@@ -43,6 +43,7 @@ import EntityCard from "../EntityCard/EntityCard.js";
 import GameMasterPanel from "./GameMasterPanel.js";
 import OrderCard from "../OrderCard/OrderCard.js";
 import gameData from "../../data/deserializedTestGameData.js";
+import PrettyBox from "../Containers/PrettyBox.js";
 
 const ENTITY = 1;
 const ORDER = 2;
@@ -72,6 +73,7 @@ class GamePanel extends Component {
       currentMenu: 0,
       menuOpen: true,
       selectionOpen: false,
+      hoverOpen: false,
       /*selectedData: {},
       selectedType: 0,
       selectedPointer: 0,
@@ -110,20 +112,26 @@ class GamePanel extends Component {
   }
 
   handleSpriteHover(bounds, data, spritePointer, type) {
-    //this.showEntityCard(bounds, data, spritePointer, type);
+    if (this.state.selectionOpen) {
+      return null;
+    }
+    this.showHoverCard(bounds, data, spritePointer, type);
   }
 
   handleSpriteClick(bounds, data, spritePointer, type) {
+    this.setState({ hoverOpen: false });
     this.showEntityCard(bounds, data, spritePointer, type);
   }
 
   handleSpriteExit() {
-    //this.setState({ popperOpen: false });
-    //this.setState({ selectionOpen: false });
+    if (this.state.selectionOpen) {
+      return null;
+    }
+    this.setState({ hoverOpen: false });
   }
 
   handleDeselect() {
-    this.setState({ selectionOpen: false });
+    this.setState({ selectionOpen: false, hoverOpen: false });
   }
 
   showEntityCard(bounds, data, spritePointer, type) {
@@ -135,6 +143,24 @@ class GamePanel extends Component {
     });
     this.setState({
       selectionOpen: true,
+      selectedData: data,
+      selectedPointer: spritePointer,
+      selectedType: type,
+    });
+  }
+
+  showHoverCard(bounds, data, spritePointer, type) {
+    if (this.state.selectionOpen) {
+      return null;
+    }
+    $("#selection-anchor").css({
+      left: bounds.x,
+      top: bounds.y,
+      width: bounds.width,
+      height: bounds.height,
+    });
+    this.setState({
+      hoverOpen: true,
       selectedData: data,
       selectedPointer: spritePointer,
       selectedType: type,
@@ -306,13 +332,13 @@ class GamePanel extends Component {
                 label="Ideas"
                 icon={<Lightbulb></Lightbulb>}
                 onClick={() => this.setState({ currentMenu: 2 })}
-              ></Tab>
+    ></Tab>*/}
               <Tab
                 label="Orders"
                 icon={<ListAlt></ListAlt>}
                 onClick={() => this.setState({ currentMenu: 3 })}
               ></Tab>
-              <Tab
+              {/*<Tab
                 label="Game Master"
                 icon={<AutoStories></AutoStories>}
                 onClick={() => this.setState({ currentMenu: 4 })}
@@ -366,7 +392,7 @@ class GamePanel extends Component {
                 className="tab-panel"
               >
                 <OrderPanel
-                  worldData={gameData}
+                  gameData={gameData}
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
                 ></OrderPanel>
@@ -430,11 +456,51 @@ class GamePanel extends Component {
               <OrderCard
                 worldData={gameData}
                 graphics={this.graphics}
-                order={this.state.selectedData}
+                order={this.state.selectedData.order}
                 civilization={this.state.selectedData.civilization}
               ></OrderCard>
             )}
           </Box>
+        </Popper>
+
+        <Popper
+          open={this.state.hoverOpen}
+          anchorEl={$("#selection-anchor").get(0)}
+          placement="top"
+          modifiers={[
+            {
+              name: "preventOverflow",
+              enabled: true,
+              options: {
+                altAxis: true,
+                altBoundary: true,
+                tether: true,
+                rootBoundary: "document",
+                padding: 8,
+              },
+            },
+          ]}
+          sx={{ zIndex: 1 }}
+        >
+          <PrettyBox className="selection-popup">
+            {this.state.selectedType == ENTITY && (
+              <Stack>
+                <Typography>{this.state.selectedData.entity.name}</Typography>
+                {this.state.selectedData.entity.action && (
+                  <ResourceDisplay
+                    resourceData={civ.state.resources}
+                    graphics={this.graphics}
+                    value={this.state.selectedData.entity.action}
+                  ></ResourceDisplay>
+                )}
+              </Stack>
+            )}
+            {this.state.selectedType == ORDER && (
+              <Typography>
+                {this.state.selectedData.order.description}
+              </Typography>
+            )}
+          </PrettyBox>
         </Popper>
       </>
     );

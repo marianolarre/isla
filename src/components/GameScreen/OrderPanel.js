@@ -7,7 +7,7 @@ class OrderPanel extends Component {
   state = {};
 
   renderOrders() {
-    const civ = this.props.worldData.civilizations[this.props.civilization];
+    const civ = this.props.gameData.civilizations[this.props.civilization];
     const options = {
       primary_color: civ.primary_color,
     };
@@ -16,27 +16,20 @@ class OrderPanel extends Component {
 
     for (let i in civ.state.orders) {
       const order = civ.state.orders[i];
-      if (order.type == "build") {
-        buttonList.push(
-          <PrettyButton>
-            <Stack direction="row">
-              <img
-                class="render"
-                style={{ padding: "5px", paddingRight: "15px" }}
-                src="img/order.png"
-              ></img>
-              <Stack>
-                <Typography>
-                  Build {this.props.worldData.bases[order.entity].name}
-                </Typography>
-                {order.notes && (
-                  <Typography fontStyle="italic">{order.notes}</Typography>
-                )}
-              </Stack>
+      buttonList.push(
+        <PrettyButton>
+          <Stack direction="row">
+            <img
+              class="render"
+              style={{ padding: "5px", paddingRight: "15px" }}
+              src="img/order.png"
+            ></img>
+            <Stack>
+              <Typography fontStyle="italic">{order.description}</Typography>
             </Stack>
-          </PrettyButton>
-        );
-      }
+          </Stack>
+        </PrettyButton>
+      );
     }
 
     /*let imgList = [];

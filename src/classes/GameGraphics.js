@@ -3,6 +3,8 @@ import $ from "jquery";
 import { IslandPIXI } from "./IslandPIXI.js";
 
 var clicking = false;
+var panning = true;
+var panDistance = 0;
 var previousMousePos = { x: 0, y: 0 };
 const outlineMultiplier = 6;
 
@@ -209,15 +211,15 @@ class Graphics {
 
   createOrderGraphic(order, civId) {
     const container = this.pixi.orderContainer();
-    container.position.set(order.p[0] * 16, order.p[1] * 16);
-    container.zIndex = order.p[1] + 100;
+    container.position.set(order.position.x * 16, order.position.y * 16);
+    container.zIndex = order.position.y + 100;
     container.pointer = this.orderCounter;
 
     this.orders[this.orderCounter] = {
       graphic: container,
       civilization: civId,
       enabled: true,
-      data: order,
+      order: order,
     };
 
     container.interactive = true;
@@ -269,8 +271,9 @@ class Graphics {
 
   mouseDownHandler(event) {
     if (this.mouseInsidePlayArea(event.clientX)) {
-      //dragged = false;
       clicking = true;
+      panning = false;
+      panDistance = 0;
       previousMousePos = { x: event.clientX, y: event.clientY };
       $("#sidebar-content").addClass("noselect");
     }
@@ -278,19 +281,25 @@ class Graphics {
 
   mouseUpHandler(event) {
     clicking = false;
+    panning = false;
     $("#sidebar-content").removeClass("noselect");
   }
 
   mouseMoveHandler(event) {
     const { gameView } = this;
+    let deltaX = event.clientX - previousMousePos.x;
+    let deltaY = event.clientY - previousMousePos.y;
     if (clicking) {
-      //dragged = true;
-      this.onCameraPan();
-      let deltaX = event.clientX - previousMousePos.x;
-      let deltaY = event.clientY - previousMousePos.y;
-      gameView.position.x += deltaX;
-      gameView.position.y += deltaY;
-      previousMousePos = { x: event.clientX, y: event.clientY };
+      panDistance += Math.abs(deltaX) + Math.abs(deltaY);
+      if (panDistance > 30) {
+        panning = true;
+      }
+      if (panning) {
+        this.onCameraPan();
+        gameView.position.x += deltaX;
+        gameView.position.y += deltaY;
+        previousMousePos = { x: event.clientX, y: event.clientY };
+      }
     }
   }
 
@@ -316,6 +325,7 @@ class Graphics {
   }
 
   handleSpriteClick(ev) {
+    if (panning) return;
     const sprite = ev.target;
     const data = this.entityInstances[ev.target.pointer];
     const bounds = sprite.getBounds();
@@ -325,9 +335,10 @@ class Graphics {
 
   /* #region Order Event Handlers */
   handleOrderMouseOver(ev) {
-    const order = ev.target;
+    const sprite = ev.target;
     const data = this.orders[ev.target.pointer];
-    this.onHover(data, ev.target.pointer);
+    const bounds = sprite.getBounds();
+    this.onHover(bounds, data, ev.target.pointer, ORDER);
   }
 
   handleOrderMouseOut() {
@@ -335,6 +346,7 @@ class Graphics {
   }
 
   handleOrderClick(ev) {
+    if (panning) return;
     const order = this.orders[ev.target.pointer];
     const bounds = ev.target.getBounds();
     this.onClick(bounds, order, ev.target.pointer, ORDER);
