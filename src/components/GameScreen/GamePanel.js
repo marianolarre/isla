@@ -17,7 +17,6 @@ import {
   Popover,
 } from "@mui/material";
 import GameGraphics from "../../classes/GameGraphics.js";
-import { Link } from "react-router-dom";
 import { Button, Popper } from "@mui/material";
 import ResourceDisplay from "../ResourceDisplay/ResourceDisplay.js";
 import "./GamePanel.css";

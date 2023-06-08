@@ -6,7 +6,6 @@ import {
   Button,
 } from "@mui/material";
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 class GameMasterPanel extends Component {
   state = {};
@@ -56,9 +55,7 @@ class GameMasterPanel extends Component {
         <BottomNavigation value={this.props.civilization}>
           {this.renderCivButtons()}
         </BottomNavigation>
-        <Link to="/editor">
-          <Button>Editor</Button>
-        </Link>
+        <Button>Editor</Button>
       </Box>
     );
   }

@@ -11,7 +11,6 @@ import {
   Lightbulb,
   Save,
 } from "@mui/icons-material";
-import { Link } from "react-router-dom";
 import ResourceEditor from "../ResourceEditor/ResourceEditor";
 import CivilizationEditor from "../CivilizationEditor/CivilizationEditor";
 import IdeaEditor from "../IdeaEditor/IdeaEditor";
@@ -114,11 +113,9 @@ class Editor extends Component {
   render() {
     return (
       <div id="editor">
-        <Link to="/">
-          <Button style={{ float: "left" }}>
-            <ArrowBack></ArrowBack>
-          </Button>
-        </Link>
+        <Button style={{ float: "left" }}>
+          <ArrowBack></ArrowBack>
+        </Button>
         <Button
           style={{ float: "right" }}
           onClick={() => this.downloadWorldData()}
