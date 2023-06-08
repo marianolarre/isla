@@ -47,6 +47,10 @@ import PrettyBox from "../Containers/PrettyBox.js";
 const ENTITY = 1;
 const ORDER = 2;
 
+const NO_ACTION = 0;
+const PLACING_ENTITY = 1;
+const PLACING_ORDER = 2;
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -73,6 +77,7 @@ class GamePanel extends Component {
       menuOpen: true,
       selectionOpen: false,
       hoverOpen: false,
+      currentAction: NO_ACTION,
       /*selectedData: {},
       selectedType: 0,
       selectedPointer: 0,
@@ -91,7 +96,8 @@ class GamePanel extends Component {
         this.handleSpriteClick(bounds, data, pointer, type),
       () => this.handleSpriteExit(),
       () => this.handleDeselect(),
-      () => this.handleDeselect()
+      () => this.handleDeselect(),
+      (position) => this.handlePlaceGhost(position)
     );
   }
 
@@ -296,6 +302,23 @@ class GamePanel extends Component {
   }
   /* #endregion */
 
+  handleAddOrder() {
+    //this.graphics.createOrderGraphic(newOrder, this.state.currentCiv);
+    this.setState({ currentAction: PLACING_ORDER });
+    this.graphics.setAction(PLACING_ORDER);
+  }
+
+  handlePlaceGhost(position) {
+    if (this.state.currentAction == PLACING_ORDER) {
+      const newOrder = {
+        description: "Descripción",
+        position: position,
+      };
+      this.graphics.createOrderGraphic(newOrder, this.state.currentCiv);
+      this.setState({ currentAction: NO_ACTION });
+    }
+  }
+
   render() {
     const civ = gameData.civilizations[this.state.currentCiv];
     if (!this.state.ready) {
@@ -335,7 +358,7 @@ class GamePanel extends Component {
               <Tab
                 label="Orders"
                 icon={<ListAlt></ListAlt>}
-                onClick={() => this.setState({ currentMenu: 3 })}
+                onClick={() => this.setState({ currentMenu: 1 })}
               ></Tab>
               {/*<Tab
                 label="Game Master"
@@ -359,7 +382,7 @@ class GamePanel extends Component {
               </TabPanel>
 
               {/* Resources */}
-              <TabPanel
+              {/*<TabPanel
                 value={this.state.currentMenu}
                 index={1}
                 className="tab-panel"
@@ -369,10 +392,10 @@ class GamePanel extends Component {
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
                 ></ResourcesPanel>
-              </TabPanel>
+  </TabPanel>*/}
 
               {/* Ideas */}
-              <TabPanel
+              {/*<TabPanel
                 value={this.state.currentMenu}
                 index={2}
                 className="tab-panel"
@@ -382,18 +405,19 @@ class GamePanel extends Component {
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
                 ></IdeaPanel>
-              </TabPanel>
+  </TabPanel>*/}
 
               {/* Orders */}
               <TabPanel
                 value={this.state.currentMenu}
-                index={3}
+                index={1}
                 className="tab-panel"
               >
                 <OrderPanel
                   gameData={gameData}
                   civilization={this.state.currentCiv}
                   graphics={this.graphics}
+                  onAddOrder={() => this.handleAddOrder()}
                 ></OrderPanel>
               </TabPanel>
 

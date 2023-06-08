@@ -17,10 +17,10 @@ class OrderPanel extends Component {
     for (let i in civ.state.orders) {
       const order = civ.state.orders[i];
       buttonList.push(
-        <PrettyButton>
+        <PrettyButton key={i}>
           <Stack direction="row">
             <img
-              class="render"
+              className="render"
               style={{ padding: "5px", paddingRight: "15px" }}
               src="img/order.png"
             ></img>
@@ -136,7 +136,15 @@ class OrderPanel extends Component {
   }
 
   render() {
-    return <Box>{this.renderOrders()}</Box>;
+    return (
+      <Stack spacing={2}>
+        <PrettyButton onClick={() => this.props.onAddOrder()}>
+          Nueva orden
+        </PrettyButton>
+
+        {this.renderOrders()}
+      </Stack>
+    );
   }
 }
 

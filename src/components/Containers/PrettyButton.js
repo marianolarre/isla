@@ -6,6 +6,7 @@ class PrettyButton extends Component {
   render() {
     return (
       <Button
+        onClick={this.props.onClick}
         variant="filled"
         className="pretty-button"
         sx={{

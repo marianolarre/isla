@@ -11,6 +11,10 @@ const outlineMultiplier = 6;
 const ENTITY = 1;
 const ORDER = 2;
 
+const NO_ACTION = 0;
+const PLACING_ENTITY = 1;
+const PLACING_ORDER = 2;
+
 class Graphics {
   constructor(
     gameData,
@@ -19,7 +23,8 @@ class Graphics {
     onClick,
     onExit,
     onCameraPan,
-    onCameraZoom
+    onCameraZoom,
+    onPlaceGhost
   ) {
     this.entityInstances = [];
     //this.entitySprites = {};
@@ -34,6 +39,8 @@ class Graphics {
     this.onExit = onExit;
     this.onCameraPan = onCameraPan;
     this.onCameraZoom = onCameraZoom;
+    this.onPlaceGhost = onPlaceGhost;
+    this.ghost = null;
     // Initialize PIXI application and containers
     this.pixi = new IslandPIXI({
       width: window.innerWidth,
@@ -89,6 +96,15 @@ class Graphics {
     $(document).off();
   }
   /* #region  Sprite Creation */
+
+  setAction(action) {
+    this.currentAction = action;
+    if (action == PLACING_ORDER) {
+      this.ghost = this.pixi.orderContainer();
+      this.ghost.alpha = 0.75;
+      this.entitiesView.addChild(this.ghost);
+    }
+  }
 
   renderAllGraphicsFromData(gameData) {
     // Load idea graphics
@@ -212,7 +228,7 @@ class Graphics {
   createOrderGraphic(order, civId) {
     const container = this.pixi.orderContainer();
     container.position.set(order.position.x * 16, order.position.y * 16);
-    container.zIndex = order.position.y + 100;
+    container.zIndex = order.position.y;
     container.pointer = this.orderCounter;
 
     this.orders[this.orderCounter] = {
@@ -280,26 +296,65 @@ class Graphics {
   }
 
   mouseUpHandler(event) {
+    if (!panning) {
+      if (this.currentAction == PLACING_ORDER) {
+        this.onPlaceGhost(this.mouseToGamePos(event));
+        this.ghost.destroy();
+        this.ghost = null;
+        this.currentAction = NO_ACTION;
+      }
+    }
     clicking = false;
     panning = false;
     $("#sidebar-content").removeClass("noselect");
   }
 
   mouseMoveHandler(event) {
-    const { gameView } = this;
     let deltaX = event.clientX - previousMousePos.x;
     let deltaY = event.clientY - previousMousePos.y;
     if (clicking) {
-      panDistance += Math.abs(deltaX) + Math.abs(deltaY);
-      if (panDistance > 30) {
-        panning = true;
+      this.cameraPan(event.clientX, event.clientY, deltaX, deltaY);
+    } else {
+      if (this.currentAction == PLACING_ORDER) {
+        if (this.ghost != null) {
+          const worldPos = this.mouseToWorldPos(event);
+          this.ghost.position.x = worldPos.x;
+          this.ghost.position.y = worldPos.y;
+          this.ghost.zIndex = worldPos.y / 16;
+        }
       }
-      if (panning) {
-        this.onCameraPan();
-        gameView.position.x += deltaX;
-        gameView.position.y += deltaY;
-        previousMousePos = { x: event.clientX, y: event.clientY };
-      }
+    }
+  }
+
+  mouseToWorldPos(event) {
+    const zoom = this.gameView.scale.x;
+    return {
+      x:
+        Math.round((event.clientX - this.gameView.position.x) / zoom / 16) * 16,
+      y:
+        Math.round((event.clientY - this.gameView.position.y) / zoom / 16) * 16,
+    };
+  }
+
+  mouseToGamePos(event) {
+    const zoom = this.gameView.scale.x;
+    return {
+      x: Math.round((event.clientX - this.gameView.position.x) / zoom / 16),
+      y: Math.round((event.clientY - this.gameView.position.y) / zoom / 16),
+    };
+  }
+
+  cameraPan(clientX, clientY, deltaX, deltaY) {
+    const { gameView } = this;
+    panDistance += Math.abs(deltaX) + Math.abs(deltaY);
+    if (panDistance > 30) {
+      panning = true;
+    }
+    if (panning) {
+      this.onCameraPan();
+      gameView.position.x += deltaX;
+      gameView.position.y += deltaY;
+      previousMousePos = { x: clientX, y: clientY };
     }
   }
 
