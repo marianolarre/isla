@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { b64ToInt, intToB64 } from "./utility.js";
-import { OutlineFilter } from "pixi-filters";
+import { OutlineFilter, AdjustmentFilter } from "pixi-filters";
 import {
   EmojiPeople,
   Hexagon,
@@ -132,9 +132,26 @@ export class IslandPIXI {
     }
     this.blackOutline = new OutlineFilter(outline, 0x000000, 0.3);
     this.blackOutline.padding = 12;
-    this.selectedFilter = new OutlineFilter(outline, 0xffffff, 0.3);
-    this.selectedFilter.padding = 24;
+    this.selectedFilter = new AdjustmentFilter();
     this.loadAssets();
+
+    this.time = 0;
+    this.pauseFlashUntil = 0;
+
+    console.log(this.selectedFilter);
+    this.app.ticker.add((delta) => {
+      this.time += delta / 60;
+      if (this.pauseFlashUntil > this.time) {
+        this.selectedFilter.brightness = 1;
+        this.selectedFilter.gamma = 1;
+        this.selectedFilter.saturation = 1;
+      } else {
+        const sine = (Math.sin(this.time * 6.28) + 1.8) * 0.4;
+        this.selectedFilter.brightness = sine;
+        this.selectedFilter.gamma = sine * 3 + 1;
+        this.selectedFilter.saturation = 1.5;
+      }
+    });
   }
 
   deserializeFullString(string) {
@@ -319,6 +336,10 @@ export class IslandPIXI {
         images++;
       }
     }
+  }
+
+  pauseFlashing(forTime) {
+    this.pauseFlashUntil = this.time + forTime;
   }
 
   overrideDefaultHitCheckWithPixelPerfectCheck() {
