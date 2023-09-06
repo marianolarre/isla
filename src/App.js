@@ -20,7 +20,9 @@ class App extends Component {
   render() {
     return (
       <ThemeProvider theme={darkTheme}>
-        <GamePanel></GamePanel>
+        {/*<GamePanel></GamePanel>*/}
+        <Draw></Draw>
+
         {/*<HashRouter>
           <Routes>
             <Route path="" element={<MainMenu></MainMenu>}></Route>

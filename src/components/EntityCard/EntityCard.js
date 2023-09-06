@@ -26,7 +26,7 @@ class EntityCard extends Component {
           <Box key={a}>
             <ResourceDisplay
               resourceData={this.props.gameData.resources}
-              graphics={this.props.graphics}
+              game={this.props.game}
               value={this.props.entity.prod[a]}
             ></ResourceDisplay>
           </Box>
@@ -38,7 +38,7 @@ class EntityCard extends Component {
           <PrettyButton key={a}>
             <ResourceDisplay
               resourceData={this.props.gameData.resources}
-              graphics={this.props.graphics}
+              game={this.props.game}
               value={this.props.entity.prod[a]}
             ></ResourceDisplay>
           </PrettyButton>
@@ -59,7 +59,7 @@ class EntityCard extends Component {
       const options = {
         primary_color: civ.primary_color,
       };
-      str = this.props.graphics.pixi.transformImageString(
+      str = this.props.game.pixi.transformImageString(
         this.props.entity.image,
         options
       );
@@ -90,7 +90,7 @@ class EntityCard extends Component {
         <Stack direction="row" spacing={4}>
           <Box className="vertical-center">
             <img
-              src={this.props.graphics.renders[str].src}
+              src={this.props.game.renders[str].src}
               className="render huge-render no-margin"
             ></img>
           </Box>
@@ -103,7 +103,7 @@ class EntityCard extends Component {
             <Typography>Trabajo actual</Typography>
             <ResourceDisplay
               resourceData={civ.state.resources}
-              graphics={this.props.graphics}
+              game={this.props.game}
               value={this.props.entity.action}
             ></ResourceDisplay>
 
@@ -115,7 +115,7 @@ class EntityCard extends Component {
                 <ResourceDisplay
                   negated
                   resourceData={civ.state.resources}
-                  graphics={this.props.graphics}
+                  game={this.props.game}
                   value={this.props.entity.cost}
                 ></ResourceDisplay>
                 {results}

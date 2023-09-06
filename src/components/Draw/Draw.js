@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import GraphicsEditor from "../GraphicsEditor/GraphicsEditor";
-import GameGraphics from "../../classes/GameGraphics.js";
 import { IslandPIXI } from "../../classes/IslandPIXI";
 import { Box, Button, Typography } from "@mui/material";
 import "./Draw.css";
@@ -36,8 +35,8 @@ class Draw extends Component {
     this.renders = [];
     this.editorGraphics = {};
     this.editorGraphics.pixi = new IslandPIXI({
-      width: 256,
-      height: 256,
+      width: 512,
+      height: 512,
       scale: 1,
     });
   }
@@ -60,16 +59,7 @@ class Draw extends Component {
 
   render() {
     return (
-      <Box
-        sx={{
-          paddingTop: "5vh",
-          width: "100%",
-          height: "90vh",
-          paddingBottom: "5vh",
-          color: "white",
-          overflow: "auto",
-        }}
-      >
+      <Box className="wrapper">
         <Box sx={{ maxWidth: "1000px", margin: "auto" }}>
           <GraphicsEditor
             containerId="preview"

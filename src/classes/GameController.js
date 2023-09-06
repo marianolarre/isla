@@ -27,7 +27,6 @@ class Graphics {
     onPlaceGhost
   ) {
     this.entityInstances = [];
-    //this.entitySprites = {};
     this.instanceCounter = 0;
     this.orders = [];
     this.orderCounter = 0;
@@ -104,6 +103,11 @@ class Graphics {
       this.ghost.alpha = 0.75;
       this.entitiesView.addChild(this.ghost);
     }
+  }
+
+  deleteOrder(orderID) {
+    this.orders[orderID].enabled = false;
+    this.orders[orderID].graphic.visible = false;
   }
 
   renderAllGraphicsFromData(gameData) {

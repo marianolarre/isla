@@ -51,7 +51,7 @@ class Editor extends Component {
       str = this.graphics.pixi.transformImgString(str, options);
     }
     if (this.graphics.renders[str] == null) {
-      const container = this.graphics.pixi.imgStringToContainer(str);
+      const container = this.graphics.pixi.imageStringToContainer(str);
       this.graphics.renders[str] = this.graphics.pixi.renderHTMLImage(
         container,
         0.25
@@ -61,6 +61,7 @@ class Editor extends Component {
   }
 
   createAllGraphicsFromData(worldData) {
+    console.log(worldData);
     for (var resource in worldData.resources) {
       this.renderHTMLFromString(worldData.resources[resource].img);
     }

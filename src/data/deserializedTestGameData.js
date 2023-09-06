@@ -52,7 +52,7 @@ export default {
             name: "Trabajo",
             description:
               "Un dia de trabajo de un aldeano. Todos los días, tu trabajo se iguala a tu población.",
-            image: "0m8MfVR0;088MGMM0;08ReeUU0;08meeOO0;001eaG5C;001heD5O",
+            image: "0m8ffVR0;088fGMM0;08RLgUU0;08mLgOO0;001LcG5C;001OgD5O",
             hidden: true,
             current: 50,
           },

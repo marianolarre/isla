@@ -57,9 +57,8 @@ class ResourceDisplay extends Component {
                 <img
                   className="render resource-icon"
                   src={
-                    this.props.graphics.renders[
-                      this.props.resourceData[i].image
-                    ].src
+                    this.props.game.renders[this.props.resourceData[i].image]
+                      .src
                   }
                 />
 

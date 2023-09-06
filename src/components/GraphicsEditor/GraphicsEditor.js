@@ -75,15 +75,24 @@ class GraphicsEditor extends Component {
     if (this.props.scale != null) {
       this.pixi.app.stage.scale.set(this.props.scale, this.props.scale);
     }
+
     const background = new PIXI.Graphics();
-    background.beginFill(0x86d369);
-    background.drawRect(0, 0, 256, 256);
+    // Background
+    background.beginFill(0x669349);
+    background.drawRect(0, 0, 512, 512);
     background.endFill();
+    // Square
+    background.lineStyle(2, 0x000000, 0.4);
+    background.beginFill(0x86d369);
+    background.drawRect(128, 128, 256, 256);
+    background.endFill();
+    // Cross
     background.lineStyle(1, 0x000000, 0.2);
-    background.moveTo(128, 0);
-    background.lineTo(128, 256);
-    background.moveTo(0, 128);
-    background.lineTo(256, 128);
+    background.moveTo(256, 0);
+    background.lineTo(256, 512);
+    background.moveTo(0, 256);
+    background.lineTo(512, 256);
+
     this.pixi.app.stage.addChild(background);
     this.preview.sortableChildren = true;
     this.pixi.app.stage.addChild(this.preview);
@@ -138,12 +147,27 @@ class GraphicsEditor extends Component {
   }
 
   renderString(string) {
-    const transformImgString = this.pixi.transformImgString(string, {
+    const transformImgString = this.pixi.transformImageString(string, {
       primary_color: this.props.primaryColor,
     });
     this.preview.removeChildren();
-    const container = this.pixi.imgStringToContainer(transformImgString);
+    const container = this.pixi.imageStringToContainer(transformImgString, {
+      offset: { x: 128, y: 128 },
+      selectedShape: this.state.currentImage,
+    });
     this.preview.addChild(container);
+
+    for (var i = 0; i < container.children.length; i++) {
+      const child = container.children[i];
+      child.interactive = true;
+      child.cursor = "pointer";
+      const index = i;
+      child.on("pointerdown", () => this.handleSpriteClick(index));
+    }
+  }
+
+  handleSpriteClick(index) {
+    this.selectPart(index);
   }
 
   selectPart(index) {
@@ -156,7 +180,10 @@ class GraphicsEditor extends Component {
     setTimeout(() => this.flashColor(42), 150);
     setTimeout(() => this.flashColor(22), 300);
     setTimeout(() => this.flashColor(42), 450);
-    setTimeout(() => this.renderString(this.props.value), 600);
+    setTimeout(
+      () => this.renderString(this.pixi.serializeSprite(this.graphicData)),
+      600
+    );
   }
 
   flashColor(colorId) {
@@ -310,7 +337,8 @@ class GraphicsEditor extends Component {
         if (part.yPos > 63) part.yPos = 63;
       }
 
-      this.props.onChange(this.pixi.serializeSprite(this.graphicData));
+      this.renderString(this.pixi.serializeSprite(this.graphicData));
+      //this.props.onChange(this.pixi.serializeSprite(this.graphicData));
     }
   }
 
@@ -456,6 +484,7 @@ class GraphicsEditor extends Component {
               </span>
             </Tooltip>
             <br></br>
+            {/*
             <Box style={{ display: "flex", justifyContent: "left" }}>
               <MyToggle
                 label="Mirrored"
@@ -521,6 +550,7 @@ class GraphicsEditor extends Component {
                 </Tooltip>
               </Box>
             </Stack>
+            */}
           </Box>
           <Box>
             <Box id={this.props.containerId}></Box>

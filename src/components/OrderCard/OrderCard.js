@@ -14,16 +14,24 @@ class OrderCard extends Component {
     //const civ = this.props.worldData.civilizations[this.props.civilization];
 
     return (
-      <PrettyBox>
+      <PrettyBox className="pretty-box-container-white">
         <Box className="card-header">
           <Typography className="description">
             {this.props.order.description}
           </Typography>
         </Box>
         <Stack direction="row" spacing={2}>
-          <PrettyButton>Mover</PrettyButton>
-          <PrettyButton>Duplicar</PrettyButton>
-          <PrettyButton>Borrar</PrettyButton>
+          <PrettyButton onClick={() => this.props.onMove(this.props.pointer)}>
+            Mover
+          </PrettyButton>
+          <PrettyButton
+            onClick={() => this.props.onDuplicate(this.props.pointer)}
+          >
+            Duplicar
+          </PrettyButton>
+          <PrettyButton onClick={() => this.props.onDelete(this.props.pointer)}>
+            Borrar
+          </PrettyButton>
         </Stack>
       </PrettyBox>
     );

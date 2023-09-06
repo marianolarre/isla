@@ -16,7 +16,7 @@ import {
   Tab,
   Popover,
 } from "@mui/material";
-import GameGraphics from "../../classes/GameGraphics.js";
+import GameController from "../../classes/GameController.js";
 import { Button, Popper } from "@mui/material";
 import ResourceDisplay from "../ResourceDisplay/ResourceDisplay.js";
 import "./GamePanel.css";
@@ -44,6 +44,7 @@ import OrderCard from "../OrderCard/OrderCard.js";
 import gameData from "../../data/deserializedTestGameData.js";
 import PrettyBox from "../Containers/PrettyBox.js";
 
+const NO_TYPE = 1;
 const ENTITY = 1;
 const ORDER = 2;
 
@@ -87,9 +88,9 @@ class GamePanel extends Component {
 
   /* #region React lifecycle */
   componentWillMount() {
-    this.graphics = new GameGraphics(
+    this.game = new GameController(
       gameData,
-      () => this.handleGraphicsLoaded(),
+      () => this.handleGameLoaded(),
       (bounds, data, pointer, type) =>
         this.handleSpriteHover(bounds, data, pointer, type),
       (bounds, data, pointer, type) =>
@@ -102,17 +103,17 @@ class GamePanel extends Component {
   }
 
   componentDidMount() {
-    this.graphics.mount();
+    this.game.mount();
   }
 
   componentWillUnmount() {
-    this.graphics.unmount();
+    this.game.unmount();
   }
 
   /* #endregion */
 
   /* #region Handle graphic events */
-  handleGraphicsLoaded() {
+  handleGameLoaded() {
     this.setState({ ready: true });
   }
 
@@ -215,7 +216,7 @@ class GamePanel extends Component {
             <ResourceDisplay
               key={i}
               resourceData={civ.state.resources}
-              graphics={this.graphics}
+              game={this.game}
               value={singleResource}
             />
           }
@@ -255,7 +256,7 @@ class GamePanel extends Component {
             <ResourceDisplay
               value={singleResource}
               resourceData={gameData.resources}
-              graphics={this.graphics}
+              game={this.game}
             ></ResourceDisplay>
           </AccordionSummary>
           <AccordionDetails>
@@ -282,13 +283,13 @@ class GamePanel extends Component {
     let imgList = [];
     for (let i in civ.state.entities) {
       const base = gameData.bases[i];
-      const str = this.graphics.pixi.transformImgString(base.img, options);
+      const str = this.game.pixi.transformImgString(base.img, options);
       imgList.push(
         <Accordion key={i}>
           <AccordionSummary>
             <img
               className="render small-render no-margin"
-              src={this.graphics.renders[str].src}
+              src={this.game.renders[str].src}
             ></img>
             <Typography style={{ margin: "auto" }}>{base.name}</Typography>
           </AccordionSummary>
@@ -303,9 +304,19 @@ class GamePanel extends Component {
   /* #endregion */
 
   handleAddOrder() {
-    //this.graphics.createOrderGraphic(newOrder, this.state.currentCiv);
+    //this.game.createOrderGraphic(newOrder, this.state.currentCiv);
     this.setState({ currentAction: PLACING_ORDER });
-    this.graphics.setAction(PLACING_ORDER);
+    this.game.setAction(PLACING_ORDER);
+  }
+
+  handleMoveOrder() {
+    this.setState({ currentAction: PLACING_ORDER });
+    this.game.setAction(PLACING_ORDER);
+  }
+
+  handleDeleteOrder(data) {
+    this.game.deleteOrder(data);
+    this.setState({ hoverOpen: false });
   }
 
   handlePlaceGhost(position) {
@@ -314,7 +325,7 @@ class GamePanel extends Component {
         description: "Descripción",
         position: position,
       };
-      this.graphics.createOrderGraphic(newOrder, this.state.currentCiv);
+      this.game.createOrderGraphic(newOrder, this.state.currentCiv);
       this.setState({ currentAction: NO_ACTION });
     }
   }
@@ -390,7 +401,7 @@ class GamePanel extends Component {
                 <ResourcesPanel
                   worldData={gameData}
                   civilization={this.state.currentCiv}
-                  graphics={this.graphics}
+                  game={this.game}
                 ></ResourcesPanel>
   </TabPanel>*/}
 
@@ -403,7 +414,7 @@ class GamePanel extends Component {
                 <IdeaPanel
                   worldData={gameData}
                   civilization={this.state.currentCiv}
-                  graphics={this.graphics}
+                  game={this.game}
                 ></IdeaPanel>
   </TabPanel>*/}
 
@@ -416,7 +427,7 @@ class GamePanel extends Component {
                 <OrderPanel
                   gameData={gameData}
                   civilization={this.state.currentCiv}
-                  graphics={this.graphics}
+                  game={this.game}
                   onAddOrder={() => this.handleAddOrder()}
                 ></OrderPanel>
               </TabPanel>
@@ -430,7 +441,7 @@ class GamePanel extends Component {
                 <GameMasterPanel
                   worldData={gameData}
                   civilization={this.state.currentCiv}
-                  graphics={this.graphics}
+                  game={this.game}
                   onCivChange={(civId) => this.handleCivChange(civId)}
                 ></GameMasterPanel>
               </TabPanel>
@@ -470,7 +481,8 @@ class GamePanel extends Component {
             {this.state.selectedType == ENTITY && (
               <EntityCard
                 gameData={gameData}
-                graphics={this.graphics}
+                game={this.game}
+                pointer={this.state.selectedPointer}
                 entity={this.state.selectedData.entity}
                 civilization={this.state.selectedData.civilization}
               ></EntityCard>
@@ -478,9 +490,13 @@ class GamePanel extends Component {
             {this.state.selectedType == ORDER && (
               <OrderCard
                 worldData={gameData}
-                graphics={this.graphics}
+                game={this.game}
+                pointer={this.state.selectedPointer}
                 order={this.state.selectedData.order}
                 civilization={this.state.selectedData.civilization}
+                onMove={(data) => this.handleMoveOrder(data)}
+                onDuplicate={(data) => this.handleDuplicateOrder(data)}
+                onDelete={(data) => this.handleDeleteOrder(data)}
               ></OrderCard>
             )}
           </Box>
@@ -512,7 +528,7 @@ class GamePanel extends Component {
                 {this.state.selectedData.entity.action && (
                   <ResourceDisplay
                     resourceData={civ.state.resources}
-                    graphics={this.graphics}
+                    game={this.game}
                     value={this.state.selectedData.entity.action}
                   ></ResourceDisplay>
                 )}
